@@ -1,0 +1,45 @@
+FROM maven:3.9.16-eclipse-temurin-17-noble AS service-dev
+
+# Section: Development Tools
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Section: Development Workspace
+ARG UID=1000
+ARG GID=1000
+ARG WORKDIR=/payment-api
+
+# Define Maven paths early
+ARG MAVEN_PATH=${WORKDIR}/.m2
+ARG MAVEN_REPOSITORY=${MAVEN_PATH}/repository
+
+USER ${UID}
+WORKDIR ${WORKDIR}
+
+# Configure Maven environment
+ENV MAVEN_CONFIG=${MAVEN_PATH}
+ENV MAVEN_REPOSITORY=${MAVEN_REPOSITORY}
+ENV MAVEN_OPTS="-Dmaven.repo.local=${MAVEN_REPOSITORY}"
+
+# Section: Download Maven Dependencies
+# Copy Maven Module POM Files
+COPY --chown=${UID}:${GID} ./services/pg-database/pom.xml ./services/pg-database/pom.xml
+COPY --chown=${UID}:${GID} ./services/identity/pom.xml ./services/identity/pom.xml
+COPY --chown=${UID}:${GID} ./services/product/pom.xml ./services/product/pom.xml
+COPY --chown=${UID}:${GID} ./pom.xml ./pom.xml
+
+# Download Dependencies (Hardcoded target path ensures BuildKit caches properly)
+RUN --mount=type=cache,target=/payment-api/.m2/repository,uid=1000,gid=1000 \
+    mvn dependency:go-offline
+
+# Dummy compile to force plugin downloads
+RUN --mount=type=cache,target=/payment-api/.m2/repository,uid=1000,gid=1000 \
+    mvn test-compile -B -DskipTests || true
+
+# Section: Source Code
+COPY --chown=${UID}:${GID} . . 
+
+CMD [ "sleep", "infinity" ]

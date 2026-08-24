@@ -1,0 +1,30 @@
+# Fallbacks for local development only
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: ${POSTGRES_DRIVER:org.postgresql.Driver}
+    password: ${POSTGRES_PASSWORD:identity}
+    user: ${POSTGRES_USER:identity}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/servicerized}
+
+  jpa:
+    defer-datasource-initialization: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    
+    properties:
+      # Flat dot-notation required under spring.jpa.properties
+      jakarta.persistence.schema-generation.scripts.action: drop-and-create
+      jakarta.persistence.schema-generation.scripts.create-target: target/generated-schema-create.sql
+      jakarta.persistence.schema-generation.scripts.drop-target: target/generated-schema-drop.sql
+      
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.jdbc.batch_size: 30
+      hibernate.jdbc.order_inserts: true
+      hibernate.jdbc.order_updates: true
+      hibernate.jdbc.time_zone: UTC
+      hibernate.format_sql: true
+      hibernate.use_sql_comments: true # Fixed: was user_sql_comments

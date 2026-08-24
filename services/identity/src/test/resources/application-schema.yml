@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:schemadb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  flyway:
+    enabled: false
+
+  jpa:
+    defer-datasource-initialization: false
+
+    hibernate:
+      ddl-auto: none
+
+    properties:
+      # Flat dot-notation keys are required inside spring.jpa.properties
+      jakarta.persistence.schema-generation.scripts.action: create
+      jakarta.persistence.schema-generation.scripts.create-target: ./target/generated-schema.sql
+
+      hibernate.format_sql: true

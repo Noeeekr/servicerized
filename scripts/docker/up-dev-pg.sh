@@ -1,0 +1,1 @@
+UID=$(id -u) docker compose --env-file="./services/pg-database/src/main/resources/secrets/compose.dev.env" up -d service-dev

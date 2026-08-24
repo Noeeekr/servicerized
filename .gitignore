@@ -1,0 +1,8 @@
+# Java, maven, etc related dependencies
+target/
+.m2/
+.mvn/
+
+# Secrets related configuration
+secrets/
+*.secret.sql
