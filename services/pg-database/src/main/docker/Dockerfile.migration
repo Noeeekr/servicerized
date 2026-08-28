@@ -1,0 +1,16 @@
+FROM liquibase/liquibase:5.0
+
+RUN lpm add postgresql --global
+
+WORKDIR /liquibase/changelog
+
+# Copy migration files
+COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/changelog/ ./
+COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/migration/ ../migration/pg/
+COPY --chown=liquibase:liquibase ./services/identity/src/main/resources/migration/ ../migration/identity/
+
+# Copy migration script
+COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/scripts/ ./
+
+ENTRYPOINT [ "./migrate.sh" ]
+CMD [ "update" ]

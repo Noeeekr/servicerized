@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+
+-- changeset migrate-identity-service:10000
     create table identity.access_control_list (
         permission_id bigint not null,
         origin_group_id uuid not null,
@@ -101,3 +104,21 @@
        add constraint fk_user_id 
        foreign key (user_id) 
        references identity.users;
+
+--rollback      alter table identity.access_control_list drop constraint fk_permission_id;
+--rollback      alter table identity.access_control_list drop constraint fk_origin_group_id;
+--rollback      alter table identity.access_control_list drop constraint fk_resource_kind_id;
+--rollback      alter table identity.access_control_list drop constraint fk_target_group_id;
+--rollback      alter table identity.groups drop constraint fk_group_kind_id;
+--rollback      alter table identity.groups drop constraint fk_group_owner_id;
+--rollback      alter table identity.groups_users drop constraint fk_group_id;
+--rollback      alter table identity.groups_users drop constraint fk_user_id;
+
+--rollback      drop table if exists identity.acl_permissions;
+--rollback      drop table if exists identity.group_kinds;
+--rollback      drop table if exists identity.groups_users;
+--rollback      drop table if exists identity.users_sessions;
+--rollback      drop table if exists identity.users;
+--rollback      drop table if exists identity.groups;
+--rollback      drop table if exists identity.acl_resources;
+--rollback      drop table if exists identity.access_control_list;
