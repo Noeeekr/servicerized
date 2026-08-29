@@ -27,6 +27,32 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.github.noeeekr:identity-service</include>
+                                </includes>
+                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
+                            <entryPoints>
+                                <entryPoint>com.github.noeeekr.servicerized.identity.repository.migrations.MigrateGroupKinds</entryPoint>
+                            </entryPoints>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>migration</shadedClassifierName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -60,6 +86,13 @@
             <artifactId>hibernate-hikaricp</artifactId>
         </dependency>
 
+        <!-- Database Migration -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -85,5 +118,13 @@
             <artifactId>logback-classic</artifactId>
             <version>1.5.6</version>
         </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        
     </dependencies>
 </project>

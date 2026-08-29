@@ -39,7 +39,8 @@ services:
   # DEVELOPMENT CONTAINERS
 
   dev-service:
-    container_name: service-dev
+    image: dev-service:latest
+    container_name: dev-service
     build:
       dockerfile: ./docker/Dockerfile.service.dev
       context: .

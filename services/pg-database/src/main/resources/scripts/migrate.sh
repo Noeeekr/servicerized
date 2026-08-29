@@ -11,6 +11,14 @@ validate_command() {
         return 0
     fi
 
+    if [ "$COMMAND" = "update --log-level=SEVERE" ]; then
+        return 0
+    fi
+        
+    if [ "$COMMAND" = "update --log-level=DEBUG" ]; then
+        return 0
+    fi
+
     if [ "$COMMAND" = "rollback-count --count=1" ]; then
         return 0
     fi
@@ -25,4 +33,4 @@ liquibase $COMMAND \
     --url="$POSTGRES_URL" \
     --username="$POSTGRES_USER" \
     --password="$POSTGRES_PASSWORD" \
-    --changelog-file=db.changelog-master.yml
+    --changelog-file=db.changelog-master.yml \

@@ -18,7 +18,6 @@
 
   <modules>
     <module>services/identity</module>
-    <module>services/product</module>
     <module>services/pg-database</module>
   </modules>
   

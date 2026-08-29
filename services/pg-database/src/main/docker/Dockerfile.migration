@@ -1,13 +1,31 @@
+# dev-service is a local generic container, and must be build before using this dockerfile.
+FROM dev-service:latest AS build
+
+# Refresh the source copied into the reusable dev image before packaging.
+COPY --chown=1000:1000 . /payment-api/
+
+# Creates jar with java code migration
+RUN cd /payment-api/services/identity/ && mvn clean package -DskipTests
+
 FROM liquibase/liquibase:5.0
 
 RUN lpm add postgresql --global
 
 WORKDIR /liquibase/changelog
 
-# Copy migration files
+# Copy migration jar's from services
+COPY --from=build --chown=liquibase:liquibase \
+    # Add here new lines of jars from service that contains migrations
+    /payment-api/services/identity/target/identity-service-1.0.0-SNAPSHOT-migration.jar \
+    /liquibase/lib/
+
 COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/changelog/ ./
-COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/migration/ ../migration/pg/
-COPY --chown=liquibase:liquibase ./services/identity/src/main/resources/migration/ ../migration/identity/
+
+# Copy migration .sql files
+COPY --chown=liquibase:liquibase \
+    ./services/identity/src/main/resources/migration/ \
+    ./services/pg-database/src/main/resources/migration/ \
+    ../migration/
 
 # Copy migration script
 COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/scripts/ ./

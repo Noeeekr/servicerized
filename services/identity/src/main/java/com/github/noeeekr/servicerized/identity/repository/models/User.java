@@ -35,16 +35,8 @@ public class User extends Metrics {
     @Column(name = "user_email", updatable = false, unique = true, nullable = false)
     private String email;
 
-    @Column(name = "user_password", updatable = true, unique = false, nullable = false)
-    private String password;
-
     public User setEmail(String email) {
         this.email = email;
-        return this;
-    }
-
-    public User setPassword(String password) {
-        this.password = password;
         return this;
     }
 

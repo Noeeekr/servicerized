@@ -17,19 +17,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = GroupKind.NAME, schema = "identity",
+@Table(name = GroupKind.TABLE_NAME, schema = "identity",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_group_kind_name", columnNames = {"group_kind_name"}),
                 @UniqueConstraint(name = "uk_group_kind_id", columnNames = {"group_kind_id"})})
 public class GroupKind {
-    static final String NAME = "group_kinds";
-    static final String COLUMN_GROUP_KIND_ID_NAME = "group_kind_id";
+    public static final String TABLE_NAME = "group_kinds";
+    public static final String COLUMN_NAME_GROUP_KIND_ID = "group_kind_id";
+    public static final String COLUMN_NAME_GROUP_KIND_NAME = "group_kind_name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_kind_id", nullable = false, updatable = false)
+    @Column(name = GroupKind.COLUMN_NAME_GROUP_KIND_ID, nullable = false, updatable = false)
     private Long groupKindId;
 
-    @Column(name = "group_kind_name", nullable = false, updatable = false)
+    @Column(name = GroupKind.COLUMN_NAME_GROUP_KIND_NAME, nullable = false, updatable = false)
     private String groupKindName;
 }

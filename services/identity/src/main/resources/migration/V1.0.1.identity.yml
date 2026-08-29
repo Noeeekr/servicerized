@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: migrate-identity-service:10001
+      author: servicerized
+      changes:
+        - customChange:
+            class: com.github.noeeekr.servicerized.identity.repository.migrations.MigrateGroupKinds

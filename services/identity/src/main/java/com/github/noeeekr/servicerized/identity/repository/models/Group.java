@@ -23,21 +23,32 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = Group.TABLE_NAME, schema = "identity")
 public class Group {
-    public static final String TABLE_NAME = "groups";
-    public static final String COLUMN_GROUP_ID_NAME = "group_id";
+        public static final String TABLE_NAME = "groups";
+        public static final String COLUMN_GROUP_ID_NAME = "group_id";
 
-    @Id
-    @Column(name = Group.COLUMN_GROUP_ID_NAME, updatable = false, unique = true)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID groupId;
+        @Id
+        @Column(name = Group.COLUMN_GROUP_ID_NAME, updatable = false, unique = true)
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = GroupKind.NAME, referencedColumnName = GroupKind.COLUMN_GROUP_KIND_ID_NAME,
-            foreignKey = @ForeignKey(name = "fk_group_kind_id"), unique = false, nullable = false)
-    private GroupKind groupKindId;
+        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+        @JoinColumn(name = GroupKind.TABLE_NAME,
+                        referencedColumnName = GroupKind.COLUMN_NAME_GROUP_KIND_ID,
+                        foreignKey = @ForeignKey(name = "fk_group_kind_id"), unique = false,
+                        nullable = false)
+        private GroupKind groupKindId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_owner_id", referencedColumnName = User.COLUMN_USER_ID_NAME,
-            foreignKey = @ForeignKey(name = "fk_group_owner_id"), nullable = false, unique = false)
-    private User groupOwnerId;
+        @Column(name = "group_password", updatable = true, unique = false, nullable = false)
+        private String password;
+
+        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+        @JoinColumn(name = "group_owner_id", referencedColumnName = User.COLUMN_USER_ID_NAME,
+                        foreignKey = @ForeignKey(name = "fk_group_owner_id"), nullable = false,
+                        unique = false)
+        private User ownerId;
+
+        public Group setPassword(String password) {
+                this.password = password;
+                return this;
+        }
 }

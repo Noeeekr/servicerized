@@ -1,16 +1,10 @@
 package com.github.noeeekr.servicerized.identity.controller.request;
 
-import lombok.AllArgsConstructor;
+import com.github.noeeekr.servicerized.identity.services.request.CreateUserRequest;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class SignUpRequest {
-    private String name;
-    private String email;
-    private String password;
+@SuperBuilder
+public class SignUpRequest extends CreateUserRequest {
 }

@@ -1,7 +1,4 @@
 databaseChangeLog:
   - includeAll:
-      path: ../migration/pg/
-      relativeToChangelogFile: true
-  - includeAll:
-      path: ../migration/identity/
+      path: ../migration/
       relativeToChangelogFile: true

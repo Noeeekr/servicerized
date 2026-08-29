@@ -1,12 +1,16 @@
 package com.github.noeeekr.servicerized.identity.common.response.failure;
 
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
 public class UserFailure {
-    public record FailedPersist(Exception e) implements Failure {
-        @Override
-        public FailureCodes code() {
-            return FailureCodes.FailedPersist;
+    public record FailedPersist(Exception e, String message) implements Failure {
+        public FailedPersist(String message) {
+            this(null, message);
+        }
+
+        public FailedPersist(Exception e) {
+            this(e, "Failed to persist data. ");
         }
 
         @Override
@@ -16,32 +20,9 @@ public class UserFailure {
 
         @Override
         public String message() {
-            return e.getMessage();
-        }
-    }
-
-    public record UnhandledException(Exception e) implements Failure {
-        @Override
-        public FailureCodes code() {
-            return FailureCodes.UnhandledException;
-        }
-
-        @Override
-        public Exception error() {
-            return e;
-        }
-
-        @Override
-        public String message() {
-            return e.getMessage();
-        }
-
-        public String getClientSafeMessage() {
-            String message;
-            if (this.isInternal()) {
-                message = "Unknown error";
-            } else {
-                message = this.message();
+            String message = this.message;
+            if (e != null) {
+                message += String.format(" %s.", e.getMessage());
             }
             return message;
         }
@@ -49,13 +30,13 @@ public class UserFailure {
 
     public record ResourceFound(String location, String resource) implements Failure {
         @Override
-        public FailureCodes code() {
-            return FailureCodes.ResourceFound;
+        public HttpStatus code() {
+            return HttpStatus.BAD_REQUEST;
         }
 
         @Override
-        public boolean isInternal() {
-            return false;
+        public boolean isClientFault() {
+            return true;
         }
 
         @Override
@@ -65,11 +46,6 @@ public class UserFailure {
     }
 
     public record Duplicate(String resourceName, List<String> ids) implements Failure {
-        @Override
-        public FailureCodes code() {
-            return FailureCodes.Duplicate;
-        }
-
         @Override
         public String message() {
             String resourceIds = new String();

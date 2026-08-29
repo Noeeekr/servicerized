@@ -1,7 +1,11 @@
 package com.github.noeeekr.servicerized.identity.common.response.failure;
 
+import org.springframework.http.HttpStatus;
+
 public interface Failure {
-    FailureCodes code();
+    default public HttpStatus code() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
 
     String message();
 
@@ -9,16 +13,16 @@ public interface Failure {
         return null;
     }
 
-    default public boolean isInternal() {
-        return true;
+    default public boolean isClientFault() {
+        return false;
     }
 
     default public String getClientSafeMessage() {
         String message;
-        if (this.isInternal()) {
-            message = "Unknown error";
-        } else {
+        if (this.isClientFault()) {
             message = this.message();
+        } else {
+            message = "Erro interno";
         }
         return message;
     }

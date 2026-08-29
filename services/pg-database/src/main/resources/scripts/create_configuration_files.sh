@@ -16,7 +16,7 @@ ARGS="$@"
 FLAG_PREFIX="--"
 
 SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
-SECRETS_DIR="$(cd "$SCRIPTS_DIR/../resources/secrets" && pwd -P )"
+SECRETS_DIR="$(cd "$SCRIPTS_DIR/../secrets" && pwd -P )"
 
 DATABASE_NAME_FLAGNAME="dbname"
 DATABASE_HOST_FLAGNAME="dbhost"
@@ -168,14 +168,6 @@ DATABASE_USER_NAME="$(replace_with_flag_value "$DATABASE_USER_NAME" "$DATABASE_U
 DATABASE_USER_NAME="$(replace_with_flag_value "$DATABASE_USER_NAME" "$DATABASE_USER_NAME_FLAGNAME" "Database user password")"
 
 log_section "Creating configuration files"
-
-## Create flyway file
-
-FILE_NAME="flyway.$ENVIRONMENT.conf"
-FILE_CONTENT=$(get_flyway_file_content)
-
-log_file_creation "$FILE_NAME" "$SECRETS_DIR"
-create_secret_file "$FILE_NAME" "$FILE_CONTENT"
 
 FILE_NAME="compose.$ENVIRONMENT.env"
 FILE_CONTENT=$(get_docker_file_content)
