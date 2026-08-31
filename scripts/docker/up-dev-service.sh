@@ -86,4 +86,4 @@ prompt_available_services "$SELECTION_IDS"
 CHOOSEN_VALUE="$(read_match)"
 CHOOSEN_ENV_FILE_PATH=$(get_env_file_path_by_id $CHOOSEN_VALUE)
 
-UID=$(id -u) docker compose --env-file="$CHOOSEN_ENV_FILE_PATH" up -d service-dev
+UID=$(id -u) docker compose --env-file="$CHOOSEN_ENV_FILE_PATH" up -d dev-service
