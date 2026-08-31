@@ -22,7 +22,7 @@ public interface Failure {
         if (this.isClientFault()) {
             message = this.message();
         } else {
-            message = "Erro interno";
+            message = "Erro interno. ";
         }
         return message;
     }

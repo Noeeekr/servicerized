@@ -1,16 +1,16 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
 public interface GroupKinds {
-    long getId();
+    Long getId();
 
     String getName();
 
-    public static final GroupKinds AccessGroup = new GroupKinds.NewGroupKind("AccessGroup", 0);
-    public static final GroupKinds FriendGroup = new GroupKinds.NewGroupKind("FriendGroup", 1);
+    public static final GroupKinds AccessGroup = new GroupKinds.NewGroupKind("AccessGroup", Long.valueOf(0));
+    public static final GroupKinds FriendGroup = new GroupKinds.NewGroupKind("FriendGroup", Long.valueOf(1));
 
-    public record NewGroupKind(String name, long id) implements GroupKinds {
+    public record NewGroupKind(String name, Long id) implements GroupKinds {
         @Override
-        public long getId() {
+        public Long getId() {
             return id;
         }
 

@@ -37,7 +37,7 @@ public class UserDao {
         Transaction tx = null;
         try (Session session = this.sessionFactory.openSession()) {
             tx = configuration.getTransaction(() -> {
-                return session.getTransaction();
+                return session.beginTransaction();
             });
             session.persist(u);
             tx.commit();

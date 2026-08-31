@@ -18,9 +18,9 @@ public class Failures {
         public String getClientSafeMessage() {
             String message;
             if (this.isClientFault()) {
-                message = "Unknown error";
-            } else {
                 message = this.message();
+            } else {
+                message = "Erro Interno. ";
             }
             return message;
         }

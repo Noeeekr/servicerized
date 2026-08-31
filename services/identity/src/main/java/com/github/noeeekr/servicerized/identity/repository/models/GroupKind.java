@@ -29,8 +29,8 @@ public class GroupKind {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = GroupKind.COLUMN_NAME_GROUP_KIND_ID, nullable = false, updatable = false)
-    private Long groupKindId;
+    private Long id;
 
     @Column(name = GroupKind.COLUMN_NAME_GROUP_KIND_NAME, nullable = false, updatable = false)
-    private String groupKindName;
+    private String name;
 }
