@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.services;
+package com.github.noeeekr.servicerized.identity.services.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

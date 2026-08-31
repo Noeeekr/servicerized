@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 
@@ -13,12 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.noeeekr.servicerized.identity.annotation.InMemoryDatabase;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 
 @SpringBootTest
-@TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
-        "spring.datasource.driver-class-name=org.h2.Driver"})
+@InMemoryDatabase
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
 public class AuthenticationControllerIntegrationTest {

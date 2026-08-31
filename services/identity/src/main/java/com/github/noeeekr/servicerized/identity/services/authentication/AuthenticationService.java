@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.services;
+package com.github.noeeekr.servicerized.identity.services.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,9 @@ import com.github.noeeekr.servicerized.identity.repository.models.GroupKind;
 import com.github.noeeekr.servicerized.identity.repository.models.GroupKinds;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
-import com.github.noeeekr.servicerized.identity.services.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.services.group.GroupService;
+import com.github.noeeekr.servicerized.identity.services.user.UserService;
+import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;

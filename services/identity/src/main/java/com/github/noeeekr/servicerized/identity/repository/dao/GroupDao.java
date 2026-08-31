@@ -6,13 +6,13 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 
-@Component
+@Repository
 @Scope("prototype")
 public class GroupDao {
     @Autowired

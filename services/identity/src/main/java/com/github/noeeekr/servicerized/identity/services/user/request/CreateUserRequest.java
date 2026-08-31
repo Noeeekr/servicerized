@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.services.request;
+package com.github.noeeekr.servicerized.identity.services.user.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

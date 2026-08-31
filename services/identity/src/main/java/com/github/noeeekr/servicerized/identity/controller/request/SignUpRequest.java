@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.identity.controller.request;
 
-import com.github.noeeekr.servicerized.identity.services.request.CreateUserRequest;
+import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.identity.repository.dto;
 
 import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.services.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
 
 public class UserDto {
     public static User prepareForClient(User user) {

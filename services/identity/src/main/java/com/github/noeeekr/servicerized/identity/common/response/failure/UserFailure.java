@@ -2,32 +2,35 @@ package com.github.noeeekr.servicerized.identity.common.response.failure;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import lombok.Builder;
 
 public class UserFailure {
-    public record FailedPersist(Exception e, String message) implements Failure {
+    @Builder
+    public record FailedPersist(Exception error, String message) implements Failure {
         public FailedPersist(String message) {
             this(null, message);
         }
 
-        public FailedPersist(Exception e) {
-            this(e, "Failed to persist data. ");
+        public FailedPersist(Exception error) {
+            this(error, "Failed to persist data. ");
         }
 
         @Override
         public Exception error() {
-            return e;
+            return error;
         }
 
         @Override
         public String message() {
             String message = this.message;
-            if (e != null) {
-                message += String.format(" %s.", e.getMessage());
+            if (error != null) {
+                message += String.format(" %s.", error.getMessage());
             }
             return message;
         }
     }
 
+    @Builder
     public record ResourceFound(String location, String resource) implements Failure {
         @Override
         public HttpStatus code() {
@@ -41,21 +44,24 @@ public class UserFailure {
 
         @Override
         public String message() {
-            return String.format("resource %s on %s already exists.", resource, location);
+            return String.format("resource '%s' on location '$s' already exists.", resource,
+                    location);
         }
     }
 
-    public record Duplicate(String resourceName, List<String> ids) implements Failure {
+    @Builder
+    public record Duplicate(String resource, List<String> duplicatedIds)
+            implements Failure {
+
         @Override
         public String message() {
-            String resourceIds = new String();
-            ids.forEach((id) -> {
-                resourceIds.concat(String.format("'%s', ", id));
+            String formattedDuplicateIds = new String();
+            duplicatedIds.forEach((id) -> {
+                formattedDuplicateIds.concat(String.format("'%s', ", id));
             });
 
-            return String.format(
-                    "Duplicates were found in resource '%s' when searching for ids: %s ",
-                    resourceName, resourceIds);
+            return String.format("Duplicates were found in resource '%s'. Duplicate Id's: %s ",
+                    resource, formattedDuplicateIds);
         }
     }
 }
