@@ -3,7 +3,8 @@ package com.github.noeeekr.servicerized.identity.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 
@@ -11,17 +12,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
-import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.services.AuthenticationService;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+        "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
+        "spring.datasource.driver-class-name=org.h2.Driver"})
 @AutoConfigureMockMvc
-public class AuthenticationControllerTest {
+@ActiveProfiles("integration")
+public class AuthenticationControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -29,14 +29,8 @@ public class AuthenticationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    private AuthenticationService authenticationService;
-
     @Test
-    public void testSignUpRoute() throws Exception {
-        given(authenticationService.newUser(any()))
-                .willReturn(Response.<User>builder().success(new User()).build());
-
+    public void signUpSuccess() throws Exception {
         // Request Content Creation : Create & Validate POST request content
         SignUpRequest request = SignUpRequest.builder().name("TestUser").password("TestUser")
                 .email("TestUser@TestDomain.Test").build();
