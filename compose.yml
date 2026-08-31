@@ -24,7 +24,7 @@ services:
       # Postgres database data
       - postgres-service-data:/var/lib/postgresql/data/18/main:rw
       # Automatically runs on first boot
-      - ./services/pg-database/src/main/resources/migration/V1__base.secret.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./services/pg-database/src/main/resources/migration/V0.0.0.base.secret.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - postgres-service-network
 
@@ -66,7 +66,7 @@ services:
     volumes:
       - dev-postgres-service-data:/var/lib/postgresql:rw
        # Automatically runs on first boot
-      - ./services/pg-database/src/main/resources/migration/V1__base.secret.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./services/pg-database/src/main/resources/migration/V0.0.0.base.secret.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
