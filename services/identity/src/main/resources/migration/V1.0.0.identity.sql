@@ -8,7 +8,6 @@ create table identity.users (
     user_id uuid not null,
     user_email varchar(255) not null unique,
     user_name varchar(255) not null unique,
-    user_password varchar(255) not null,
     primary key (user_id)
 );
 --rollback drop table if exists identity.users;
