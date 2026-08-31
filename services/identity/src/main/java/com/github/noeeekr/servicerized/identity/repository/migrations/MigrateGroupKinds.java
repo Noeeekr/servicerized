@@ -52,10 +52,6 @@ public class MigrateGroupKinds implements CustomSqlChange, CustomSqlRollback {
     @Override
     public SqlStatement[] generateRollbackStatements(Database database)
             throws CustomChangeException, RollbackImpossibleException {
-        String where = String.format("(k.%s = %d) OR (k.%s = %d)",
-                GroupKind.COLUMN_NAME_GROUP_KIND_ID, GroupKinds.AccessGroup.getId(),
-                GroupKind.COLUMN_NAME_GROUP_KIND_ID, GroupKinds.FriendGroup.getId());
-        String statement = String.format("DELETE FROM %s k WHERE %s", TABLE_NAME, where);
-        return new SqlStatement[] {new RawSqlStatement(statement)};
+        return new SqlStatement[] {};
     }
 }

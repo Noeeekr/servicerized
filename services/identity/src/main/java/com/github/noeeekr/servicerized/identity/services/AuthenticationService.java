@@ -33,7 +33,7 @@ public class AuthenticationService {
         User user = UserDto.fromCreateRequest(request);
         Response<User> createUserResponse = userService.createUser(user, configuration);
 
-        if (createUserResponse.getFailure() != null) {
+        if (createUserResponse.isSuccess() == false) {
             return createUserResponse;
         }
 
@@ -47,7 +47,11 @@ public class AuthenticationService {
         initialAccessGroup.setGroupKindId(groupKindReference);
         initialAccessGroup.setOwnerId(user);
 
-        groupService.createAccessGroup(initialAccessGroup, configuration);
+        Response<Group> createGroupResponse =
+                groupService.createAccessGroup(initialAccessGroup, configuration);
+        if (createGroupResponse.isSuccess() == false) {
+            return Response.<User>builder().fail(createGroupResponse.getFailure()).build();
+        }
 
         return createUserResponse;
     }

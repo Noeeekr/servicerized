@@ -2,6 +2,7 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 
 
 import java.util.UUID;
+import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = User.TABLE_NAME, schema = "identity")
-public class User extends Metrics {
+public class User extends Metrics implements ClientResponseDto {
     public static final String TABLE_NAME = "users";
     public static final String COLUMN_USER_ID_NAME = "user_id";
     public static final String COLUMN_USER_EMAIL_NAME = "user_email";
@@ -42,6 +43,10 @@ public class User extends Metrics {
 
     public User setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Object prepareToClient() {
         return this;
     }
 }

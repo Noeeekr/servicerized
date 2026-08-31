@@ -20,9 +20,9 @@ public class ClientResponse {
     private Object payload;
     private Date createdAt;
 
-    public ClientResponse(Object payload) {
+    public ClientResponse(ClientResponseDto payload) {
         this.createdAt = new Date();
-        this.payload = payload;
+        this.payload = payload.prepareToClient();
         this.error = null;
     }
 

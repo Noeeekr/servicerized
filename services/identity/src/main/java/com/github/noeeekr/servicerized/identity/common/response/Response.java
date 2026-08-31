@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Response<PayloadType> {
-    private boolean success = true;
-    private PayloadType payload = null;
-    private Failure err = null;
+    private boolean success;
+    private PayloadType payload;
+    private Failure err;
 
-    public static <Payload> ResponseBuilder<Payload> newInstance() {
+    public static <Payload> ResponseBuilder<Payload> builder() {
         return new ResponseBuilder<>();
     }
 

@@ -4,7 +4,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,7 @@ import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponse;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseError;
-import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseErrorDTO;
+import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseErrorDto;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.AuthenticationService;
 import lombok.AllArgsConstructor;
@@ -26,31 +26,23 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
 
-    @GetMapping
+    @PostMapping
     @RequestMapping("/signup")
     public ResponseEntity<Object> signUp(@RequestBody SignUpRequest request) {
-        Response<User> newUserResponse = authenticationService.newUser(request);
+        Response<User> serviceResponse = authenticationService.newUser(request);
 
-        // Handle errors
-        if (newUserResponse.isSuccess() == false) {
-            Failure failure = newUserResponse.getFailure();
+        if (serviceResponse.isSuccess() == false) {
+            Failure failure = serviceResponse.getFailure();
+            
+            ClientResponseError clientResponseError = ClientResponseErrorDto.fromFailure(failure);
+            ClientResponse clientResponse = new ClientResponse(clientResponseError);
+            HttpStatus statusCode = Objects.requireNonNull(failure.code());
 
-            ClientResponseError err = ClientResponseErrorDTO.fromFailure(failure);
-            ClientResponse response = new ClientResponse(err);
-            HttpStatus code = Objects.requireNonNull(failure.code());
-
-            return new ResponseEntity<>(response, code);
+            return new ResponseEntity<>(clientResponse, statusCode);
         }
 
-        User user = newUserResponse.getPayload();
-        // Tables: User; Group; GroupUsers;
-
-        // get user info
-        // validate user info
-        // Return data
-        new ClientResponse(user);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        User user = serviceResponse.getPayload();
+        return new ResponseEntity<>(new ClientResponse(user), HttpStatus.CREATED);
     }
 
 }

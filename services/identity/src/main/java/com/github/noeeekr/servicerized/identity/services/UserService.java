@@ -29,13 +29,13 @@ public class UserService {
     public Response<User> createUser(User user, ServiceConfiguration configuration) {
         // Validation: User with this credentials must not exist.
         Response<User> response = dao.getByEmail(user.getEmail());
-        if (response.isSuccess() != true) {
+        if (response.isSuccess() == false) {
             return response;
         }
 
         User target = response.getPayload();
         if (target != null) {
-            return Response.<User>newInstance()
+            return Response.<User>builder()
                     .fail(new UserFailure.ResourceFound(String.format("table %s", User.TABLE_NAME),
                             String.format("user (id: %s)", target.getId().toString())))
                     .build();
@@ -43,10 +43,10 @@ public class UserService {
 
         // Persist: Create a user with this credentials.
         response = dao.saveOne(user, configuration);
-        if (response.isSuccess() != true) {
+        if (response.isSuccess() == false) {
             return response;
         }
 
-        return Response.<User>newInstance().success(user).build();
+        return Response.<User>builder().success(user).build();
     }
 }

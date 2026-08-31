@@ -27,9 +27,9 @@ public class UserDao {
                     .createQuery("FROM User u WHERE u.email = :email AND u.deletedAt = null",
                             User.class)
                     .setParameter("email", email).uniqueResult();
-            return Response.<User>newInstance().success(u).build();
+            return Response.<User>builder().success(u).build();
         } catch (Exception e) {
-            return Response.<User>newInstance().fail(new Failures.UnhandledException(e)).build();
+            return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 
@@ -41,11 +41,11 @@ public class UserDao {
             });
             session.persist(u);
             tx.commit();
-            return Response.<User>newInstance().success(u).build();
+            return Response.<User>builder().success(u).build();
         } catch (Exception e) {
             if (tx != null)
                 tx.rollback();
-            return Response.<User>newInstance().fail(new Failures.UnhandledException(e)).build();
+            return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 }

@@ -26,9 +26,9 @@ public class GroupDao {
         try (Session session = this.sessionFactory.openSession()) {
             Group g = session.createQuery("FROM Group g WHERE g.id = :id AND g.deletedAt = null",
                     Group.class).setParameter("id", groupId).uniqueResult();
-            return Response.<Group>newInstance().success(g).build();
+            return Response.<Group>builder().success(g).build();
         } catch (Exception e) {
-            return Response.<Group>newInstance().fail(new Failures.UnhandledException(e)).build();
+            return Response.<Group>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 
@@ -38,9 +38,9 @@ public class GroupDao {
                     .createQuery("FROM Group g WHERE g.ownerId = :ownerId AND g.deletedAt = null",
                             Group.class)
                     .setParameter("ownerId", ownerId).uniqueResult();
-            return Response.<Group>newInstance().success(g).build();
+            return Response.<Group>builder().success(g).build();
         } catch (Exception e) {
-            return Response.<Group>newInstance().fail(new Failures.UnhandledException(e)).build();
+            return Response.<Group>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 
@@ -52,11 +52,11 @@ public class GroupDao {
             });
             session.persist(g);
             tx.commit();
-            return Response.<Group>newInstance().success(g).build();
+            return Response.<Group>builder().success(g).build();
         } catch (Exception e) {
             if (tx != null)
                 tx.rollback();
-            return Response.<Group>newInstance().fail(new Failures.UnhandledException(e)).build();
+            return Response.<Group>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 }
