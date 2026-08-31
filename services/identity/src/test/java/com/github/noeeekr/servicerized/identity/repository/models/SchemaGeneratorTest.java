@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @EntityScan(basePackages = "com.github.noeeekr.servicerized.identity.repository.models")
-@ActiveProfiles("schema")
+@ActiveProfiles("generate-sql")
 class SchemaGeneratorTest {
 
     @Test
