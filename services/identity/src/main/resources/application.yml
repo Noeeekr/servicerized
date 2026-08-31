@@ -2,12 +2,34 @@
 server:
   port: 8080
 
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    com.github.noeeekr: DEBUG
+
 spring:
   datasource:
     driver-class-name: ${POSTGRES_DRIVER:org.postgresql.Driver}
     username: ${POSTGRES_USER:identity}
     password: ${POSTGRES_PASSWORD:identity}
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/servicerized}
+
+  thymeleaf:
+    prefix: classpath:templates/
+  
+  mail:
+    host: ${MAILER_HOST:servicerized.gmail.com}
+    port: 587
+    username: ${MAILER_NAME:servicerized@gmail.com}
+    password: ${MAILER_PASSWORD:servicerized}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls: 
+            enable: true
 
   liquibase:
     enabled: false
