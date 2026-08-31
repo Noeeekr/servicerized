@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Conta - Servicerized</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f8; table-layout: fixed;">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                <!-- Main Container Table -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    
+                    <!-- Header Banner -->
+                    <tr>
+                        <td align="center" style="background-color: #0f172a; padding: 32px 20px;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">Servicerized</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Content Body -->
+                    <tr>
+                        <td style="padding: 40px 36px 30px 36px; color: #334155; font-size: 16px; line-height: 1.6;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin-top: 0; margin-bottom: 20px; font-weight: 600; font-size: 18px; color: #1e293b;">
+                                Olá <span th:text="${userName}">Usuário</span>,
+                            </p>
+
+                            <!-- Primary Intro -->
+                            <p style="margin-top: 0; margin-bottom: 24px; color: #475569;">
+                                Obrigado por se cadastrar na <strong>Servicerized</strong>. Para concluir sua configuração e ativar sua conta, por favor confirme seu endereço de e-mail clicando no botão abaixo.
+                            </p>
+
+                            <!-- Call to Action Button -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 32px 0;">
+                                <tr>
+                                    <td align="center" style="border-radius: 6px; background-color: #2563eb;">
+                                        <a th:href="${confirmationUrl}" target="_blank" style="background-color: #2563eb; border: solid 1px #2563eb; border-radius: 6px; color: #ffffff; display: inline-block; font-size: 16px; font-weight: 600; letter-spacing: 0.3px; padding: 14px 28px; text-decoration: none; text-transform: none;">
+                                            Confirmar seu E-mail
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Dynamic Paragraphs Injection -->
+                            <!-- Iterates through a list of strings passed from the backend service -->
+                            <div th:if="${additionalParagraphs != null}">
+                                <p th:each="paragraph : ${additionalParagraphs}" th:text="${paragraph}" style="margin-top: 0; margin-bottom: 16px; color: #475569; font-size: 15px;">
+                                    Conteúdo adicional de parágrafo será renderizado dinamicamente aqui.
+                                </p>
+                            </div>
+
+                            <!-- Fallback spacer line -->
+                            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+
+                            <!-- Closing Sign-off -->
+                            <p style="margin-bottom: 0; color: #64748b; font-size: 14px;">
+                                Atenciosamente,<br>
+                                <strong style="color: #334155;">Equipe Servicerized</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer Section -->
+                    <tr>
+                        <td align="center" style="background-color: #f8fafc; padding: 20px 36px; border-top: 1px solid #e2e8f0;">
+                            <p style="margin: 0; color: #94a3b8; font-size: 12px; line-height: 1.4;">
+                                &copy; 2026 Servicerized. Todos os direitos reservados.<br>
+                                Se você não solicitou este e-mail, pode ignorá-lo com segurança.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
