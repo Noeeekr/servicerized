@@ -1,7 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: migrate-identity-service:10001
+      id: migrate-identity-service-default-rows
       author: servicerized
       changes:
         - customChange:
             class: com.github.noeeekr.servicerized.identity.repository.migrations.MigrateGroupKinds
+  - changeSet:
+      id: tag-release-v1.0
+      author: servicerized
+      changes:
+        - tagDatabase:
+            tag: v1.0.0

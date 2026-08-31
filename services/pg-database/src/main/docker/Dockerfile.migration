@@ -4,7 +4,7 @@ FROM dev-service:latest AS build
 # Refresh the source copied into the reusable dev image before packaging.
 COPY --chown=1000:1000 . /payment-api/
 
-# Creates jar with java code migration
+# Creates jar with sql & java code migration
 RUN cd /payment-api/services/identity/ && mvn clean package -DskipTests
 
 FROM liquibase/liquibase:5.0
@@ -13,19 +13,19 @@ RUN lpm add postgresql --global
 
 WORKDIR /liquibase/changelog
 
-# Copy migration jar's from services
+# Copy migration jar's from services with sql and java code migrations 
 COPY --from=build --chown=liquibase:liquibase \
     # Add here new lines of jars from service that contains migrations
     /payment-api/services/identity/target/identity-service-1.0.0-SNAPSHOT-migration.jar \
     /liquibase/lib/
 
-COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/changelog/ ./
-
-# Copy migration .sql files
+# Copy base service migrations (Could also become a jar to be copied)
 COPY --chown=liquibase:liquibase \
-    ./services/identity/src/main/resources/migration/ \
     ./services/pg-database/src/main/resources/migration/ \
     ../migration/
+
+# Copy master changelog file 
+COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/changelog/ ./
 
 # Copy migration script
 COPY --chown=liquibase:liquibase ./services/pg-database/src/main/resources/scripts/ ./
