@@ -1,12 +1,12 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
 import java.util.UUID;
+import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,8 +27,9 @@ public class Group {
         public static final String COLUMN_GROUP_ID_NAME = "group_id";
 
         @Id
+        @GeneratedValue()
+        @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
         @Column(name = Group.COLUMN_GROUP_ID_NAME, updatable = false, unique = true)
-        @GeneratedValue(strategy = GenerationType.UUID)
         private UUID id;
 
         @ManyToOne(fetch = FetchType.LAZY, optional = false)

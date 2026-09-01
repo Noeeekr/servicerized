@@ -2,11 +2,11 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 
 
 import java.util.UUID;
+import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,8 @@ public class User extends Metrics implements ClientResponseDto {
     public static final String COLUMN_USER_EMAIL_NAME = "user_email";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue()
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = User.COLUMN_USER_ID_NAME, updatable = false, unique = true, nullable = false)
     private UUID id;
 
