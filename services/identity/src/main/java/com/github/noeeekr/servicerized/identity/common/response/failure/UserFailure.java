@@ -31,7 +31,7 @@ public class UserFailure {
     }
 
     @Builder
-    public record ResourceFound(String location, String resource) implements Failure {
+    public record ResourceFound(String message) implements Failure {
         @Override
         public HttpStatus code() {
             return HttpStatus.BAD_REQUEST;
@@ -44,8 +44,7 @@ public class UserFailure {
 
         @Override
         public String message() {
-            return String.format("resource '%s' on location '$s' already exists.", resource,
-                    location);
+            return String.format(message);
         }
     }
 

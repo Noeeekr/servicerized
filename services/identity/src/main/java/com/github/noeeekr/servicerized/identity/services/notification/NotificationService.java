@@ -1,10 +1,13 @@
 package com.github.noeeekr.servicerized.identity.services.notification;
 
+import java.net.URI;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -28,17 +31,26 @@ public class NotificationService {
      * @throws MessagingException Check {@link JavaMailSender#send(MimeMessage...)} for more
      *         information about the exceptions thrown.
      */
-    public void sendConfirmation(@NonNull String to) throws MessagingException, NullPointerException {
-        String messageBody = this.template.buildConfirmationEmailHtml("Usuário", "");
-        Objects.requireNonNull(messageBody, "Confirmation e-mail message body must exist");
+    public Response<?> sendConfirmation(@NonNull String to, @NonNull String username,
+            @NonNull URI endpoint) {
+        try {
+            String messageBody =
+                    this.template.buildConfirmationEmailHtml(username, endpoint.toString());
+            Objects.requireNonNull(messageBody, "Confirmation e-mail message body must exist");
 
-        MimeMessage message = this.mailSender.createMimeMessage();
-        MimeMessageHelper messageBuilder = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessage message = this.mailSender.createMimeMessage();
+            MimeMessageHelper messageBuilder = new MimeMessageHelper(message, true, "UTF-8");
 
-        messageBuilder.setTo(to);
-        messageBuilder.setSubject("Confirmar Conta em Servicerized");
-        messageBuilder.setText(messageBody, true);
+            messageBuilder.setTo(to);
+            messageBuilder.setSubject("Confirmar Conta em Servicerized");
+            messageBuilder.setText(messageBody, true);
 
-        mailSender.send(message);
+            mailSender.send(message);
+
+            return Response.builder().success().build();
+        } catch (Exception e) {
+            // MessagingException, NullPointerException
+            return Response.builder().fail(new Failures.UnhandledException(e)).build();
+        }
     }
 }

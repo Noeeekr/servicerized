@@ -7,12 +7,14 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 
 @Repository
+@Transactional
 @Scope("prototype")
 public class GroupDao {
     @Autowired
@@ -47,9 +49,7 @@ public class GroupDao {
     public Response<Group> saveOne(Group g, DaoConfiguration configuration) {
         Transaction tx = null;
         try (Session session = this.sessionFactory.openSession()) {
-            tx = configuration.getTransaction(() -> {
-                return session.beginTransaction();
-            });
+            tx = session.beginTransaction();
             session.persist(g);
             tx.commit();
             return Response.<Group>builder().success(g).build();

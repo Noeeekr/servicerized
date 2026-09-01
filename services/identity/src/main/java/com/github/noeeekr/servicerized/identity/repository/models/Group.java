@@ -47,6 +47,11 @@ public class Group {
                         unique = false)
         private User ownerId;
 
+        public Group setGroupKindId(GroupKind knd) {
+                this.groupKindId = knd;
+                return this;
+        }
+
         public Group setPassword(String password) {
                 this.password = password;
                 return this;

@@ -2,11 +2,11 @@ package com.github.noeeekr.servicerized.identity.services.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.identity.repository.dto.GroupDto;
 import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
-import com.github.noeeekr.servicerized.identity.repository.models.GroupKind;
-import com.github.noeeekr.servicerized.identity.repository.models.GroupKinds;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
 import com.github.noeeekr.servicerized.identity.services.group.GroupService;
@@ -16,13 +16,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
+@Transactional
+@AllArgsConstructor
 public class AuthenticationService {
     @Autowired
     private final UserService userService;
+
     @Autowired
     private final GroupService groupService;
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -31,26 +34,22 @@ public class AuthenticationService {
     }
 
     public Response<User> newUser(CreateUserInterface request, ServiceConfiguration configuration) {
-        // Create User & Handle Operation Errors
-        User user = UserDto.fromCreateRequest(request);
-        Response<User> createUserResponse = userService.createUser(user, configuration);
+        // Section: Create User & Handle Operation Errors
+        Response<User> createUserResponse =
+                userService.createUser(UserDto.fromCreateRequest(request), configuration);
 
-        if (createUserResponse.isSuccess() == false) {
+        // Section: Handle Previous Section Errors
+        if (createUserResponse.isSuccess() == false)
             return createUserResponse;
-        }
 
-        GroupKind groupKindReference =
-                entityManager.getReference(GroupKind.class, GroupKinds.AccessGroup.getId());
-
-        // Create User Access Group & Handle Operation Errors
-        Group initialAccessGroup = new Group();
-        initialAccessGroup.setPassword(request.getPassword());
-        // Group Kind needs to come from pre-defined on database;
-        initialAccessGroup.setGroupKindId(groupKindReference);
-        initialAccessGroup.setOwnerId(user);
+        // Section: Create User Access Group
+        Group initialAccessGroup = GroupDto.createPrimaryAccessGroup(entityManager,
+                createUserResponse.getPayload(), request.getPassword());
 
         Response<Group> createGroupResponse =
                 groupService.createAccessGroup(initialAccessGroup, configuration);
+
+        // Section: Handle Previous Section Errors
         if (createGroupResponse.isSuccess() == false) {
             return Response.<User>builder().fail(createGroupResponse.getFailure()).build();
         }

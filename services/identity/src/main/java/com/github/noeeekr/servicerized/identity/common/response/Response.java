@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class Response<PayloadType> {
     private boolean success;
     private PayloadType payload;
-    private Failure err;
+    private Failure failure;
 
     public static <Payload> ResponseBuilder<Payload> builder() {
         return new ResponseBuilder<>();
@@ -23,7 +23,13 @@ public class Response<PayloadType> {
         return this.payload;
     }
 
+    public Response<PayloadType> fail(Failure failure) {
+        this.failure = failure;
+        this.success = false;
+        return this;
+    }
+
     public Failure getFailure() {
-        return this.err;
+        return this.failure;
     }
 }

@@ -6,12 +6,15 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
+import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 
 @Repository
+@Transactional
 @Scope("prototype")
 public class UserDao {
     @Autowired
@@ -36,9 +39,7 @@ public class UserDao {
     public Response<User> saveOne(User u, DaoConfiguration configuration) {
         Transaction tx = null;
         try (Session session = this.sessionFactory.openSession()) {
-            tx = configuration.getTransaction(() -> {
-                return session.beginTransaction();
-            });
+            tx = session.beginTransaction();
             session.persist(u);
             tx.commit();
             return Response.<User>builder().success(u).build();
@@ -46,6 +47,20 @@ public class UserDao {
             if (tx != null)
                 tx.rollback();
             return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
+        }
+    }
+
+    public Response<UserEmailConfirmation> saveEmailConfirmation(UserEmailConfirmation u, DaoConfiguration configuration) {
+        Transaction tx = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            tx = session.beginTransaction();
+            session.persist(u);
+            tx.commit();
+            return Response.<UserEmailConfirmation>builder().success(u).build();
+        } catch (Exception e) {
+            if (tx != null)
+                tx.rollback();
+            return Response.<UserEmailConfirmation>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 }
