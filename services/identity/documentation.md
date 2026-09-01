@@ -1,7 +1,20 @@
 # Documentation
 
-## Implementation Rules
-Services methods should not do data mutation to prepare them for client. This behaviour should be expected from [controllers](../controller/documentation.md).
+## Migrations
+
+This service migrations are available at [NOT IMPLEMENTED](README.md). The models are managed JPA entities. This offers some benefits, such as helpers for creating *.sql* migration files, one of them is a sql schema generation from entity inference. 
+
+In order to use it, it requires maven updated and the packages described in pom installed. For this, go to this service root folder and run:
+```
+    $ mvn install -DskipTests
+```
+
+After that, still on this service root folder, run:
+```
+    $ mvn clean package -Dtest=SchemaGeneratorTest
+```
+
+It will generate the base sql files used to created and update the SQL migrations. [SQL Migration Generator](./src/test/java/com/github/noeeekr/servicerized/identity/repository/models/SchemaGeneratorTest.java) is a test that fails if it cannot infer the types of models as postgres sql version, otherwise it always passes, on execution it creates files at [Target Folder](./target) with the names defined at [SQL Migration Configuration](./src/test/resources/application-generate-sql.yml)
 
 ## Endpoints
 
