@@ -37,4 +37,13 @@ public class ClientResponse {
         this.payload = payload;
         this.error = err;
     }
+
+    public static ClientResponseDto getEmptyPayload() {
+        return new ClientResponseDto() {
+            @Override
+            public Object prepareToClient() {
+                return new Object();
+            }
+        };
+    }
 }

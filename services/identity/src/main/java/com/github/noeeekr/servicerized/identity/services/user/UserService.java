@@ -13,6 +13,7 @@ import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.common.response.failure.UserFailure;
 import com.github.noeeekr.servicerized.identity.controller.AuthenticationController;
 import com.github.noeeekr.servicerized.identity.repository.dao.UserDao;
+import com.github.noeeekr.servicerized.identity.repository.dao.UserEmailConfirmationDao;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
@@ -27,12 +28,19 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     @Autowired
     private UserDao dao;
+    @Autowired
+    private UserEmailConfirmationDao emailConfirmationDao;
 
     @Autowired
     private NotificationService notificationService;
 
     public Response<User> createUser(User user) {
         return this.createUser(user, new ServiceConfiguration());
+    }
+
+    public Response<?> validateEmail(UUID emailConfirmationToken) {
+        Response<?> response = emailConfirmationDao.validateUserEmail(emailConfirmationToken);
+        return response;
     }
 
     /**

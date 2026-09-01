@@ -49,8 +49,25 @@ public class UserFailure {
     }
 
     @Builder
-    public record Duplicate(String resource, List<String> duplicatedIds)
-            implements Failure {
+    public record ResourceNotFound(String message) implements Failure {
+        @Override
+        public HttpStatus code() {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        @Override
+        public boolean isClientFault() {
+            return true;
+        }
+
+        @Override
+        public String message() {
+            return String.format(message);
+        }
+    }
+
+    @Builder
+    public record Duplicate(String resource, List<String> duplicatedIds) implements Failure {
 
         @Override
         public String message() {

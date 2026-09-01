@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.identity.services.authentication;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,5 +56,10 @@ public class AuthenticationService {
         }
 
         return createUserResponse;
+    }
+
+    public Response<?> authorizeUserSignin(UUID emailConfirmationToken) {
+        Response<?> response = userService.validateEmail(emailConfirmationToken);
+        return response;
     }
 }
