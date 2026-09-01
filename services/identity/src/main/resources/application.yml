@@ -1,6 +1,6 @@
 # Fallbacks for local development only
 app:
-  domain: ${SERVER_DOMAIN:https://servicerized.com}
+  domain: ${SERVER_DOMAIN:http://localhost:80}
 
 server:
   port: 8080

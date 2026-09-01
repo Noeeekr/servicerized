@@ -77,8 +77,7 @@ public class UserService {
     }
 
     protected URI createEmailConfirmationUri(UUID confirmationToken) {
-        String domain = String.format("https://%s", ServerConfiguration.getDomain()) + "";
-        return UriComponentsBuilder.fromUriString(domain)
+        return UriComponentsBuilder.fromUriString(ServerConfiguration.getDomain() + "")
                 .path(AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH)
                 .queryParam(AuthenticationController.QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN,
                         confirmationToken)

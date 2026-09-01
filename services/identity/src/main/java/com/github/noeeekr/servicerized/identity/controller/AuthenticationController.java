@@ -57,7 +57,7 @@ public class AuthenticationController extends Controller {
     @GetMapping
     @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH + "/{confirmationToken}")
     public ResponseEntity<ClientResponse> signUpConfirmation() {
-
+        
         return new ResponseEntity<>(new ClientResponse(new ClientResponseError("Recurso em construção. ", false)), HttpStatus.NOT_IMPLEMENTED);
     }
 }
