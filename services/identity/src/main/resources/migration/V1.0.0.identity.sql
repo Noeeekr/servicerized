@@ -94,7 +94,8 @@ alter table identity.groups_users
 --changeset migrate-identity-service:create-users-email-confirmation-table
 create table identity.users_email_confirmations (
     confirmation_token uuid not null,
-    user_id uuid,
+    confirmed boolean not null default FALSE,
+    user_id uuid not null,
     primary key (confirmation_token)
 );
 
