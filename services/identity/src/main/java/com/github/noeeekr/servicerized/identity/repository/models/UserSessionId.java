@@ -1,12 +1,10 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +16,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSessionId implements Serializable {
-    @ManyToOne
-    @MapsId("groupId")
-    @JoinColumn(name = "session_group_id", foreignKey = @ForeignKey(name = "fk_session_group_id"))
+    @Column(name = "session_group_id")
     private UUID groupId;
 
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "session_user_id", foreignKey = @ForeignKey(name = "fk_session_user_id"))
+    @Column(name = "session_user_id")
     private UUID userId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof UserSessionId))
+            return false;
+        UserSessionId that = (UserSessionId) o;
+        return Objects.equals(groupId, that.groupId) && Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(groupId, userId);
+    }
 }

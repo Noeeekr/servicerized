@@ -42,8 +42,9 @@ create table identity.users_sessions (
     created_at timestamp(6) default CURRENT_TIMESTAMP not null,
     deleted_at timestamp(6) default NULL,
     updated_at timestamp(6) default CURRENT_TIMESTAMP not null,
-    user_session_id uuid not null,
-    primary key (user_session_id)
+    session_group_id uuid not null,
+    session_user_id uuid not null,
+    primary key (session_group_id, session_user_id)
 );
 --rollback drop table if exists identity.users_sessions;
 
@@ -93,6 +94,9 @@ alter table identity.groups_users
 
 --changeset migrate-identity-service:create-users-email-confirmation-table
 create table identity.users_email_confirmations (
+    created_at timestamp(6) default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp(6) default NULL,
+    updated_at timestamp(6) default CURRENT_TIMESTAMP not null,
     confirmation_token uuid not null,
     confirmed boolean not null default FALSE,
     user_id uuid not null,

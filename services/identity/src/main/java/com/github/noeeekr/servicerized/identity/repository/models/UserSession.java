@@ -1,8 +1,11 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +21,16 @@ import lombok.Setter;
 public class UserSession extends Metrics {
 
     @EmbeddedId
-    @Column(name = "user_session_id")
-    private UserSessionId UserSessionId;
+    private UserSessionId id = new UserSessionId();
+
+    @ManyToOne
+    @MapsId("groupId")
+    @JoinColumn(name = "session_group_id", foreignKey = @ForeignKey(name = "fk_session_group_id"))
+    private Group group;
+
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "session_user_id", foreignKey = @ForeignKey(name = "fk_session_user_id"))
+    private User user;
 
 }
