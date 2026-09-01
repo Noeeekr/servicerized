@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.github.noeeekr.servicerized.identity.common.configuration.ServerConfiguration;
+import com.github.noeeekr.servicerized.identity.common.logging.Debugger;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.common.response.failure.UserFailure;
@@ -17,7 +18,9 @@ import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfi
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
 import com.github.noeeekr.servicerized.identity.services.notification.NotificationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @AllArgsConstructor
@@ -77,11 +80,16 @@ public class UserService {
     }
 
     protected URI createEmailConfirmationUri(UUID confirmationToken) {
-        return UriComponentsBuilder.fromUriString(ServerConfiguration.getDomain() + "")
+        URI uri = UriComponentsBuilder.fromUriString(ServerConfiguration.getDomain() + "")
                 .path(AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH)
                 .queryParam(AuthenticationController.QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN,
                         confirmationToken)
                 .build().toUri();
+        if (log.isDebugEnabled()) {
+            log.debug("%s%s", Debugger.formatDomain(UserService.class.getName(),
+                    "Created email confirmation", "URI"), uri);
+        }
+        return uri;
     }
 
     protected Response<User> handleUserAlreadyExists() {
