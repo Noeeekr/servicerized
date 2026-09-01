@@ -91,6 +91,21 @@ alter table identity.groups_users
 --rollback alter table identity.groups_users drop constraint fk_group_id;
 --rollback drop table if exists identity.groups_users;
 
+--changeset migrate-identity-service:create-users-email-confirmation-table
+create table identity.users_email_confirmations (
+    confirmation_token uuid not null,
+    user_id uuid,
+    primary key (confirmation_token)
+);
+
+alter table if exists identity.users_email_confirmations 
+   add constraint fk_user_id 
+   foreign key (user_id) 
+   references identity.users;
+
+--rollback alter table identity.users_email_confirmations drop constraint fk_user_id;
+--rollback drop table if exists identity.users_email_confirmations;
+
 --changeset migrate-identity-service:create-access-control-list-table
 create table identity.access_control_list (
     permission_id bigint not null,
