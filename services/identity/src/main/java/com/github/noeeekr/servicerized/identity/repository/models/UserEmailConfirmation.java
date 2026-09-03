@@ -27,7 +27,7 @@ public class UserEmailConfirmation extends Metrics {
     public static final String COLUMN_NAME_CONFIRMED = "confirmed";
 
     @ManyToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_email_confirmation_user_id"))
     private User user;
 
     @Id

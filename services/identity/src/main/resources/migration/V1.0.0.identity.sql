@@ -103,8 +103,8 @@ create table identity.users_email_confirmations (
     primary key (confirmation_token)
 );
 
-alter table if exists identity.users_email_confirmations 
-   add constraint fk_user_id 
+alter table identity.users_email_confirmations 
+   add constraint fk_email_confirmation_user_id 
    foreign key (user_id) 
    references identity.users;
 
