@@ -1,6 +1,9 @@
 # Fallbacks for local development only
 app:
   domain: ${SERVER_DOMAIN:http://localhost:80}
+  jwt: 
+    secret: ${JWT_SECRET:a99e0bdfcbe527abdc02da4dfadb3bf340db38c95d4b7773e379c36901f10bb8}
+    expiration-ms: 1800000
 
 server:
   port: 8080

@@ -1,6 +1,7 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
 
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
@@ -9,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +39,9 @@ public class User extends Metrics implements ClientResponseDto {
 
     @Column(name = "user_email", updatable = false, unique = true, nullable = false)
     private String email;
+
+    @OneToMany(mappedBy = "owner")
+    List<Group> groups;
 
     public User setEmail(String email) {
         this.email = email;

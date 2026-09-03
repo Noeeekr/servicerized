@@ -12,6 +12,8 @@ import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
+import com.github.noeeekr.servicerized.identity.repository.models.User;
+import com.github.noeeekr.servicerized.identity.services.user.request.UserSignInInterface;
 
 @Repository
 @Transactional
@@ -22,6 +24,20 @@ public class GroupDao {
 
     public GroupDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public Response<User> getBySigninCredentials(UserSignInInterface request) {
+        String query = String.format(
+                "FROM User u INNER JOIN u.groups g WHERE g.name = :name AND g.password = :password");
+        try (Session session = this.sessionFactory.openSession()) {
+            User u = session.createQuery(query, User.class)
+                    .setParameter("name", request.getGroupName())
+                    .setParameter("password", request.getGroupPassword()).uniqueResult();
+
+            return Response.<User>builder().success(u).build();
+        } catch (Exception e) {
+            return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
+        }
     }
 
     public Response<Group> getOneById(UUID groupId) {

@@ -64,8 +64,9 @@ public class AuthenticationService {
         return response;
     }
 
-    public Response<?> signUserAccount(UserSignInInterface request) {
-        Response<?> response = userService.getBySignInCredentials(request);
+    public Response<User> signUserAccount(UserSignInInterface request) {
+        Response<User> response = userService.getBySignInCredentials(request);
+     
         return response;
     }
 }

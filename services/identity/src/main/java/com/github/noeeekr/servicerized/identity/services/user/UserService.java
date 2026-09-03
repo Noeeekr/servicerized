@@ -12,12 +12,14 @@ import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.common.response.failure.UserFailure;
 import com.github.noeeekr.servicerized.identity.controller.AuthenticationController;
+import com.github.noeeekr.servicerized.identity.repository.dao.GroupDao;
 import com.github.noeeekr.servicerized.identity.repository.dao.UserDao;
 import com.github.noeeekr.servicerized.identity.repository.dao.UserEmailConfirmationDao;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
 import com.github.noeeekr.servicerized.identity.services.notification.NotificationService;
+import com.github.noeeekr.servicerized.identity.services.user.request.UserSignInInterface;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     @Autowired
     private UserDao dao;
+
+    @Autowired
+    private GroupDao groupDao;
+
     @Autowired
     private UserEmailConfirmationDao emailConfirmationDao;
 
@@ -40,6 +46,11 @@ public class UserService {
 
     public Response<?> validateEmail(UUID emailConfirmationToken) {
         Response<?> response = emailConfirmationDao.validateUserEmail(emailConfirmationToken);
+        return response;
+    }
+
+    public Response<User> getBySignInCredentials(UserSignInInterface request) {
+        Response<User> response = groupDao.getBySigninCredentials(request);
         return response;
     }
 
