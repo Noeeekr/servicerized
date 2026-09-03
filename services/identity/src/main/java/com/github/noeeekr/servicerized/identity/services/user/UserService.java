@@ -70,7 +70,7 @@ public class UserService {
         UserEmailConfirmation confirmation = new UserEmailConfirmation().setUser(user);
         {
             Response<UserEmailConfirmation> saveEmailResponse =
-                    dao.saveEmailConfirmation(confirmation, configuration);
+                    emailConfirmationDao.saveEmailConfirmation(confirmation, configuration);
             if (saveEmailResponse.isSuccess() == false)
                 return response.fail(saveEmailResponse.getFailure());
         }

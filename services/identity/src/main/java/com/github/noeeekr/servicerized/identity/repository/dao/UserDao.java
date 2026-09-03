@@ -11,7 +11,6 @@ import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 
 @Repository
 @Transactional
@@ -47,20 +46,6 @@ public class UserDao {
             if (tx != null)
                 tx.rollback();
             return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
-        }
-    }
-
-    public Response<UserEmailConfirmation> saveEmailConfirmation(UserEmailConfirmation u, DaoConfiguration configuration) {
-        Transaction tx = null;
-        try (Session session = this.sessionFactory.openSession()) {
-            tx = session.beginTransaction();
-            session.persist(u);
-            tx.commit();
-            return Response.<UserEmailConfirmation>builder().success(u).build();
-        } catch (Exception e) {
-            if (tx != null)
-                tx.rollback();
-            return Response.<UserEmailConfirmation>builder().fail(new Failures.UnhandledException(e)).build();
         }
     }
 }
