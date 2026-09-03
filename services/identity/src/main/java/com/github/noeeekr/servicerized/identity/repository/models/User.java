@@ -4,6 +4,7 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
+import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,7 +48,7 @@ public class User extends Metrics implements ClientResponseDto {
         return this;
     }
 
-    public Object prepareToClient() {
-        return this;
+    public User prepareToClient() {
+        return UserDto.prepareForClient(this);
     }
 }
