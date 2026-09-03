@@ -38,6 +38,7 @@ public class UserEmailConfirmationDao {
                     .setParameter("token", confirmationToken).executeUpdate();
 
             if (updatedAmount == 0) {
+                tx.rollback();
                 Response<?> response = Response.<Boolean>builder().fail(
                         new UserFailure.ResourceNotFound("Código de confirmação não encontrado. "))
                         .build();
