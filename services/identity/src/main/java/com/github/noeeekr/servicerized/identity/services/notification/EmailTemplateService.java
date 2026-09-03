@@ -1,15 +1,17 @@
 package com.github.noeeekr.servicerized.identity.services.notification;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 public class EmailTemplateService {
-    private final TemplateEngine templateEngine;
+    @Autowired
+    private final SpringTemplateEngine templateEngine;
 
-    public EmailTemplateService(TemplateEngine templateEngine) {
+    public EmailTemplateService(SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 

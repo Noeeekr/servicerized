@@ -18,6 +18,7 @@ import lombok.NonNull;
 public class NotificationService {
     @Autowired
     private final JavaMailSender mailSender;
+    
     @Autowired
     private final EmailTemplateService template;
 
