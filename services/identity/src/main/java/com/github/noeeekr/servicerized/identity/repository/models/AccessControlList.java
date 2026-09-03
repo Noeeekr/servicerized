@@ -34,13 +34,13 @@ public class AccessControlList {
     private AclResource resource_kind_id;
 
     @ManyToOne
-    @JoinColumn(name = "origin_group_id", referencedColumnName = Group.COLUMN_GROUP_ID_NAME,
+    @JoinColumn(name = "origin_group_id", referencedColumnName = Group.COLUMN_NAME_GROUP_ID,
             foreignKey = @ForeignKey(name = "fk_origin_group_id"), unique = false, nullable = false,
             updatable = false)
     private Group origin_group_id;
 
     @ManyToOne
-    @JoinColumn(name = "target_group_id", referencedColumnName = Group.COLUMN_GROUP_ID_NAME,
+    @JoinColumn(name = "target_group_id", referencedColumnName = Group.COLUMN_NAME_GROUP_ID,
             foreignKey = @ForeignKey(name = "fk_target_group_id"), unique = false, nullable = false,
             updatable = false)
     private Group target_group_id;

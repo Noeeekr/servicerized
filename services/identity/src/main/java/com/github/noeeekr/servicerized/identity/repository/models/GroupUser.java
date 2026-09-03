@@ -33,6 +33,6 @@ public class GroupUser {
 
     @ManyToOne
     @MapsId("groupId")
-    @JoinColumn(name = Group.COLUMN_GROUP_ID_NAME, foreignKey = @ForeignKey(name = "fk_group_id"))
+    @JoinColumn(name = Group.COLUMN_NAME_GROUP_ID, foreignKey = @ForeignKey(name = "fk_group_id"))
     private Group groupId;
 }

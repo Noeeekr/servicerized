@@ -21,8 +21,8 @@ public class GroupDto {
                 entityManager.getReference(GroupKind.class, GroupKinds.AccessGroup.getId());
 
         Group initialAccessGroup = new Group();
-        initialAccessGroup.setPassword(password).setGroupKindId(groupKindReference)
-                .setOwnerId(user);
+        initialAccessGroup.setPassword(password).setGroupKindId(groupKindReference).setOwner(user)
+                .setName(user.getName());
 
         return initialAccessGroup;
     }

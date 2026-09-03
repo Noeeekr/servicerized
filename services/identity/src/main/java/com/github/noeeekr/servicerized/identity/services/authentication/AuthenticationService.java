@@ -13,6 +13,7 @@ import com.github.noeeekr.servicerized.identity.services.configuration.ServiceCo
 import com.github.noeeekr.servicerized.identity.services.group.GroupService;
 import com.github.noeeekr.servicerized.identity.services.user.UserService;
 import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.services.user.request.UserSignInInterface;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,11 @@ public class AuthenticationService {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    public Response<User> newUser(CreateUserInterface request) {
-        return this.newUser(request, new ServiceConfiguration());
+    public Response<User> createUserAccount(CreateUserInterface request) {
+        return this.createUserAccount(request, new ServiceConfiguration());
     }
 
-    public Response<User> newUser(CreateUserInterface request, ServiceConfiguration configuration) {
+    public Response<User> createUserAccount(CreateUserInterface request, ServiceConfiguration configuration) {
         // Section: Create User & Handle Operation Errors
         Response<User> createUserResponse =
                 userService.createUser(UserDto.fromCreateRequest(request), configuration);
@@ -58,8 +59,13 @@ public class AuthenticationService {
         return createUserResponse;
     }
 
-    public Response<?> authorizeUserSignin(UUID emailConfirmationToken) {
+    public Response<?> authorizeUserAccount(UUID emailConfirmationToken) {
         Response<?> response = userService.validateEmail(emailConfirmationToken);
+        return response;
+    }
+
+    public Response<?> signUserAccount(UserSignInInterface request) {
+        Response<?> response = userService.getBySignInCredentials(request);
         return response;
     }
 }

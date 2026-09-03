@@ -34,7 +34,7 @@ public class AuthenticationControllerUnitTest {
 
         @Test
         public void signUpSuccess() throws Exception {
-                given(authenticationService.newUser(any()))
+                given(authenticationService.createUserAccount(any()))
                                 .willReturn(Response.<User>builder().success(new User()).build());
 
                 // Request Content Creation : Create & Validate POST request content
