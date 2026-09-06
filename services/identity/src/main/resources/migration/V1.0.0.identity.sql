@@ -54,6 +54,7 @@ create table identity.groups (
     group_id uuid not null,
     group_password varchar(255) not null,
     group_owner_id uuid not null,
+    group_name varchar(255) not null,
     primary key (group_id)
 );
 
