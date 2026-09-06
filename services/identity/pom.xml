@@ -161,6 +161,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!-- JWT JSON -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
