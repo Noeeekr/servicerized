@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 import com.github.noeeekr.servicerized.identity.controller.AuthenticationController;
 import com.github.noeeekr.servicerized.identity.middlewares.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -22,40 +23,56 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final AuthenticationFilter authenticationFilter;
+        private final AuthenticationFilter authenticationFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf((configurator) -> configurator.disable());
-        httpSecurity.sessionManagement(
-                (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                httpSecurity.csrf((configurator) -> configurator.disable());
+                httpSecurity.sessionManagement((session) -> session
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // Allows only requests where client does not contain a spring authentication token for sign
-        // in route
-        httpSecurity.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(AuthenticationController.CONTROLLER_PATH).anonymous());
-        httpSecurity.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(AuthenticationController.CONTROLLER_SIGNIN_PATH).anonymous());
+                // Allows only requests where client is making a preflight request for any route
+                httpSecurity.authorizeHttpRequests(authorize -> authorize
+                                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll());
 
-        // Allows only requests where client contains a spring authentication token for default
-        // routes
-        httpSecurity.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
+                // Allows only requests where client does not contain a spring authentication token
+                // for sign-in route
+                httpSecurity.authorizeHttpRequests(authorize -> authorize
+                                .requestMatchers(String.format("%s%s",
+                                                AuthenticationController.CONTROLLER_PATH,
+                                                AuthenticationController.CONTROLLER_SIGNUP_PATH))
+                                .anonymous());
+                httpSecurity.authorizeHttpRequests(authorize -> authorize
+                                .requestMatchers(String.format("%s%s",
+                                                AuthenticationController.CONTROLLER_PATH,
+                                                AuthenticationController.CONTROLLER_SIGNIN_PATH))
+                                .anonymous());
+                httpSecurity.authorizeHttpRequests(authorize -> authorize
+                                .requestMatchers(String.format("%s%s",
+                                                AuthenticationController.CONTROLLER_PATH,
+                                                AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH))
+                                .permitAll());
 
-        httpSecurity.addFilterBefore(authenticationFilter,
-                UsernamePasswordAuthenticationFilter.class);
+                // Allows only requests where client contains a spring authentication token for
+                // default routes
+                httpSecurity.authorizeHttpRequests(
+                                authorize -> authorize.anyRequest().authenticated());
 
-        return httpSecurity.build();
-    }
+                httpSecurity.addFilterBefore(authenticationFilter,
+                                UsernamePasswordAuthenticationFilter.class);
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+                return httpSecurity.build();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
