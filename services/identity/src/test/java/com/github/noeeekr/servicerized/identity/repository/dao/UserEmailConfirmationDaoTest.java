@@ -1,20 +1,20 @@
 package com.github.noeeekr.servicerized.identity.repository.dao;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import static org.junit.Assert.fail;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import com.github.noeeekr.servicerized.identity.annotation.InMemoryDatabase;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 
 @SpringBootTest
-@InMemoryDatabase
+@ActiveProfiles("in-memory-db")
 @AutoConfigureMockMvc
 class UserEmailConfirmationDaoTest {
     @Autowired
