@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.repository.dto;
+package com.github.noeeekr.servicerized.identity.repository.dto.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor
-public class GroupDto {
+public class ClientGroupDtoUtils {
     @Autowired
     private final EntityManager entityManager;
 
@@ -28,6 +28,6 @@ public class GroupDto {
     }
 
     public Group createPrimaryAccessGroup(User user, String password) {
-        return GroupDto.createPrimaryAccessGroup(entityManager, user, password);
+        return ClientGroupDtoUtils.createPrimaryAccessGroup(entityManager, user, password);
     }
 }

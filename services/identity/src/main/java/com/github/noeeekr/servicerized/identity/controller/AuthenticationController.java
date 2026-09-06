@@ -18,6 +18,7 @@ import com.github.noeeekr.servicerized.identity.common.response.failure.Failures
 import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponse;
+import com.github.noeeekr.servicerized.identity.repository.dto.internal.UserDto;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
@@ -54,7 +55,7 @@ public class AuthenticationController extends Controller {
         User user = serviceResponse.getPayload();
 
         if (log.isDebugEnabled()) {
-            Debugger.displayEntity("Created User", user, Debugger.class.getName(),
+            Debugger.displayEntity("Created User", UserDto.New(user),
                     AuthenticationController.class.getName(), "Signup Endpoint");
         }
 

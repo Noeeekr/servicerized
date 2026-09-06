@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
-import com.github.noeeekr.servicerized.identity.repository.dto.GroupDto;
-import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
+import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientGroupDtoUtils;
+import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDtoUtils;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
@@ -38,14 +38,14 @@ public class AuthenticationService {
     public Response<User> createUserAccount(CreateUserInterface request, ServiceConfiguration configuration) {
         // Section: Create User & Handle Operation Errors
         Response<User> createUserResponse =
-                userService.createUser(UserDto.fromCreateRequest(request), configuration);
+                userService.createUser(ClientUserDtoUtils.fromCreateRequest(request), configuration);
 
         // Section: Handle Previous Section Errors
         if (createUserResponse.isSuccess() == false)
             return createUserResponse;
 
         // Section: Create User Access Group
-        Group initialAccessGroup = GroupDto.createPrimaryAccessGroup(entityManager,
+        Group initialAccessGroup = ClientGroupDtoUtils.createPrimaryAccessGroup(entityManager,
                 createUserResponse.getPayload(), request.getPassword());
 
         Response<Group> createGroupResponse =

@@ -1,11 +1,11 @@
-package com.github.noeeekr.servicerized.identity.repository.dto;
+package com.github.noeeekr.servicerized.identity.repository.dto.client;
 
 import org.springframework.stereotype.Component;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
 
 @Component
-public class UserDto {
+public class ClientUserDtoUtils {
     public static User prepareForClient(User user) {
         return user;
     }

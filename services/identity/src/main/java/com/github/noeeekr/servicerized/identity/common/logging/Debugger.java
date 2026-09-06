@@ -1,24 +1,30 @@
 package com.github.noeeekr.servicerized.identity.common.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
+import com.github.noeeekr.servicerized.identity.repository.dto.Dto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Debugger {
-    public static void displayEntity(String message, Object entity, String... domains) {
+    private static ObjectMapper objectMapper =
+            new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    public static void displayEntity(String message, Dto entity, String... domains) {
         String formattedDomains =
                 Debugger.formatDomain(Debugger.class.getName(), Debugger.formatDomain(domains));
         message = String.format("%s: ", message);
 
         try {
-            String json = new ObjectMapper().writeValueAsString(entity);
-            log.debug("%s%s\nEntity:\n%s", message, formattedDomains, json);
+            String json = objectMapper.writeValueAsString(entity);
+            log.debug(String.format("%s%s\n\tEntity:\n%s", message, formattedDomains, json));
         } catch (Exception e) {
             Debugger.printStackTrace(new Failures.UnhandledException(e), domains);
-            log.debug("%sUnable to display entity '%s'\n %s", formattedDomains,
-                    entity.getClass().getName(), e.getMessage());
+            log.debug(String.format("%sUnable to display entity '%s'\n %s", formattedDomains,
+                    entity.getClass().getName(), e.getMessage()));
         }
     }
 
@@ -42,7 +48,7 @@ public class Debugger {
                 builder.append(domains[0]);
             }
             for (int i = 1; i < domains.length; i++) {
-                builder.append(": ");
+                builder.append("\n\tat ");
                 builder.append(domains[i]);
             }
             builder.append(": ");
