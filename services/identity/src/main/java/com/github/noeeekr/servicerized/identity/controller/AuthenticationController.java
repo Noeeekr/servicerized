@@ -75,7 +75,7 @@ public class AuthenticationController extends Controller {
     }
 
     @PostMapping
-    @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_PATH)
+    @RequestMapping(AuthenticationController.CONTROLLER_SIGNIN_PATH)
     public ResponseEntity<ClientResponse> signIn(@RequestBody SignInRequest requestBody) {
         Response<User> response = authenticationService.signUserAccount(requestBody);
         if (response.isSuccess() == false)
