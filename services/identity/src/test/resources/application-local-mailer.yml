@@ -1,0 +1,13 @@
+spring:
+  mail:
+    host: ${MAILER_HOST:127.0.0.1}
+    port: 3050
+    username: ${MAILER_NAME:servicerized}
+    password: ${MAILER_PASSWORD:servicerized}
+    protocol: ${MAILER_PROTOCL:smtp}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
