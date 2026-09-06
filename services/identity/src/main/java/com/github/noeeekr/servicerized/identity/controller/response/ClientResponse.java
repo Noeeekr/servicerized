@@ -42,7 +42,7 @@ public class ClientResponse {
         return new ClientResponseDto() {
             @Override
             public Object prepareToClient() {
-                return new Object();
+                return "";
             }
         };
     }
