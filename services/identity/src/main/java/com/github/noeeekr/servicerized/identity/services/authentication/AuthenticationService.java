@@ -1,13 +1,17 @@
 package com.github.noeeekr.servicerized.identity.services.authentication;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.identity.common.response.failure.UserFailure;
 import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientGroupDtoUtils;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
+import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
 import com.github.noeeekr.servicerized.identity.services.group.GroupService;
 import com.github.noeeekr.servicerized.identity.services.user.UserService;
@@ -66,6 +70,29 @@ public class AuthenticationService {
 
     public Response<User> signUserAccount(UserSignInInterface request) {
         Response<User> response = userService.getBySignInCredentials(request);
+        if (response.isSuccess() == false)
+            return response;
+
+        Response<List<UserEmailConfirmation>> confirmationsResponse =
+                userService.getEmailConfirmations(response.getPayload().getEmail());
+
+        if (confirmationsResponse.isSuccess() == false)
+            return response.fail(confirmationsResponse.getFailure());
+
+        Iterator<UserEmailConfirmation> confirmations =
+                confirmationsResponse.getPayload().iterator();
+        boolean failedConfirmation = false;
+        while (confirmations.hasNext()) {
+            if (confirmations.next().isConfirmed())
+                continue;
+            failedConfirmation = true;
+            break;
+        }
+        if (failedConfirmation) {
+            return Response.<User>builder().fail(new UserFailure.EmailConfirmationPending(
+                    "Por favor, confirme seu e-mail através do link enviado para sua caixa de entrada antes de continuar."))
+                    .build();
+        }
 
         return response;
     }

@@ -6,6 +6,24 @@ import lombok.Builder;
 
 public class UserFailure {
     @Builder
+    public record EmailConfirmationPending(String message) implements Failure {
+        @Override
+        public String message() {
+            return message;
+        }
+
+        @Override
+        public HttpStatus code() {
+            return HttpStatus.PRECONDITION_REQUIRED;
+        }
+
+        @Override
+        public boolean isClientFault() {
+            return true;
+        }
+    }
+
+    @Builder
     public record FailedPersist(Exception error, String message) implements Failure {
         public FailedPersist(String message) {
             this(null, message);

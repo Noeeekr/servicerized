@@ -1,6 +1,7 @@
 package com.github.noeeekr.servicerized.identity.services.user;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,11 @@ public class UserService {
 
     public Response<User> getBySignInCredentials(UserSignInInterface request) {
         Response<User> response = groupDao.getBySigninCredentials(request);
+        return response;
+    }
+
+    public Response<List<UserEmailConfirmation>> getEmailConfirmations(String email) {
+        Response<List<UserEmailConfirmation>> response = dao.getEmailConfirmations(email);
         return response;
     }
 

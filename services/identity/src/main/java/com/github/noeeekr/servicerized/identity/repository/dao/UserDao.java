@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.identity.repository.dao;
 
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,6 +12,7 @@ import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
+import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 
 @Repository
 @Transactional
@@ -21,6 +23,18 @@ public class UserDao {
 
     public UserDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public Response<List<UserEmailConfirmation>> getEmailConfirmations(String email) {
+        try (Session session = this.sessionFactory.openSession()) {
+            List<UserEmailConfirmation> confirmations =
+                    session.createQuery("FROM UserEmailConfirmation c WHERE c.user.email = :email",
+                            UserEmailConfirmation.class).setParameter("email", email).list();
+            return Response.<List<UserEmailConfirmation>>builder().success(confirmations).build();
+        } catch (Exception e) {
+            return Response.<List<UserEmailConfirmation>>builder()
+                    .fail(new Failures.UnhandledException(e)).build();
+        }
     }
 
     public Response<User> getByEmail(String email) {

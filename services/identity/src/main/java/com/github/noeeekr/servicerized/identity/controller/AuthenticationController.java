@@ -1,6 +1,7 @@
 package com.github.noeeekr.servicerized.identity.controller;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -33,79 +34,88 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(AuthenticationController.CONTROLLER_PATH)
 @RequiredArgsConstructor
 public class AuthenticationController extends Controller {
-    public static final String CONTROLLER_PATH = "/api/auth/account";
-    public static final String CONTROLLER_SIGNUP_PATH = "/signup";
-    public static final String CONTROLLER_SIGNIN_PATH = "/signin";
-    public static final String CONTROLLER_SIGNUP_CONFIRMATION_PATH =
-            CONTROLLER_SIGNUP_PATH + "/confirmation";
+        public static final String CONTROLLER_PATH = "/api/auth/account";
+        public static final String CONTROLLER_SIGNUP_PATH = "/signup";
+        public static final String CONTROLLER_SIGNIN_PATH = "/signin";
+        public static final String CONTROLLER_SIGNUP_CONFIRMATION_PATH =
+                        CONTROLLER_SIGNUP_PATH + "/confirmation";
 
-    public static final String QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN = "emailConfirmationToken";
+        public static final String QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN = "emailConfirmationToken";
 
-    public static final String CONTROLLER_AUTH_COOKIE_NAME = "auth";
+        public static final String CONTROLLER_AUTH_COOKIE_NAME = "auth";
 
-    @Value("${app.jwt.expiration-ms}")
-    private long expirationMilisseconds;
+        @Value("${app.jwt.expiration-ms}")
+        private long expirationMilisseconds;
 
-    private final AuthenticationService authenticationService;
-    private final AuthenticationJwtService authenticationJwtService;
+        private final AuthenticationService authenticationService;
+        private final AuthenticationJwtService authenticationJwtService;
 
-    @PostMapping
-    @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_PATH)
-    public ResponseEntity<ClientResponse> signUp(@RequestBody SignUpRequest request) {
-        Response<User> serviceResponse = authenticationService.createUserAccount(request);
+        @PostMapping
+        @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_PATH)
+        public ResponseEntity<ClientResponse> signUp(@RequestBody SignUpRequest request) {
+                Response<User> serviceResponse = authenticationService.createUserAccount(request);
 
-        if (serviceResponse.isSuccess() == false) {
-            Failure failure = serviceResponse.getFailure();
-            return this.handleFailure(failure, AuthenticationController.class.getName(),
-                    "Signup Endpoint");
+                if (serviceResponse.isSuccess() == false) {
+                        Failure failure = serviceResponse.getFailure();
+                        return this.handleFailure(failure, AuthenticationController.class.getName(),
+                                        "Signup Endpoint");
+                }
+
+                User user = serviceResponse.getPayload();
+
+                if (log.isDebugEnabled()) {
+                        Debugger.displayEntity("Created User", InternalUserDto.New(user),
+                                        AuthenticationController.class.getName(),
+                                        "Signup Endpoint");
+                }
+
+                return new ResponseEntity<>(new ClientResponse(user), HttpStatus.CREATED);
         }
 
-        User user = serviceResponse.getPayload();
+        @GetMapping
+        @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH)
+        public ResponseEntity<ClientResponse> signUpConfirmation(@RequestParam(
+                        name = AuthenticationController.QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN) UUID confirmationToken) {
+                Response<?> response =
+                                authenticationService.authorizeUserAccount(confirmationToken);
+                if (response.isSuccess() == false)
+                        return this.handleFailure(response.getFailure(),
+                                        AuthenticationController.class.getName(),
+                                        "Signup Confirmation Endpoint");
 
-        if (log.isDebugEnabled()) {
-            Debugger.displayEntity("Created User", InternalUserDto.New(user),
-                    AuthenticationController.class.getName(), "Signup Endpoint");
+                return new ResponseEntity<>(new ClientResponse(ClientResponse.getEmptyPayload()),
+                                HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(new ClientResponse(user), HttpStatus.CREATED);
-    }
+        @PostMapping
+        @RequestMapping(AuthenticationController.CONTROLLER_SIGNIN_PATH)
+        public ResponseEntity<ClientResponse> signIn(@RequestBody SignInRequest requestBody) {
+                Response<User> response = authenticationService.signUserAccount(requestBody);
+                if (response.isSuccess() == false)
+                        return this.handleFailure(response.getFailure(),
+                                        AuthenticationController.class.getName(),
+                                        "Signin Endpoint");
 
-    @GetMapping
-    @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_CONFIRMATION_PATH)
-    public ResponseEntity<ClientResponse> signUpConfirmation(@RequestParam(
-            name = AuthenticationController.QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN) UUID confirmationToken) {
-        Response<?> response = authenticationService.authorizeUserAccount(confirmationToken);
-        if (response.isSuccess() == false)
-            return this.handleFailure(response.getFailure(),
-                    AuthenticationController.class.getName(), "Signup Confirmation Endpoint");
+                String cookieContent;
+                try {
+                        cookieContent = authenticationJwtService
+                                        .createToken(InternalUserDto.New(response.getPayload()));
+                } catch (JsonProcessingException e) {
+                        log.error("Failed to parse user details to json. " + e.getMessage());
+                        return this.handleFailure(new Failures.UnhandledException(e),
+                                        AuthenticationController.class.getName(),
+                                        "Signin Endpoint");
+                }
 
-        return new ResponseEntity<>(new ClientResponse(ClientResponse.getEmptyPayload()),
-                HttpStatus.OK);
-    }
+                Duration duration = Duration.ofMillis(expirationMilisseconds);
+                Objects.requireNonNull(duration, "Duration cannot be null. ");
 
-    @PostMapping
-    @RequestMapping(AuthenticationController.CONTROLLER_SIGNIN_PATH)
-    public ResponseEntity<ClientResponse> signIn(@RequestBody SignInRequest requestBody) {
-        Response<User> response = authenticationService.signUserAccount(requestBody);
-        if (response.isSuccess() == false)
-            return this.handleFailure(response.getFailure(),
-                    AuthenticationController.class.getName(), "Signin Endpoint");
+                ResponseCookie cookie =
+                                ResponseCookie.from(CONTROLLER_AUTH_COOKIE_NAME, "" + cookieContent)
+                                                .httpOnly(true).secure(true).path("/")
+                                                .maxAge(duration).sameSite("Lax").build();
 
-        String cookieContent;
-        try {
-            cookieContent =
-                    authenticationJwtService.createToken(InternalUserDto.New(response.getPayload()));
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse user details to json. " + e.getMessage());
-            return this.handleFailure(new Failures.UnhandledException(e),
-                    AuthenticationController.class.getName(), "Signin Endpoint");
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                                .body(new ClientResponse(response.getPayload()));
         }
-
-        ResponseCookie cookie = ResponseCookie.from(CONTROLLER_AUTH_COOKIE_NAME, "" + cookieContent)
-                .httpOnly(true).secure(true).path("/")
-                .maxAge(Duration.ofMillis(expirationMilisseconds)).sameSite("Lax").build();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new ClientResponse(response.getPayload()));
-    }
 }

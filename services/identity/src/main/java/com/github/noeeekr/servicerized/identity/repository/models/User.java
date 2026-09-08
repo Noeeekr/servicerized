@@ -42,8 +42,13 @@ public class User extends Metrics implements ClientResponseDto {
     @Column(name = "user_email", updatable = false, unique = true, nullable = false)
     private String email;
 
+    /* Relations */
+
     @OneToMany(mappedBy = "owner")
     List<Group> groups;
+
+    @OneToMany(mappedBy = "user")
+    List<UserEmailConfirmation> confirmations;
 
     /* Static methods */
 
