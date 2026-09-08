@@ -14,8 +14,8 @@ import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
 
 @SpringBootTest
-@ActiveProfiles("in-memory-db")
 @AutoConfigureMockMvc
+@ActiveProfiles("in-memory-db")
 class UserEmailConfirmationDaoTest {
     @Autowired
     private SessionFactory sessionFactory;
@@ -57,7 +57,7 @@ class UserEmailConfirmationDaoTest {
 
         this.failOnEmailConfirmationNotFound(recievedConfirmation);
         this.failOnDifferentConfirmations(expectedConfirmation, recievedConfirmation);
-        this.failOnNotConfirmed(recievedConfirmation);
+        this.failOnNotConfirmed(expectedConfirmation);
     }
 
     // Test Dependency Helpers
