@@ -1,8 +1,11 @@
 package com.github.noeeekr.servicerized.identity.controller;
 
+import java.time.Duration;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +21,7 @@ import com.github.noeeekr.servicerized.identity.common.response.failure.Failures
 import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponse;
-import com.github.noeeekr.servicerized.identity.repository.dto.internal.UserDto;
+import com.github.noeeekr.servicerized.identity.repository.dto.internal.InternalUserDto;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
@@ -38,6 +41,11 @@ public class AuthenticationController extends Controller {
 
     public static final String QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN = "emailConfirmationToken";
 
+    public static final String CONTROLLER_AUTH_COOKIE_NAME = "auth";
+
+    @Value("${app.jwt.expiration-ms}")
+    private long expirationMilisseconds;
+
     private final AuthenticationService authenticationService;
     private final AuthenticationJwtService authenticationJwtService;
 
@@ -55,7 +63,7 @@ public class AuthenticationController extends Controller {
         User user = serviceResponse.getPayload();
 
         if (log.isDebugEnabled()) {
-            Debugger.displayEntity("Created User", UserDto.New(user),
+            Debugger.displayEntity("Created User", InternalUserDto.New(user),
                     AuthenticationController.class.getName(), "Signup Endpoint");
         }
 
@@ -83,16 +91,21 @@ public class AuthenticationController extends Controller {
             return this.handleFailure(response.getFailure(),
                     AuthenticationController.class.getName(), "Signin Endpoint");
 
-        String cookie;
+        String cookieContent;
         try {
-            cookie = authenticationJwtService.createToken(response.getPayload());
+            cookieContent =
+                    authenticationJwtService.createToken(InternalUserDto.New(response.getPayload()));
         } catch (JsonProcessingException e) {
             log.error("Failed to parse user details to json. " + e.getMessage());
             return this.handleFailure(new Failures.UnhandledException(e),
                     AuthenticationController.class.getName(), "Signin Endpoint");
         }
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie)
+        ResponseCookie cookie = ResponseCookie.from(CONTROLLER_AUTH_COOKIE_NAME, "" + cookieContent)
+                .httpOnly(true).secure(true).path("/")
+                .maxAge(Duration.ofMillis(expirationMilisseconds)).sameSite("Lax").build();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new ClientResponse(response.getPayload()));
     }
 }

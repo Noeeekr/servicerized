@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.github.noeeekr.servicerized.identity.repository.models.User;
+import com.github.noeeekr.servicerized.identity.repository.dto.internal.InternalUserDto;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,7 +36,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7);
-        User user = authenticationJwtService.getPayload(token);
+        InternalUserDto user = authenticationJwtService.getPayload(token);
 
         // Sets spring security authentication for this request
         if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {

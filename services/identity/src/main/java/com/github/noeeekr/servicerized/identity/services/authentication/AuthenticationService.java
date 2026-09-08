@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.noeeekr.servicerized.identity.common.response.Response;
 import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientGroupDtoUtils;
-import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDtoUtils;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
@@ -35,10 +34,11 @@ public class AuthenticationService {
         return this.createUserAccount(request, new ServiceConfiguration());
     }
 
-    public Response<User> createUserAccount(CreateUserInterface request, ServiceConfiguration configuration) {
+    public Response<User> createUserAccount(CreateUserInterface request,
+            ServiceConfiguration configuration) {
         // Section: Create User & Handle Operation Errors
         Response<User> createUserResponse =
-                userService.createUser(ClientUserDtoUtils.fromCreateRequest(request), configuration);
+                userService.createUser(User.from(request), configuration);
 
         // Section: Handle Previous Section Errors
         if (createUserResponse.isSuccess() == false)
@@ -66,7 +66,7 @@ public class AuthenticationService {
 
     public Response<User> signUserAccount(UserSignInInterface request) {
         Response<User> response = userService.getBySignInCredentials(request);
-     
+
         return response;
     }
 }

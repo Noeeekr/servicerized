@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
-import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDtoUtils;
+import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
+import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDto;
+import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +45,14 @@ public class User extends Metrics implements ClientResponseDto {
     @OneToMany(mappedBy = "owner")
     List<Group> groups;
 
+    /* Static methods */
+
+    public static User from(CreateUserInterface user) {
+        return new User().setEmail(user.getEmail()).setName(user.getName());
+    }
+
+    /* Instance methods */
+
     public User setEmail(String email) {
         this.email = email;
         return this;
@@ -53,7 +63,8 @@ public class User extends Metrics implements ClientResponseDto {
         return this;
     }
 
-    public User prepareToClient() {
-        return ClientUserDtoUtils.prepareForClient(this);
+    public ClientUserDto prepareToClient() {
+        return UserDto.getClientDto(this);
     }
+
 }
