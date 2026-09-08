@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 
@@ -21,6 +22,7 @@ import com.github.noeeekr.servicerized.identity.services.authentication.Authenti
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles({"in-memory-db", "local-mailer"})
 public class AuthenticationControllerUnitTest {
 
         @Autowired
@@ -45,8 +47,12 @@ public class AuthenticationControllerUnitTest {
                         throw new Exception("Unable to transform POST payload into JSON string.");
                 }
 
+                String requestUrl =
+                                "" + String.format("%s%s", AuthenticationController.CONTROLLER_PATH,
+                                                AuthenticationController.CONTROLLER_SIGNUP_PATH);
+
                 // Request Creation : Create Request & Expected Results
-                this.mockMvc.perform(post("/api/auth/user/signup").content(content)
+                this.mockMvc.perform(post(requestUrl).content(content)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE))
 
