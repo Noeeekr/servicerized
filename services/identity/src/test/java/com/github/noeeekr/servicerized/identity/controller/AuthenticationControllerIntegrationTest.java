@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;
@@ -133,4 +134,29 @@ public class AuthenticationControllerIntegrationTest {
                                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
         }
 
+        @Test
+        @Order(3000)
+        public void signInSuccess() throws Exception {
+                // Test Configuration : Create POST body and Request url
+                SignInRequest signInRequest = SignInRequest.builder().groupName(this.testUserName)
+                                .groupPassword(testUserPassword).build();
+
+                String content = this.objectMapper.writeValueAsString(signInRequest);
+                if (content == null) {
+                        fail("Test Configuration: Unable to transform POST payload into JSON string.");
+                        return;
+                }
+
+                String requestPath =
+                                "" + String.format("%s%s", AuthenticationController.CONTROLLER_PATH,
+                                                AuthenticationController.CONTROLLER_SIGNIN_PATH);
+
+                // Test Creation : Create Request & Expected Results
+                this.mockMvc.perform(post(requestPath).content(content)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                                .andExpect(status().is(HttpStatus.OK.value()))
+                                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+        }
 }
