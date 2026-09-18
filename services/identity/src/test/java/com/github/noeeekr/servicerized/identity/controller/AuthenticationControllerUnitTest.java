@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;

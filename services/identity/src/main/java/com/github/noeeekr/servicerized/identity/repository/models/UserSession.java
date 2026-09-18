@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
+import com.github.noeeekr.servicerized.repository.models.Metrics;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;

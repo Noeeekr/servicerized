@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.identity.repository.dao.configuration.DaoConfiguration;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.repository.models.UserEmailConfirmation;

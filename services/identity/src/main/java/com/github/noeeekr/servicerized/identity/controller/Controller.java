@@ -3,11 +3,11 @@ package com.github.noeeekr.servicerized.identity.controller;
 import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.github.noeeekr.servicerized.identity.common.logging.Debugger;
-import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
+import com.github.noeeekr.servicerized.response.failure.Failure;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponse;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseError;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseErrorDto;
+import com.github.noeeekr.servicerized.logging.DebugLogger;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,7 +22,7 @@ public abstract class Controller {
     protected ResponseEntity<ClientResponse> handleFailure(Failure failure,
             String... domains) {
 
-        Debugger.printStackTrace(failure, domains);
+        DebugLogger.printStackTrace(failure, domains);
 
         ClientResponseError clientResponseError = ClientResponseErrorDto.fromFailure(failure);
         ClientResponse clientResponse = new ClientResponse(clientResponseError);

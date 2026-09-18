@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.common.configuration;
+package com.github.noeeekr.servicerized.identity.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 

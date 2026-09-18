@@ -1,7 +1,8 @@
-package com.github.noeeekr.servicerized.identity.common.response.failure;
+package com.github.noeeekr.servicerized.identity.response.failure;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import com.github.noeeekr.servicerized.response.failure.Failure;
 import lombok.Builder;
 
 public class UserFailure {

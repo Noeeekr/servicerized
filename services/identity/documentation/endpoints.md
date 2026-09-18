@@ -14,7 +14,7 @@ This endpoint is located at [Authentication Controller](../src/main/java/com/git
 
 - Usage:
     In order for user to sign-up, they must send a POST request to the endpoint located at [Authentication Controller](../src/main/java/com/github/noeeekr/servicerized/identity/controller/AuthenticationController.java)
-(README.md) containing data defined in [Sign-up Endpoint Request](../src/main/java/com/github/noeeekr/servicerized/identity/controller/request/SignUpRequest.java).
+(README.md) containing edata defined in [Sign-up Endpoint Request](../src/main/java/com/github/noeeekr/servicerized/identity/controller/request/SignUpRequest.java).
 
     After that, if everything is done correctly on client side and server does the expected behaviour, an account confirmation link will be send to user's email. 
 

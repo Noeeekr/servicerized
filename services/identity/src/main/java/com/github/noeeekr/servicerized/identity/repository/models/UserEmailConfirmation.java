@@ -3,6 +3,7 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 import java.util.UUID;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
+import com.github.noeeekr.servicerized.repository.models.Metrics;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;

@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.identity.controller.response;
 
-import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
+import com.github.noeeekr.servicerized.response.failure.Failure;
 
 public class ClientResponseErrorDto {
     public final static ClientResponseError fromFailure(Failure failure) {

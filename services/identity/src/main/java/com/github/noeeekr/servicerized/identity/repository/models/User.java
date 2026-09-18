@@ -8,6 +8,7 @@ import com.github.noeeekr.servicerized.identity.controller.response.ClientRespon
 import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
 import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDto;
 import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.repository.models.Metrics;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

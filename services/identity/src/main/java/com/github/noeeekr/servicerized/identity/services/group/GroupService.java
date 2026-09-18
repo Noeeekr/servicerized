@@ -3,7 +3,7 @@ package com.github.noeeekr.servicerized.identity.services.group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.noeeekr.servicerized.identity.common.response.Response;
+import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.identity.repository.dao.GroupDao;
 import com.github.noeeekr.servicerized.identity.repository.models.Group;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;

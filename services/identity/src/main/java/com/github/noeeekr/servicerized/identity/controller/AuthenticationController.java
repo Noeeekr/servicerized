@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.noeeekr.servicerized.identity.common.logging.Debugger;
-import com.github.noeeekr.servicerized.identity.common.response.Response;
-import com.github.noeeekr.servicerized.identity.common.response.failure.Failure;
-import com.github.noeeekr.servicerized.identity.common.response.failure.Failures;
+import com.github.noeeekr.servicerized.logging.DebugLogger;
 import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.controller.response.ClientResponse;
@@ -26,6 +23,9 @@ import com.github.noeeekr.servicerized.identity.repository.dto.internal.Internal
 import com.github.noeeekr.servicerized.identity.repository.models.User;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
+import com.github.noeeekr.servicerized.response.Response;
+import com.github.noeeekr.servicerized.response.failure.Failure;
+import com.github.noeeekr.servicerized.response.failure.Failures;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,7 +64,7 @@ public class AuthenticationController extends Controller {
                 User user = serviceResponse.getPayload();
 
                 if (log.isDebugEnabled()) {
-                        Debugger.displayEntity("Created User", InternalUserDto.New(user),
+                        DebugLogger.displayEntity("Created User", InternalUserDto.New(user),
                                         AuthenticationController.class.getName(),
                                         "Signup Endpoint");
                 }
