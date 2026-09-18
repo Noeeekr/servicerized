@@ -17,6 +17,11 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>common/repository</module>
+    <module>common/response</module>
+    <module>common/logging</module>
+
+    <module>services/product</module>
     <module>services/identity</module>
     <module>services/pg-database</module>
   </modules>
