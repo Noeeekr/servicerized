@@ -8,9 +8,19 @@
 
 These are instructions to follow when creating a new service. The instructions contains design patterns that must be followed.
 
+## Helper Features
+
+### Building Controllers
+
+While building controller, if the helpers services communicate through [Common Package Responses](../common/response/pom.xml) instead of custom-defined responses for inter-class communication, it is possible to use simplified abstractions for handling controller responses. The package [Common Package Controller](../common/controller/pom.xml) offers controller helper utilities for handling responses that comes from the common response package. 
+
 ## Rules
 
-### Building REST API's.
+### Building Helper Services
+
+Please, for consistency across services, prefer the usage of [Common Package Responses](../common/response/pom.xml) instead of custom-defined responses for inter-class communication as much as possible. This package provides features such as predictable response objects and rich failure handling.
+
+### Building REST API's
 
 Please, prefer the usage of HTTP Methods for routing than endpoing naming conventions when possible.
 
