@@ -1,0 +1,1 @@
+For more information about technical implementation and behaviour of this service check [Behavior Documentation](./documentation.md)
