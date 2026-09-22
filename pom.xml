@@ -17,6 +17,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>common/controller</module>
     <module>common/repository</module>
     <module>common/response</module>
     <module>common/logging</module>
