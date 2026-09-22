@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.controller.response;
+package com.github.noeeekr.servicerized.response.client;
 
 import com.github.noeeekr.servicerized.response.failure.Failure;
 
