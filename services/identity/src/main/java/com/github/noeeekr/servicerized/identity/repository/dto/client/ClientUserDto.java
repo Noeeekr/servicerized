@@ -1,20 +1,22 @@
 package com.github.noeeekr.servicerized.identity.repository.dto.client;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.identity.repository.models.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import com.github.noeeekr.servicerized.identity.repository.interfaces.UserInterface;
 
-@Getter
-@Builder
-@AllArgsConstructor
-public class ClientUserDto {
-    private UUID clientId;
-    private String clientName;
-    private String clientEmail;
+public record ClientUserDto(UserInterface user) implements UserInterface {
+    @Override
+    public String getUserEmail() {
+        return this.user.getUserEmail();
+    }
 
-    public static ClientUserDto New(User user) {
-        return new ClientUserDto(user.getId(), user.getName(), user.getEmail());
+    @Override
+    public String getUserName() {
+        return this.user.getUserName();
+
+    }
+
+    @Override
+    public UUID getUserId() {
+        return this.user.getUserId();
     }
 }

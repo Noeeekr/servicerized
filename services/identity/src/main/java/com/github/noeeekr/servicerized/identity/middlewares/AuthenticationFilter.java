@@ -11,8 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.github.noeeekr.servicerized.identity.repository.dto.internal.InternalUserDto;
-import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
+import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
+import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private final AuthenticationJwtService authenticationJwtService;
+    private final AuthorizationCookieService authorizationCookieService;
 
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest httpRequest,
@@ -36,18 +36,18 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7);
-        InternalUserDto user = authenticationJwtService.getPayload(token);
+        AuthorizationToken authorizationToken = authorizationCookieService.getPayload(token);
 
         // Sets spring security authentication for this request
-        if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (authenticationJwtService.isTokenValid(token, user) == false) {
+        if (authorizationToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (authorizationCookieService.isTokenValid(token, authorizationToken.userId()) == false) {
                 filterChain.doFilter(httpRequest, httpResponse);
                 return;
             }
 
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user.getName(), null, authorities);
+                    new UsernamePasswordAuthenticationToken(authorizationToken.userId(), null, authorities);
             authenticationToken
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

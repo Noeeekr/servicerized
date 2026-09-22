@@ -15,10 +15,13 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 public abstract class JwtService {
-    @Value("${app.jwt.secret}")
+    @Value("${app.version}")
+    private String version;
+    
+    @Value("${app.jwt.auth.secret}")
     private String secretKey;
 
-    @Value("${app.jwt.expiration-ms}")
+    @Value("${app.jwt.auth.expiration-ms}")
     private long expirationMilisseconds;
 
     public String generateToken(Object payload) throws JsonProcessingException {
@@ -58,5 +61,9 @@ public abstract class JwtService {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String version() {
+        return this.version;
     }
 }

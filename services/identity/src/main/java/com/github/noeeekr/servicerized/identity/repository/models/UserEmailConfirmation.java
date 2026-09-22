@@ -51,7 +51,7 @@ public class UserEmailConfirmation extends Metrics {
         builder.append(String.format("Entity %s:", UserEmailConfirmation.class.getName()));
         builder.append(String.format("\n\tConfirmed: %b", this.confirmed));
         builder.append(String.format("\n\tToken UUID: %s", this.token));
-        builder.append(String.format("\n\tTarget User UUID: %s", this.user.getId()));
+        builder.append(String.format("\n\tTarget User UUID: %s", this.user.getUserId()));
         return builder.toString();
     }
 }

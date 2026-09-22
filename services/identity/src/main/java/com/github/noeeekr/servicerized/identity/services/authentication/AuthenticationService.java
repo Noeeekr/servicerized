@@ -15,7 +15,7 @@ import com.github.noeeekr.servicerized.identity.response.failure.UserFailure;
 import com.github.noeeekr.servicerized.identity.services.configuration.ServiceConfiguration;
 import com.github.noeeekr.servicerized.identity.services.group.GroupService;
 import com.github.noeeekr.servicerized.identity.services.user.UserService;
-import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserRequest;
 import com.github.noeeekr.servicerized.identity.services.user.request.UserSignInInterface;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -34,11 +34,11 @@ public class AuthenticationService {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    public Response<User> createUserAccount(CreateUserInterface request) {
+    public Response<User> createUserAccount(CreateUserRequest request) {
         return this.createUserAccount(request, new ServiceConfiguration());
     }
 
-    public Response<User> createUserAccount(CreateUserInterface request,
+    public Response<User> createUserAccount(CreateUserRequest request,
             ServiceConfiguration configuration) {
         // Section: Create User & Handle Operation Errors
         Response<User> createUserResponse =
@@ -50,7 +50,7 @@ public class AuthenticationService {
 
         // Section: Create User Access Group
         Group initialAccessGroup = ClientGroupDtoUtils.createPrimaryAccessGroup(entityManager,
-                createUserResponse.getPayload(), request.getPassword());
+                createUserResponse.getPayload(), request.getGroupPassword());
 
         Response<Group> createGroupResponse =
                 groupService.createAccessGroup(initialAccessGroup, configuration);
@@ -74,7 +74,7 @@ public class AuthenticationService {
             return response;
 
         Response<List<UserEmailConfirmation>> confirmationsResponse =
-                userService.getEmailConfirmations(response.getPayload().getEmail());
+                userService.getEmailConfirmations(response.getPayload().getUserEmail());
 
         if (confirmationsResponse.isSuccess() == false)
             return response.fail(confirmationsResponse.getFailure());

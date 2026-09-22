@@ -21,12 +21,12 @@ import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.repository.dto.internal.InternalUserDto;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationJwtService;
 import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 import com.github.noeeekr.servicerized.response.failure.Failure;
 import com.github.noeeekr.servicerized.response.failure.Failures;
+import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +49,7 @@ public class AuthenticationController extends Controller {
         private long expirationMilisseconds;
 
         private final AuthenticationService authenticationService;
-        private final AuthenticationJwtService authenticationJwtService;
+        private final AuthorizationCookieService authorizationCookieService;
 
         @PostMapping
         @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_PATH)
@@ -65,7 +65,7 @@ public class AuthenticationController extends Controller {
                 User user = serviceResponse.getPayload();
 
                 if (log.isDebugEnabled()) {
-                        DebugLogger.displayEntity("Created User", InternalUserDto.New(user),
+                        DebugLogger.displayEntity("Created User", new InternalUserDto(user),
                                         AuthenticationController.class.getName(),
                                         "Signup Endpoint");
                 }
@@ -99,8 +99,8 @@ public class AuthenticationController extends Controller {
 
                 String cookieContent;
                 try {
-                        cookieContent = authenticationJwtService
-                                        .createToken(InternalUserDto.New(response.getPayload()));
+                        cookieContent = authorizationCookieService
+                                        .createToken(response.getPayload().getUserId());
                 } catch (JsonProcessingException e) {
                         log.error("Failed to parse user details to json. " + e.getMessage());
                         return this.handleFailure(new Failures.UnhandledException(e),

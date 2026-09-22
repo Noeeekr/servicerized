@@ -69,7 +69,7 @@ public class UserService {
      */
     public Response<User> createUser(User user, ServiceConfiguration configuration) {
         // Section : Attempt To Get User With Required Credentials.
-        Response<User> response = dao.getByEmail(user.getEmail());
+        Response<User> response = dao.getByEmail(user.getUserEmail());
         if (response.isSuccess() == false)
             return response;
 
@@ -96,7 +96,7 @@ public class UserService {
         {
             URI endpoint = createEmailConfirmationUri(confirmation.getToken());
             Response<?> sendConfirmationResponse =
-                    notificationService.sendConfirmation(user.getEmail(), user.getName(), endpoint);
+                    notificationService.sendConfirmation(user.getUserEmail(), user.getUserName(), endpoint);
             if (sendConfirmationResponse.isSuccess() == false)
                 return response.fail(sendConfirmationResponse.getFailure());
         }

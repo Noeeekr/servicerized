@@ -4,11 +4,12 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
-import com.github.noeeekr.servicerized.identity.controller.response.ClientResponseDto;
 import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
 import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDto;
-import com.github.noeeekr.servicerized.identity.services.user.request.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.repository.interfaces.CreateUserInterface;
+import com.github.noeeekr.servicerized.identity.repository.interfaces.UserInterface;
 import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,17 +17,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = User.TABLE_NAME, schema = "identity")
-public class User extends Metrics implements ClientResponseDto {
+public class User extends Metrics implements ClientResponseDto, UserInterface {
     public static final String TABLE_NAME = "users";
     public static final String COLUMN_USER_ID_NAME = "user_id";
     public static final String COLUMN_USER_EMAIL_NAME = "user_email";
@@ -54,7 +53,7 @@ public class User extends Metrics implements ClientResponseDto {
     /* Static methods */
 
     public static User from(CreateUserInterface user) {
-        return new User().setEmail(user.getEmail()).setName(user.getName());
+        return new User().setEmail(user.getUserEmail()).setName(user.getUserName());
     }
 
     /* Instance methods */
@@ -73,4 +72,14 @@ public class User extends Metrics implements ClientResponseDto {
         return UserDto.getClientDto(this);
     }
 
+    /* Getter */
+    public String getUserName() {
+        return this.name;
+    }
+    public String getUserEmail() {
+        return this.email;
+    }
+    public UUID getUserId() {
+        return this.id;
+    }
 }

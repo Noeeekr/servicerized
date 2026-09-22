@@ -40,8 +40,8 @@ public class AuthenticationControllerUnitTest {
                                 .willReturn(Response.<User>builder().success(new User()).build());
 
                 // Request Content Creation : Create & Validate POST request content
-                SignUpRequest request = SignUpRequest.builder().name("TestUser")
-                                .password("TestUser").email("TestUser@TestDomain.Test").build();
+                SignUpRequest request = SignUpRequest.builder().userName("TestUser")
+                                .groupPassword("TestUser").userEmail("TestUser@TestDomain.Test").build();
                 String content = this.objectMapper.writeValueAsString(request);
                 if (content == null) {
                         throw new Exception("Unable to transform POST payload into JSON string.");

@@ -67,8 +67,9 @@ public class AuthenticationControllerIntegrationTest {
         @Order(1000)
         public void signUpSuccess() throws Exception {
                 // Test Configuration : Create & Validate POST request content
-                SignUpRequest request = SignUpRequest.builder().name(this.testUserName)
-                                .password(this.testUserPassword).email(this.testUserEmail).build();
+                SignUpRequest request = SignUpRequest.builder().userName(this.testUserName)
+                                .groupPassword(this.testUserPassword).userEmail(this.testUserEmail)
+                                .build();
                 String content = this.objectMapper.writeValueAsString(request);
                 if (content == null) {
                         fail("Test Configuration: Unable to transform POST payload into JSON string.");

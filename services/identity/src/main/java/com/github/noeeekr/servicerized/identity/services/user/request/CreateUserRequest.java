@@ -10,11 +10,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
-public class CreateUserRequest implements CreateUserInterface {
+public class CreateUserRequest implements CreateUserRequestInterface {
     @Builder.Default
-    private String name = "";
+    private String userName = "";
     @Builder.Default
-    private String email = "";
+    private String userEmail = "";
     @Builder.Default
-    private String password = "";
+    private String groupPassword = "";
 }

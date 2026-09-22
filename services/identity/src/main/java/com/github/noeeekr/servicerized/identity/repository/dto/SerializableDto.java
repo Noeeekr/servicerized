@@ -7,6 +7,6 @@ package com.github.noeeekr.servicerized.identity.repository.dto;
  * Internal Dto's must implement this interface, also this interface must be a required type for all
  * methods arguments that write entities as json.
  */
-public interface Dto {
+public interface SerializableDto {
 
 }

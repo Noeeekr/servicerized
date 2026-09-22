@@ -22,7 +22,7 @@ public class ClientGroupDtoUtils {
 
         Group initialAccessGroup = new Group();
         initialAccessGroup.setPassword(password).setGroupKindId(groupKindReference).setOwner(user)
-                .setName(user.getName());
+                .setName(user.getUserName());
 
         return initialAccessGroup;
     }
