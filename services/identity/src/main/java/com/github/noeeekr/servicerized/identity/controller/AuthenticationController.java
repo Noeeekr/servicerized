@@ -26,6 +26,7 @@ import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 import com.github.noeeekr.servicerized.response.failure.Failure;
 import com.github.noeeekr.servicerized.response.failure.Failures;
+import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +43,6 @@ public class AuthenticationController extends Controller {
                         CONTROLLER_SIGNUP_PATH + "/confirmation";
 
         public static final String QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN = "emailConfirmationToken";
-
-        public static final String CONTROLLER_AUTH_COOKIE_NAME = "auth";
 
         @Value("${app.jwt.expiration-ms}")
         private long expirationMilisseconds;
@@ -112,7 +111,7 @@ public class AuthenticationController extends Controller {
                 Objects.requireNonNull(duration, "Duration cannot be null. ");
 
                 ResponseCookie cookie =
-                                ResponseCookie.from(CONTROLLER_AUTH_COOKIE_NAME, "" + cookieContent)
+                                ResponseCookie.from(Authorization.AUTH_COOKIE_NAME, "" + cookieContent)
                                                 .httpOnly(true).secure(true).path("/")
                                                 .maxAge(duration).sameSite("Lax").build();
 

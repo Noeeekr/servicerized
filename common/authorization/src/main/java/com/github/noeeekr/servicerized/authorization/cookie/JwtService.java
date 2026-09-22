@@ -38,7 +38,7 @@ abstract class JwtService {
         return builder.compact();
     }
 
-    protected boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return this.extractClaim(token, claims -> claims.getExpiration()).before(new Date());
     }
 

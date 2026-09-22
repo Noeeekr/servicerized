@@ -1,5 +1,5 @@
 package com.github.noeeekr.servicerized.authorization;
 
-class Authorization {
-
+public class Authorization {
+    public static final String AUTH_COOKIE_NAME = "auth";
 }
