@@ -12,9 +12,9 @@ import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.failures.Failures;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
 import com.github.noeeekr.servicerized.product.service.ProductService;
 import com.github.noeeekr.servicerized.response.Response;
@@ -33,6 +33,9 @@ public class ProductController extends Controller {
     public ResponseEntity<ClientResponse> createProduct(
             @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
             @RequestBody CreateProductRequestInterface request) {
+        /**
+         * Handle authorization through common authorization package.
+         */
         AuthorizationToken token = authorizationCookieService.getPayload(authorizationCookie);
         if (authorizationCookieService.isTokenExpired(authorizationCookie)) {
             return this.handleFailure(
@@ -41,18 +44,28 @@ public class ProductController extends Controller {
                     ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
 
+        /**
+         * Build a 'create product' instance merging data from client with Api-populated fields.
+         */
         CreateProductInterface requestedProduct =
                 CreateProductInterface.fromUpgrade(request, token.userId());
 
+        /**
+         * Execute the target operation.
+         */
         Response<ProductEntity> createProductResponse =
                 productService.createProduct(requestedProduct);
 
+        /**
+         * Handle the response
+         */
         if (createProductResponse.isSuccess() == false) {
             return this.handleFailure(createProductResponse.getFailure(),
                     ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
 
-        return new ResponseEntity<ClientResponse>(HttpStatus.NOT_IMPLEMENTED);
+        ClientResponse responseBody = new ClientResponse(createProductResponse.getPayload());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
 
