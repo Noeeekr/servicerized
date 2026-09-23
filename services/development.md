@@ -10,11 +10,16 @@ These are instructions to follow when creating a new service. The instructions c
 
 ## Helper Features
 
-### Building Controllers
+### Helpers for Developing Controllers
 
 While building controller, if the helpers services communicate through [Common Package Responses](../common/response/pom.xml) instead of custom-defined responses for inter-class communication, it is possible to use simplified abstractions for handling controller responses. The package [Common Package Controller](../common/controller/pom.xml) offers controller helper utilities for handling responses that comes from the common response package. 
 
 ## Rules
+
+### Building Controllers
+
+The following suggestions should be implemented and checked for every controller:
+- **Input Validation**: All data should be validated to check if it follows the right format. Additionally, it should be validated to guarantee its values are coherent with the relations they target. For example, and ID that points to a user product must be validated to guarantee it is actually pointing for a product of that user.
 
 ### Building Helper Services
 
