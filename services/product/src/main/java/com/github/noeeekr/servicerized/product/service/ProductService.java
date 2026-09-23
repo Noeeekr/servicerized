@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.hibernate.query.spi.Limit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
@@ -43,7 +43,7 @@ public class ProductService {
         List<ProductEntity> products = new ArrayList<>();
         try {
             List<ProductEntity> fetchedProducts = productRepository.findProduct(
-                    filter.getProductId(), filter.getProductOwnerId(), new Limit(0, 1));
+                    filter.getProductId(), filter.getProductOwnerId(), Limit.of(1));
             products.addAll(fetchedProducts);
         } catch (Exception e) {
             return responseBuilder.fail(new Failures.UnhandledException(e)).build();

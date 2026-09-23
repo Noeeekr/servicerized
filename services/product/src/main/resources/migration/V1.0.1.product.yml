@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: migrate-identity-service-default-rows
+      id: migrate-product-service-default-rows
       author: servicerized
       changes:
         - customChange:
-            class: com.github.noeeekr.servicerized.identity.repository.migrations.PopulateGroupKinds
+            class: com.github.noeeekr.servicerized.product.repository.migrations.PopulateCategories
   - changeSet:
       id: tag-release-v1.0
       author: servicerized

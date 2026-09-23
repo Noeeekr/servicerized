@@ -2,6 +2,7 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,7 +41,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Table(name = CategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
-public class CategoryEntity {
+public class CategoryEntity extends MetricsEntity {
     public static final class METADATA {
         public static final String TABLE_NAME = "categories";
 
