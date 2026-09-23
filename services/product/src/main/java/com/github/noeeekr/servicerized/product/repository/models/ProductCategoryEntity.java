@@ -1,5 +1,8 @@
 package com.github.noeeekr.servicerized.product.repository.models;
 
+import com.github.noeeekr.servicerized.product.repository.dto.ProductCategoryDto;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
+import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -12,9 +15,13 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = ProductCategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
-public class ProductCategoryEntity {
+public class ProductCategoryEntity extends MetricsEntity implements ClientResponseDto {
     public static final class METADATA {
         public static final String TABLE_NAME = "products_categories";
+    }
+
+    public ProductCategoryEntity(ProductCategoryKey key) {
+        this.productCategoryKey = key;
     }
 
     @EmbeddedId
@@ -31,4 +38,8 @@ public class ProductCategoryEntity {
     @MapsId(ProductCategoryKey.METADATA.COLUMN_NAME_CATEGORY_ID)
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     private CategoryEntity category;
+
+    public ProductCategoryDto prepareToClient() {
+        return new ProductCategoryDto();
+    }
 }

@@ -6,15 +6,20 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Embeddable
+@NoArgsConstructor
 public class ProductCategoryKey implements Serializable {
     public static final class METADATA {
         public static final String COLUMN_NAME_PRODUCT_ID = "productId";
         public static final String COLUMN_NAME_CATEGORY_ID = "categoryId";
+    }
+
+    public ProductCategoryKey(UUID productId, UUID categoryId) {
+        this.categoryId = categoryId;
+        this.productId = productId;
     }
 
     @Column(name = "product_id")

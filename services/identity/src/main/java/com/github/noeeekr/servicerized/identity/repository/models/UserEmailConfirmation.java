@@ -3,7 +3,7 @@ package com.github.noeeekr.servicerized.identity.repository.models;
 import java.util.UUID;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
-import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = UserEmailConfirmation.TABLE_NAME, schema = "identity")
-public class UserEmailConfirmation extends Metrics {
+public class UserEmailConfirmation extends MetricsEntity {
     public static final String TABLE_NAME = "users_email_confirmations";
 
     public static final String COLUMN_NAME_TOKEN = "token";

@@ -8,7 +8,7 @@ import com.github.noeeekr.servicerized.identity.repository.dto.UserDto;
 import com.github.noeeekr.servicerized.identity.repository.dto.client.ClientUserDto;
 import com.github.noeeekr.servicerized.identity.repository.interfaces.CreateUserInterface;
 import com.github.noeeekr.servicerized.identity.repository.interfaces.UserInterface;
-import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = User.TABLE_NAME, schema = "identity")
-public class User extends Metrics implements ClientResponseDto, UserInterface {
+public class User extends MetricsEntity implements ClientResponseDto, UserInterface {
     public static final String TABLE_NAME = "users";
     public static final String COLUMN_USER_ID_NAME = "user_id";
     public static final String COLUMN_USER_EMAIL_NAME = "user_email";

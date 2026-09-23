@@ -21,7 +21,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Metrics {
+public class MetricsEntity {
+    public static final class METADATA {
+        public static final String DATABASE_COLUMN_NAME_CREATED_AT = "created_at";
+        public static final String DATABASE_COLUMN_NAME_DELETED_AT = "deleted_at";
+        public static final String DATABASE_COLUMN_NAME_UPDATED_AT = "updated_at";
+    }
+
     @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false, updatable = false)

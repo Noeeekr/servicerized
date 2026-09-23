@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.identity.repository.models;
 
-import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users_sessions", schema = "identity")
-public class UserSession extends Metrics {
+public class UserSession extends MetricsEntity {
 
     @EmbeddedId
     private UserSessionId id = new UserSessionId();

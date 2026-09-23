@@ -2,11 +2,11 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
-import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,7 +43,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Table(name = ProductEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
-public class ProductEntity extends Metrics implements ProductInterface, ClientResponseDto {
+public class ProductEntity extends MetricsEntity implements ProductInterface, ClientResponseDto {
     /**
      * METADATA defines a single source of truth for external references to this table names to be
      * used across this micro-service, providing consistency and easy maintence.
@@ -52,6 +52,9 @@ public class ProductEntity extends Metrics implements ProductInterface, ClientRe
         public static final String TABLE_NAME = "products";
 
         public static final String COLUMN_NAME_PRODUCT_ID = "id";
+
+        public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
+        public static final String DATABASE_COLUMN_NAME_PRODUCT_OWNER_ID = "product_owner_id";
     }
 
     /**
@@ -63,12 +66,12 @@ public class ProductEntity extends Metrics implements ProductInterface, ClientRe
     @Id
     @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
-    @Column(name = "product_id")
+    @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID)
     public UUID id;
 
     // Fields - Foreign Keys
 
-    @Column(name = "product_owner_id", nullable = false)
+    @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID, nullable = false)
     public UUID ownerId;
 
     // Fields - Primitives
