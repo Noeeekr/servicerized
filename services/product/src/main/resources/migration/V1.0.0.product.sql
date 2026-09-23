@@ -28,6 +28,9 @@ set client_min_messages = WARNING;
 --changeset migrate-product-service:create-categories-table
 
     create table products.categories (
+        created_at timestamp(6) default CURRENT_TIMESTAMP not null,
+        deleted_at timestamp(6) default NULL,
+        updated_at timestamp(6) default CURRENT_TIMESTAMP not null,
         product_category_id uuid not null,
         product_category_name varchar(255) not null unique,
         primary key (product_category_id)
@@ -38,10 +41,14 @@ set client_min_messages = WARNING;
 --changeset migrate-product-service:create-product-categories-relation-table
 
     create table products.products_categories (
+        created_at timestamp(6) default CURRENT_TIMESTAMP not null,
+        deleted_at timestamp(6) default NULL,
+        updated_at timestamp(6) default CURRENT_TIMESTAMP not null,
         category_id uuid not null,
         product_id uuid not null,
         primary key (category_id, product_id)
     );
+
 
     alter table if exists products.products_categories 
        add constraint fk_category_id 
