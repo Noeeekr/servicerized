@@ -42,7 +42,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-@Table(name = ProductEntity.METADATA.TABLE_NAME)
+@Table(name = ProductEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class ProductEntity extends Metrics implements ProductInterface, ClientResponseDto {
     /**
      * METADATA defines a single source of truth for external references to this table names to be
