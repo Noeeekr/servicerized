@@ -44,7 +44,7 @@ public class AuthenticationController extends Controller {
 
         public static final String QUERY_PARAM_EMAIL_CONFIRMATION_TOKEN = "emailConfirmationToken";
 
-        @Value("${app.jwt.expiration-ms}")
+        @Value("${app.jwt.auth.expiration-ms}")
         private long expirationMilisseconds;
 
         private final AuthorizationService authorizationService;
