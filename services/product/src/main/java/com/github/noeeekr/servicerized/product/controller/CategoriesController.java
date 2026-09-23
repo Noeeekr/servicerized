@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
+import com.github.noeeekr.servicerized.product.service.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.ProductCategoryService;
 import com.github.noeeekr.servicerized.product.service.request.AttachCategoryRequest;
 import com.github.noeeekr.servicerized.product.service.request.DetachCategoryRequest;
@@ -29,7 +29,7 @@ public class CategoriesController extends Controller {
     private ProductCategoryService productCategoryService;
 
     @Autowired
-    private AuthorizationCookieService authorizationCookieService;
+    private AuthorizationService authorizationService;
 
     @PutMapping()
     public ResponseEntity<ClientResponse> attachCategory(
@@ -39,7 +39,7 @@ public class CategoriesController extends Controller {
         /**
          * Authorization: Requires user to contain credentials that are not expired.
          */
-        if (authorizationCookieService.isTokenExpired(authorizationCookie)) {
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
             return this.handleFailure(
                     new Failures.AuthorizationFailed(
                             "Falha de autorização: Credenciais não encontradas.", true),
@@ -51,7 +51,7 @@ public class CategoriesController extends Controller {
          * Preparation: Recover user data & create request.
          */
         AuthorizationToken authorizationToken =
-                authorizationCookieService.getPayload(authorizationCookie);
+                authorizationService.getPayload(authorizationCookie);
         AttachCategoryRequest attachCategoryRequest =
                 new AttachCategoryRequest(authorizationToken.userId(), productId, categoryId);
 
@@ -82,7 +82,7 @@ public class CategoriesController extends Controller {
         /**
          * Authorization: Requires user to contain credentials that are not expired.
          */
-        if (authorizationCookieService.isTokenExpired(authorizationCookie)) {
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
             return this.handleFailure(
                     new Failures.AuthorizationFailed(
                             "Falha de autorização: Credenciais não encontradas.", true),
@@ -94,7 +94,7 @@ public class CategoriesController extends Controller {
          * Preparation: Recover user data & create request.
          */
         AuthorizationToken authorizationToken =
-                authorizationCookieService.getPayload(authorizationCookie);
+                authorizationService.getPayload(authorizationCookie);
         DetachCategoryRequest dettachCategoryRequest =
                 new DetachCategoryRequest(authorizationToken.userId(), productId, categoryId);
 

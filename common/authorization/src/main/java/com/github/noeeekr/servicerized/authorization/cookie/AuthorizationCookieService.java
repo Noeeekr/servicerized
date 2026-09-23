@@ -1,11 +1,13 @@
 package com.github.noeeekr.servicerized.authorization.cookie;
 
 import java.util.UUID;
-import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Service
+/**
+ * AuthorizationCookieService must be extended in order to be scannable and manageable by spring
+ * boot.
+ */
 public class AuthorizationCookieService extends JwtService {
     public String createToken(UUID userId) throws JsonProcessingException {
         return this.buildToken(new ObjectMapper()

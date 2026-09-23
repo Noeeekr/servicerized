@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.noeeekr.servicerized.authorization.Authorization;
-import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.service.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.ProductService;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
@@ -27,7 +27,7 @@ public class ProductController extends Controller {
     private ProductService productService;
 
     @Autowired
-    private AuthorizationCookieService authorizationCookieService;
+    private AuthorizationService authorizationService;
 
     @PostMapping()
     public ResponseEntity<ClientResponse> createProduct(
@@ -36,8 +36,8 @@ public class ProductController extends Controller {
         /**
          * Handle authorization through common authorization package.
          */
-        AuthorizationToken token = authorizationCookieService.getPayload(authorizationCookie);
-        if (authorizationCookieService.isTokenExpired(authorizationCookie)) {
+        AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
             return this.handleFailure(
                     new Failures.AuthorizationFailed("Cookie de autorização não encontrado. ",
                             true),

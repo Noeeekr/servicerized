@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.identity.services.authentication;
+package com.github.noeeekr.servicerized.identity.services.auth;
 
 import java.util.Iterator;
 import java.util.List;

@@ -21,13 +21,13 @@ import com.github.noeeekr.servicerized.identity.controller.request.SignInRequest
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.repository.dto.internal.InternalUserDto;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
+import com.github.noeeekr.servicerized.identity.services.auth.AuthenticationService;
+import com.github.noeeekr.servicerized.identity.services.auth.AuthorizationService;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 import com.github.noeeekr.servicerized.response.failure.Failure;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import com.github.noeeekr.servicerized.authorization.Authorization;
-import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,8 +47,8 @@ public class AuthenticationController extends Controller {
         @Value("${app.jwt.expiration-ms}")
         private long expirationMilisseconds;
 
+        private final AuthorizationService authorizationService;
         private final AuthenticationService authenticationService;
-        private final AuthorizationCookieService authorizationCookieService;
 
         @PostMapping
         @RequestMapping(AuthenticationController.CONTROLLER_SIGNUP_PATH)
@@ -98,7 +98,7 @@ public class AuthenticationController extends Controller {
 
                 String cookieContent;
                 try {
-                        cookieContent = authorizationCookieService
+                        cookieContent = authorizationService
                                         .createToken(response.getPayload().getUserId());
                 } catch (JsonProcessingException e) {
                         log.error("Failed to parse user details to json. " + e.getMessage());
@@ -110,10 +110,10 @@ public class AuthenticationController extends Controller {
                 Duration duration = Duration.ofMillis(expirationMilisseconds);
                 Objects.requireNonNull(duration, "Duration cannot be null. ");
 
-                ResponseCookie cookie =
-                                ResponseCookie.from(Authorization.AUTH_COOKIE_NAME, "" + cookieContent)
-                                                .httpOnly(true).secure(true).path("/")
-                                                .maxAge(duration).sameSite("Lax").build();
+                ResponseCookie cookie = ResponseCookie
+                                .from(Authorization.AUTH_COOKIE_NAME, "" + cookieContent)
+                                .httpOnly(true).secure(true).path("/").maxAge(duration)
+                                .sameSite("Lax").build();
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                                 .body(new ClientResponse(response.getPayload()));

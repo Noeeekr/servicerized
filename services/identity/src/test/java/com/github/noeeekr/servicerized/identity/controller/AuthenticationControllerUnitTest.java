@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.identity.controller.request.SignUpRequest;
 import com.github.noeeekr.servicerized.identity.repository.models.User;
-import com.github.noeeekr.servicerized.identity.services.authentication.AuthenticationService;
+import com.github.noeeekr.servicerized.identity.services.auth.AuthenticationService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,7 +41,8 @@ public class AuthenticationControllerUnitTest {
 
                 // Request Content Creation : Create & Validate POST request content
                 SignUpRequest request = SignUpRequest.builder().userName("TestUser")
-                                .groupPassword("TestUser").userEmail("TestUser@TestDomain.Test").build();
+                                .groupPassword("TestUser").userEmail("TestUser@TestDomain.Test")
+                                .build();
                 String content = this.objectMapper.writeValueAsString(request);
                 if (content == null) {
                         throw new Exception("Unable to transform POST payload into JSON string.");
