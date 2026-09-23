@@ -14,6 +14,8 @@ public record ProductDto(UUID id, UUID ownerId, String name, Integer price, Stri
         }
     }
 
+    // Getters
+
     public UUID getId() {
         return this.id;
     }
@@ -32,5 +34,12 @@ public record ProductDto(UUID id, UUID ownerId, String name, Integer price, Stri
 
     public String getDescription() {
         return this.description;
+    }
+
+    // Transformers
+
+    public static ProductDto from(ProductInterface product) {
+        return new ProductDto(product.getId(), product.getOwnerId(), product.getName(),
+                product.getPrice(), product.getDescription());
     }
 }
