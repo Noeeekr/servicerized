@@ -1,21 +1,64 @@
 package com.github.noeeekr.servicerized.product.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import org.hibernate.query.spi.Limit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.service.request.FindOneProductRequest;
 import com.github.noeeekr.servicerized.response.Response;
+import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
-    
+
+    /**
+     * findProduct() returns an optional with the product if found. If none are specified returns a
+     * empty optional. If only one is specified also returns a empty optional.
+     * 
+     * @param filter The filters
+     * @return a response containing a Optional with the product on success.
+     */
+    public Response<Optional<ProductEntity>> findProduct(FindOneProductRequest filter) {
+        ResponseBuilder<Optional<ProductEntity>> responseBuilder = Response.builder();
+        /**
+         * Validates if request is empty.
+         */
+        if (filter.getProductId() == null || filter.getProductOwnerId() == null) {
+            return responseBuilder.success(Optional.empty()).build();
+        }
+
+        List<ProductEntity> products = new ArrayList<>();
+        try {
+            List<ProductEntity> fetchedProducts = productRepository.findProduct(
+                    filter.getProductId(), filter.getProductOwnerId(), new Limit(0, 1));
+            products.addAll(fetchedProducts);
+        } catch (Exception e) {
+            return responseBuilder.fail(new Failures.UnhandledException(e)).build();
+        }
+
+        /**
+         * Validates if response is empty.
+         */
+        if (products.size() == 0) {
+            return responseBuilder.success(Optional.empty()).build();
+        }
+
+        return responseBuilder.success(Optional.of(products.get(0))).build();
+    }
+
     public Response<ProductEntity> createProduct(CreateProductInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
