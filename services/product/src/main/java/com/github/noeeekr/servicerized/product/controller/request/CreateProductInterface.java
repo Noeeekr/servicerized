@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces;
+package com.github.noeeekr.servicerized.product.controller.request;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;

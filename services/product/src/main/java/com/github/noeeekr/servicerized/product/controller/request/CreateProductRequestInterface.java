@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces;
+package com.github.noeeekr.servicerized.product.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
