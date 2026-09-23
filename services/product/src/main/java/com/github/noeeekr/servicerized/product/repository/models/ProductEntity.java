@@ -2,10 +2,12 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
 import com.github.noeeekr.servicerized.repository.models.Metrics;
+import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,12 +17,43 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * ProductEntity defines the format of data for a user product.
+ * 
+ * <br/>
+ * 
+ * 'Product' entity is intended to hold information about a 'service' that is available to be rented
+ * by a user. For this purpose it should demonstrate the following behaviour:
+ * 
+ * <br/>
+ * 
+ * 1. The field 'deleted_at' (extended from Metrics) from this entity defines privative behavior.
+ * Any entity instance where this field is not null should be considered private for its owner and
+ * be ignored by default CRUD queries unless their domain rules strictly target them.
+ * 
+ * <br/>
+ * 
+ * 2. This entity should not define data related to actual processes that may act upon products, it
+ * should only act as a registry for an available 'service'. If necessary, create other entities for
+ * that purpose.
+ * 
+ */
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
-@Table(name = "products")
-public class ProductEntity extends Metrics implements ProductInterface {
+@Table(name = ProductEntity.METADATA.TABLE_NAME)
+public class ProductEntity extends Metrics implements ProductInterface, ClientResponseDto {
+    /**
+     * METADATA defines a single source of truth for external references to this table names to be
+     * used across this micro-service, providing consistency and easy maintence.
+     */
+    public static final class METADATA {
+        public static final String TABLE_NAME = "products";
+
+        public static final String COLUMN_NAME_PRODUCT_ID = "id";
+    }
+
     /**
      * Fields
      */
@@ -40,7 +73,7 @@ public class ProductEntity extends Metrics implements ProductInterface {
 
     // Fields - Primitives
 
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "product_name", nullable = false, unique = true)
     public String name;
 
     @Column(name = "product_price", nullable = false)
@@ -57,6 +90,10 @@ public class ProductEntity extends Metrics implements ProductInterface {
     public static ProductEntity from(CreateProductRequestInterface product) {
         return ProductEntity.builder().name(product.getName()).description(product.getDescription())
                 .price(product.getPrice()).build();
+    }
+
+    public ProductInterface prepareToClient() {
+        return ProductDto.from(this);
     }
 }
 
