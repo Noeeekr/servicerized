@@ -13,7 +13,7 @@ import liquibase.resource.ResourceAccessor;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.RawSqlStatement;
 
-public class MigrateGroupKinds implements CustomSqlChange, CustomSqlRollback {
+public class PopulateGroupKinds implements CustomSqlChange, CustomSqlRollback {
     private static final String TABLE_NAME = "identity." + GroupKind.TABLE_NAME;
 
     @Override

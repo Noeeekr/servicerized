@@ -66,6 +66,12 @@
             <version>3.2.0</version>
         </dependency>
 
+        <!-- Database Migration -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
 		<!-- Spring Boot Dependencies -->
 		<dependency>

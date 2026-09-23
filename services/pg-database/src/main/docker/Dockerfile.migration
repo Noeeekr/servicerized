@@ -17,6 +17,7 @@ WORKDIR /liquibase/changelog
 COPY --from=build --chown=liquibase:liquibase \
     # Add here new lines of jars from service that contains migrations
     /payment-api/services/identity/target/identity-service-1.0.0-SNAPSHOT-migration.jar \
+    /payment-api/services/identity/target/product-service-1.0.0-SNAPSHOT-migration.jar \
     /liquibase/lib/
 
 # Copy base service migrations (Could also become a jar to be copied)

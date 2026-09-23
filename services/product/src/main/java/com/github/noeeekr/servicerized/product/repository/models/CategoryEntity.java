@@ -44,15 +44,28 @@ public class CategoryEntity {
     public static final class METADATA {
         public static final String TABLE_NAME = "categories";
 
+        //
+        // Refers to java fields names
+        //
+
         public static final String COLUMN_NAME_CATEGORY_ID = "categoryId";
+
+        //
+        // Refers to database fields names
+        //
+
+        public static final String DATABASE_COLUMN_NAME_CATEGORY_ID = "product_category_id";
+        public static final String DATABASE_COLUMN_NAME_CATEGORY_NAME = "product_category_name";
     }
 
     @Id
     @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
-    @Column(name = "product_category_id", nullable = false, unique = true)
+    @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_ID, nullable = false,
+            unique = true)
     public UUID categoryId;
 
-    @Column(name = "product_category_name", nullable = false, unique = true)
+    @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME, nullable = false,
+            unique = true)
     public String categoryName;
 }
