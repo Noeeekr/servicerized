@@ -71,7 +71,7 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
 
     // Fields - Foreign Keys
 
-    @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID, nullable = false)
+    @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_OWNER_ID, nullable = false)
     public UUID ownerId;
 
     // Fields - Primitives
