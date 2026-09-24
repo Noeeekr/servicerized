@@ -2,17 +2,30 @@ package com.github.noeeekr.servicerized.product.repository.dto;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.filters.ProductFilterableFieldsInterface;
 import lombok.Builder;
 
 @Builder
-public record ProductDto(UUID id, UUID ownerId, String name, Integer price, String description)
-        implements ProductInterface, ProductFilterableFieldsInterface {
-    public ProductDto {
-        if (id.version() != 7 || ownerId.version() != 7) {
+public class ProductDto implements ProductInterface {
+    private UUID id;
+    private UUID ownerId;
+    private String name;
+    private Integer price;
+    private String description;
+
+    public ProductDto(UUID id, UUID ownerId, String name, Integer price, String description) {
+        if (id.version() != 7) {
             throw new IllegalArgumentException(
-                    "create dto 'product' failed: UUID version on field 'id' or 'ownerId' is different from 'v7'.");
+                    String.format("Create dto for entity 'product': Required UUID version on field 'id' to be 'v7' found 'v%d'.", id.version()));
         }
+        if (ownerId.version() != 7) {
+            throw new IllegalArgumentException(
+                    String.format("Create dto for entity 'product': Required UUID version on field 'ownerId' to be 'v7' found 'v%d'.", ownerId.version()));
+        }
+        this.description = description;
+        this.ownerId = ownerId;
+        this.price = price;
+        this.name = name;
+        this.id = id;
     }
 
     // Getters
