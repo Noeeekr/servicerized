@@ -35,20 +35,47 @@ All helper services present in this micro-service follow the rules for developin
 
 ## Endpoints
 
+For more information about default endpoint REST response, check [Default Endpoint Responses](../documentation.md#default-endpoint-responses).
+
 All endpoints present in this micro-service follow the rules for developing endpoints defined at [Building REST API's](../development.md). The following endpoints are currently implemented and available:
 
-**CREATE**:
+#### Products
 
-- [Create product endpoint](./src/main/java/com/github/noeeekr/servicerized/product/controller/ProductController.java): Recieves a create product payload and creates a product. The controller assumes the product owner is the user whose authorization cookie belongs to. 
+The current implementation for endpoints related to product operations can be found at [Product Endpoints](./src/main/java/com/github/noeeekr/servicerized/product/controller/ProductController.java).
 
-**POST**:
+- Create Endpoints: Contains endpoints related to creating products.
+  - Create One: Creates a single product entity.
+```
+    POST to /api/product
+    Body: JSON 
+        key: name          type: String (Max 256 Characters)
+        key: description   type: String (Max 256 Characters)
+        key: price         type: Integer (Only Positive)
 
-    None Available 
-    
-**PUT**:
-
-    None Available 
-
-**DELETE**:
-
-    None Available 
+    Failure Causes:
+        DOCUMENTATION_MISSING
+        
+    On success, replies with:
+        Default Endpoint Response (success state) with a single product data as JSON:
+            JSON
+                key: id            type: UUID (Version 7)
+                key: ownerId       type: UUID (Version 7)
+                key: name          type: String (Max 256 Characters)
+                key: description   type: String (Max 256 Characters)
+                key: price         type: Integer (Only Positive)
+```
+- Listing Endpoints:
+  - List one: List a single products.
+```
+    DOCUMENTATION_MISSING
+```
+  
+#### Products (Categories)
+- Attach:
+```
+    DOCUMENTATION_MISSING
+```
+- Dettach:
+```
+    DOCUMENTATION_MISSING
+```
