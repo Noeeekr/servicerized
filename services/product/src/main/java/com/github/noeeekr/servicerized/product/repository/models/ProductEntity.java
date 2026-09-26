@@ -2,10 +2,10 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
-import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
@@ -85,7 +85,7 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     @Column(name = "product_description", nullable = true)
     public String description;
 
-    public static ProductEntity from(CreateProductInterface product) {
+    public static ProductEntity from(CreateProductCommandInterface product) {
         return ProductEntity.builder().name(product.getName()).ownerId(product.getOwnerId())
                 .description(product.getDescription()).price(product.getPrice()).build();
     }

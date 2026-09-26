@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
-import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
 import com.github.noeeekr.servicerized.product.service.category.models.request.ListProductRelationRequest;
+import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
@@ -59,7 +59,7 @@ public class ProductService {
         return responseBuilder.success(Optional.of(products.get(0))).build();
     }
 
-    public Response<ProductEntity> createProduct(CreateProductInterface product) {
+    public Response<ProductEntity> createProduct(CreateProductCommandInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
         try {
