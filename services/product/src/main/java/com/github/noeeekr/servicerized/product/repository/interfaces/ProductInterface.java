@@ -1,8 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.interfaces;
 
-import java.util.UUID;
-import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.fields.ProductFieldsInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 
-public interface ProductInterface extends CreateProductCommandInterface {
-    public UUID getId();
+public interface ProductInterface extends CreateProductCommandInterface, ProductFieldsInterface.Id {
 }

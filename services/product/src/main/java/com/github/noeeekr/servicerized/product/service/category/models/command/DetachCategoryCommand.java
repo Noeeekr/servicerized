@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service.category.models.request;
+package com.github.noeeekr.servicerized.product.service.category.models.command;
 
 import java.util.UUID;
 
@@ -11,6 +11,6 @@ import java.util.UUID;
  * @param productId The product the user wants to detach the category from.
  * @param categoryId The category to detach from a product.
  */
-public record DetachCategoryRequest(UUID userId, UUID productId, UUID categoryId) {
+public record DetachCategoryCommand(UUID userId, UUID productId, UUID categoryId) {
 
 }

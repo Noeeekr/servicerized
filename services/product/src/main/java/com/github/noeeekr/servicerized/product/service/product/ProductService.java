@@ -1,18 +1,18 @@
 package com.github.noeeekr.servicerized.product.service.product;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
+import com.github.noeeekr.servicerized.product.repository.interfaces.filters.CategoryFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.filters.ProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
-import com.github.noeeekr.servicerized.product.service.category.models.request.ListProductRelationRequest;
-import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
 import com.github.noeeekr.servicerized.response.Response;
-import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -21,57 +21,49 @@ import lombok.AllArgsConstructor;
 @Transactional
 @AllArgsConstructor
 public class ProductService {
+    public static class LIMITS {
+        public static int LIST = 20;
+    }
+
     @Autowired
     private ProductRepository productRepository;
 
-    /**
-     * findProduct() returns an optional with the product if found. If none are specified returns a
-     * empty optional. If only one is specified also returns a empty optional.
-     * 
-     * @param filter The filters
-     * @return a response containing a Optional with the product on success.
-     */
-    public Response<Optional<ProductEntity>> findProduct(ListProductRelationRequest filter) {
-        ResponseBuilder<Optional<ProductEntity>> responseBuilder = Response.builder();
-        /**
-         * Validates if request is empty.
-         */
-        if (filter.getProductId() == null || filter.getProductOwnerId() == null) {
-            return responseBuilder.success(Optional.empty()).build();
+    public Response<Optional<ProductEntity>> listProduct(ListProductCommandInterface command) {
+        List<CategoryFilterableFieldsInterface> categoryFilters = null;
+        ProductFilterableFieldsInterface productFilters = null;
+
+        Optional<ListFilterInterface> listFilters = command.getFilter();
+        if (listFilters.isEmpty() == false) {
+            ListFilterInterface filters = listFilters.get();
+
+            Optional<List<CategoryFilterableFieldsInterface>> categoryFilter =
+                    filters.getCategoryFilter();
+            if (categoryFilter.isEmpty() == false) {
+                categoryFilters = categoryFilter.get();
+            }
+
+            Optional<ProductFilterableFieldsInterface> productFilter = filters.getProductFilter();
+            if (productFilter.isEmpty() == false) {
+                productFilters = productFilter.get();
+            }
         }
 
-        List<ProductEntity> products = new ArrayList<>();
-        try {
-            List<ProductEntity> fetchedProducts = productRepository.findProduct(
-                    filter.getProductId(), filter.getProductOwnerId(), Limit.of(1));
-            products.addAll(fetchedProducts);
-        } catch (Exception e) {
-            return responseBuilder.fail(new Failures.UnhandledException(e)).build();
-        }
-
-        /**
-         * Validates if response is empty.
-         */
-        if (products.size() == 0) {
-            return responseBuilder.success(Optional.empty()).build();
-        }
-
-        return responseBuilder.success(Optional.of(products.get(0))).build();
+        Response<Optional<ProductEntity>> listProductResponse =
+                productRepository.listProduct(productFilters, categoryFilters);
+        if (listProductResponse.isSuccess() == false)
+            return Response.fromFailure(listProductResponse);
+        return listProductResponse;
     }
 
     public Response<ProductEntity> createProduct(CreateProductCommandInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
         try {
-            productEntity = productRepository
+            return productRepository
                     .save(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
         } catch (Exception e) {
             return Response.<ProductEntity>builder().fail(new Failures.UnhandledException(e))
                     .build();
         }
-
-        // return Response.<ProductEntity>builder().success(productEntity).build();
-        return Response.<ProductEntity>builder().fail(new Failures.NotImplemented("Create Product",
-                ProductService.class.getCanonicalName())).build();
     }
 }

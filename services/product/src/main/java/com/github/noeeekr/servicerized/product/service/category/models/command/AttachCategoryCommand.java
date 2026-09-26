@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service.category.models.request;
+package com.github.noeeekr.servicerized.product.service.category.models.command;
 
 import java.util.UUID;
 
@@ -11,6 +11,6 @@ import java.util.UUID;
  * @param productId The product the user wants to attach the category to.
  * @param categoryId The category to attach to a product.
  */
-public record AttachCategoryRequest(UUID userId, UUID productId, UUID categoryId) {
+public record AttachCategoryCommand(UUID userId, UUID productId, UUID categoryId) {
 
 }

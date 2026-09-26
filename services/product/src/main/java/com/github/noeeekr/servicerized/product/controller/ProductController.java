@@ -1,9 +1,9 @@
 package com.github.noeeekr.servicerized.product.controller;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
-import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
-import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommand;
-import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
+import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 
 @RestController
 @RequestMapping("/api/product")
@@ -32,13 +34,45 @@ public class ProductController extends Controller {
         @Autowired
         private AuthorizationService authorizationService;
 
-        // @GetMapping()
-        // public ResponseEntity<ClientResponse> listProduct(
-        // @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-        // @RequestBody ListProductRequest
-        // ) {
+        @GetMapping()
+        public ResponseEntity<ClientResponse> listProduct(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+                        @RequestBody ListProductRequest request) {
+                /**
+                 * Handle authorization through common authorization package.
+                 */
+                if (authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Cookie de autorização não encontrado. ", true),
+                                        ProductController.class.getCanonicalName(),
+                                        "Create Product (Method)");
+                }
 
-        // }
+                /**
+                 * Build a 'list product' instance by upgrading simple JSON to complex java
+                 * structures.
+                 */
+                ListProductCommandInterface requestedProduct =
+                                ListProductCommandInterface.upgrade(request);
+
+                Response<Optional<ProductEntity>> listProductResponse =
+                                productService.listProduct(requestedProduct);
+                if (listProductResponse.isSuccess() == false)
+                        return this.handleFailure(listProductResponse.getFailure(),
+                                        "Product (Controller)", "List Product (Endpoint)");
+
+                /**
+                 * Execute the target operation
+                 */
+                Optional<ProductEntity> product = listProductResponse.getPayload();
+
+                if (product.isEmpty()) {
+                        ClientResponse responseBody =
+                                        new ClientResponse(ClientResponseDto.EmptyPayload);
+                        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+                }
+                return ResponseEntity.ok(new ClientResponse(product.get()));
+        }
 
         @PostMapping()
         public ResponseEntity<ClientResponse> createProduct(
@@ -60,7 +94,7 @@ public class ProductController extends Controller {
                  * fields.
                  */
                 CreateProductCommandInterface requestedProduct =
-                                CreateProductCommandInterface.fromUpgrade(request, token.userId());
+                                CreateProductCommandInterface.upgrade(request, token.userId());
 
                 /**
                  * Execute the target operation.

@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service.product.models.request;
+package com.github.noeeekr.servicerized.product.service.product.models.command;
 
 import java.util.UUID;
 import lombok.AllArgsConstructor;

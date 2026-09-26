@@ -17,8 +17,8 @@ import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.category.ProductCategoryService;
-import com.github.noeeekr.servicerized.product.service.category.models.request.AttachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.category.models.request.DetachCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.command.AttachCategoryCommand;
+import com.github.noeeekr.servicerized.product.service.category.models.command.DetachCategoryCommand;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 
@@ -52,8 +52,8 @@ public class CategoriesController extends Controller {
          */
         AuthorizationToken authorizationToken =
                 authorizationService.getPayload(authorizationCookie);
-        AttachCategoryRequest attachCategoryRequest =
-                new AttachCategoryRequest(authorizationToken.userId(), productId, categoryId);
+        AttachCategoryCommand attachCategoryRequest =
+                new AttachCategoryCommand(authorizationToken.userId(), productId, categoryId);
 
         /**
          * Execution: Trigger the target operations.
@@ -95,8 +95,8 @@ public class CategoriesController extends Controller {
          */
         AuthorizationToken authorizationToken =
                 authorizationService.getPayload(authorizationCookie);
-        DetachCategoryRequest dettachCategoryRequest =
-                new DetachCategoryRequest(authorizationToken.userId(), productId, categoryId);
+        DetachCategoryCommand dettachCategoryRequest =
+                new DetachCategoryCommand(authorizationToken.userId(), productId, categoryId);
 
         /**
          * Execution: Trigger the target operations.

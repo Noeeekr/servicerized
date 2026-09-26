@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.product.service.category;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,14 @@ import com.github.noeeekr.servicerized.product.repository.models.CategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryKey;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
-import com.github.noeeekr.servicerized.product.service.category.models.request.AttachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.category.models.request.DetachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.category.models.request.ListCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.category.models.request.ListProductRelationRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.command.AttachCategoryCommand;
+import com.github.noeeekr.servicerized.product.service.category.models.command.DetachCategoryCommand;
+import com.github.noeeekr.servicerized.product.service.category.models.command.ListCategoryCommand;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
+import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommand;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.CategoryFilter;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilter;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
@@ -30,12 +34,15 @@ public class ProductCategoryService {
     @Autowired
     private ProductService productService;
 
-    public Response<ProductCategoryEntity> dettachCategory(DetachCategoryRequest detachRequest) {
+    public Response<ProductCategoryEntity> dettachCategory(DetachCategoryCommand detachRequest) {
         /**
          * Data Integrity: Validate product existence & ownership.
          */
-        Response<Optional<ProductEntity>> findProductResponse = productService.findProduct(
-                new ListProductRelationRequest(detachRequest.productId(), detachRequest.userId()));
+        Response<Optional<ProductEntity>> findProductResponse =
+                productService.listProduct(new ListProductCommand(new ListFilter(
+                        Arrays.asList(new CategoryFilter(detachRequest.categoryId(), "")),
+                        new ProductFilter(detachRequest.productId(), ""))));
+
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
         if (findProductResponse.getPayload().isEmpty())
@@ -46,7 +53,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate category existence.
          */
         Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new ListCategoryRequest(detachRequest.categoryId(), null));
+                .findCategory(new ListCategoryCommand(detachRequest.categoryId(), null));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())
@@ -84,12 +91,14 @@ public class ProductCategoryService {
         return Response.success(entity);
     }
 
-    public Response<ProductCategoryEntity> attachCategory(AttachCategoryRequest attachRequest) {
+    public Response<ProductCategoryEntity> attachCategory(AttachCategoryCommand attachRequest) {
         /**
          * Data Integrity: Validate product existence & ownership.
          */
-        Response<Optional<ProductEntity>> findProductResponse = productService.findProduct(
-                new ListProductRelationRequest(attachRequest.productId(), attachRequest.userId()));
+        Response<Optional<ProductEntity>> findProductResponse =
+                productService.listProduct(new ListProductCommand(new ListFilter(
+                        Arrays.asList(new CategoryFilter(attachRequest.categoryId(), "")),
+                        new ProductFilter(attachRequest.productId(), ""))));
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
         if (findProductResponse.getPayload().isEmpty())
@@ -100,7 +109,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate category existence.
          */
         Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new ListCategoryRequest(attachRequest.categoryId(), null));
+                .findCategory(new ListCategoryCommand(attachRequest.categoryId(), null));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())

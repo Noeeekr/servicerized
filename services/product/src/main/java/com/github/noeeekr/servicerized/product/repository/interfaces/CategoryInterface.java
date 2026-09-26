@@ -1,9 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.interfaces;
 
-import java.util.UUID;
+import com.github.noeeekr.servicerized.product.repository.interfaces.filters.CategoryFilterableFieldsInterface;
 
-public interface CategoryInterface {
-    String getCategoryName();
-
-    UUID getCategoryId();
+public interface CategoryInterface extends CategoryFilterableFieldsInterface {
 }

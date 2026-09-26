@@ -2,6 +2,7 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.github.noeeekr.servicerized.product.repository.interfaces.CategoryInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,7 +42,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Table(name = CategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
-public class CategoryEntity extends MetricsEntity {
+public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     public static final class METADATA {
         public static final String TABLE_NAME = "categories";
 
@@ -57,6 +58,11 @@ public class CategoryEntity extends MetricsEntity {
 
         public static final String DATABASE_COLUMN_NAME_CATEGORY_ID = "product_category_id";
         public static final String DATABASE_COLUMN_NAME_CATEGORY_NAME = "product_category_name";
+    }
+
+    public CategoryEntity(UUID categoryId, String categoryName) {
+        this.categoryName = categoryName;
+        this.categoryId = categoryId;
     }
 
     @Id

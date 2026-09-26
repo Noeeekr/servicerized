@@ -1,8 +1,8 @@
-package com.github.noeeekr.servicerized.product.service.category.models.request;
+package com.github.noeeekr.servicerized.product.service.category.models.command;
 
 import java.util.UUID;
 
-public record ListProductRelationRequest(UUID productId, UUID productOwnerId) {
+public record ListProductRelationCommand(UUID productId, UUID productOwnerId) {
     public UUID getProductId() {
         return this.productId;
     }

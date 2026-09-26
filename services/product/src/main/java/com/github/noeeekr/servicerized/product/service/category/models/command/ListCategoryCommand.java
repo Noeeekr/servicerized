@@ -1,9 +1,9 @@
-package com.github.noeeekr.servicerized.product.service.category.models.request;
+package com.github.noeeekr.servicerized.product.service.category.models.command;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.CategoryInterface;
 
-public record ListCategoryRequest(UUID categoryId, String categoryName)
+public record ListCategoryCommand(UUID categoryId, String categoryName)
         implements CategoryInterface {
     @Override
     public UUID getCategoryId() {

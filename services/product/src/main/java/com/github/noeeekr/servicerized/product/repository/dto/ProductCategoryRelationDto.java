@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.dto;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.product.controller.request.CreateProductCategoryRelationRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductCategoryRelationRequestInterface;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

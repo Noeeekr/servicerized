@@ -2,10 +2,10 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
-import com.github.noeeekr.servicerized.product.controller.request.CreateProductRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
-import com.github.noeeekr.servicerized.product.service.product.models.request.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
@@ -57,24 +57,26 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
         public static final String DATABASE_COLUMN_NAME_PRODUCT_OWNER_ID = "product_owner_id";
     }
 
-    /**
-     * Fields
-     */
-
+    //
     // Fields - Indexes
-
+    //
+    
     @Id
     @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID)
     public UUID id;
 
+    //
     // Fields - Foreign Keys
+    //
 
     @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_OWNER_ID, nullable = false)
     public UUID ownerId;
 
+    //
     // Fields - Primitives
+    //
 
     @Column(name = "product_name", nullable = false, unique = true)
     public String name;
@@ -85,6 +87,10 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     @Column(name = "product_description", nullable = true)
     public String description;
 
+    //
+    // Transformators
+    //
+
     public static ProductEntity from(CreateProductCommandInterface product) {
         return ProductEntity.builder().name(product.getName()).ownerId(product.getOwnerId())
                 .description(product.getDescription()).price(product.getPrice()).build();
@@ -94,6 +100,10 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
         return ProductEntity.builder().name(product.getName()).description(product.getDescription())
                 .price(product.getPrice()).build();
     }
+
+    //
+    // Interface implementations
+    //
 
     public ProductInterface prepareToClient() {
         return ProductDto.from(this);

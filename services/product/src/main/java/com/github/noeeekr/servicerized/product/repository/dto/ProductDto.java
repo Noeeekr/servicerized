@@ -2,11 +2,12 @@ package com.github.noeeekr.servicerized.product.repository.dto;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.filters.ProductFilterableFieldsInterface;
 import lombok.Builder;
 
 @Builder
 public record ProductDto(UUID id, UUID ownerId, String name, Integer price, String description)
-        implements ProductInterface {
+        implements ProductInterface, ProductFilterableFieldsInterface {
     public ProductDto {
         if (id.version() != 7 || ownerId.version() != 7) {
             throw new IllegalArgumentException(
