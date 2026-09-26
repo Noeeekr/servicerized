@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +33,7 @@ public class ProductController extends Controller {
         @Autowired
         private AuthorizationService authorizationService;
 
-        @GetMapping()
+        @PostMapping("/list")
         public ResponseEntity<ClientResponse> listProduct(
                         @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
                         @RequestBody ListProductRequest request) {
