@@ -67,10 +67,31 @@ The current implementation for endpoints related to product operations can be fo
 - Listing Endpoints:
   - List one: List a single products.
 ```
-    DOCUMENTATION_MISSING
+    POST to /api/product/list
+    Body: JSON
+        key: filter                  type: Object
+            key: productFilter       type: Object
+                key: productId       type: UUID
+                key: productName     type: String
+            key: categoryFilter      type: Object
+                key: categoryId      type: UUID
+                key: categoryName    type: String
+
+    Failure Causes:
+        DOCUMENTATION_MISSING
+
+    On success, replies with:
+        Default Endpoint Response (success state) with a single product data as JSON:
+            JSON
+                key: id            type: UUID (Version 7)
+                key: ownerId       type: UUID (Version 7)
+                key: name          type: String (Max 256 Characters)
+                key: description   type: String (Max 256 Characters)
+                key: price         type: Integer (Only Positive)
 ```
   
 #### Products (Categories)
+
 - Attach:
 ```
     DOCUMENTATION_MISSING
