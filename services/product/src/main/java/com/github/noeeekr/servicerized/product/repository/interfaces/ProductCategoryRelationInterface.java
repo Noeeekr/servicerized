@@ -1,0 +1,7 @@
+package com.github.noeeekr.servicerized.product.repository.interfaces;
+
+import com.github.noeeekr.servicerized.product.controller.request.CreateProductCategoryRelationRequestInterface;
+
+public interface ProductCategoryRelationInterface extends CreateProductCategoryRelationRequestInterface {
+
+}

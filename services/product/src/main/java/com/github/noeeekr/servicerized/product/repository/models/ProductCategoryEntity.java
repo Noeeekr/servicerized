@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.models;
 
-import com.github.noeeekr.servicerized.product.repository.dto.ProductCategoryDto;
+import com.github.noeeekr.servicerized.product.repository.dto.ProductCategoryRelationDto;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.CascadeType;
@@ -39,7 +39,7 @@ public class ProductCategoryEntity extends MetricsEntity implements ClientRespon
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     private CategoryEntity category;
 
-    public ProductCategoryDto prepareToClient() {
-        return new ProductCategoryDto();
+    public ProductCategoryRelationDto prepareToClient() {
+        return new ProductCategoryRelationDto();
     }
 }
