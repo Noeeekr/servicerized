@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service;
+package com.github.noeeekr.servicerized.product.service.authorization;
 
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationCookieService;

@@ -15,10 +15,10 @@ import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
-import com.github.noeeekr.servicerized.product.service.AuthorizationService;
-import com.github.noeeekr.servicerized.product.service.ProductCategoryService;
-import com.github.noeeekr.servicerized.product.service.request.AttachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.request.DetachCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
+import com.github.noeeekr.servicerized.product.service.category.ProductCategoryService;
+import com.github.noeeekr.servicerized.product.service.category.models.request.AttachCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.DetachCategoryRequest;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 

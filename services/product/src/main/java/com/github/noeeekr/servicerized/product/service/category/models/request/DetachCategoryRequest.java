@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service.request;
+package com.github.noeeekr.servicerized.product.service.category.models.request;
 
 import java.util.UUID;
 

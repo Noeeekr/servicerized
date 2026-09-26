@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service;
+package com.github.noeeekr.servicerized.product.service.product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.controller.request.CreateProductInterface;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
-import com.github.noeeekr.servicerized.product.service.request.FindOneProductRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.ListProductRelationRequest;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
@@ -31,7 +31,7 @@ public class ProductService {
      * @param filter The filters
      * @return a response containing a Optional with the product on success.
      */
-    public Response<Optional<ProductEntity>> findProduct(FindOneProductRequest filter) {
+    public Response<Optional<ProductEntity>> findProduct(ListProductRelationRequest filter) {
         ResponseBuilder<Optional<ProductEntity>> responseBuilder = Response.builder();
         /**
          * Validates if request is empty.

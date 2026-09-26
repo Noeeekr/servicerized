@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service;
+package com.github.noeeekr.servicerized.product.service.category;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -11,10 +11,11 @@ import com.github.noeeekr.servicerized.product.repository.models.CategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryKey;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
-import com.github.noeeekr.servicerized.product.service.request.AttachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.request.DetachCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.request.FindCategoryRequest;
-import com.github.noeeekr.servicerized.product.service.request.FindOneProductRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.AttachCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.DetachCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.ListCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.ListProductRelationRequest;
+import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
@@ -34,7 +35,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate product existence & ownership.
          */
         Response<Optional<ProductEntity>> findProductResponse = productService.findProduct(
-                new FindOneProductRequest(detachRequest.productId(), detachRequest.userId()));
+                new ListProductRelationRequest(detachRequest.productId(), detachRequest.userId()));
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
         if (findProductResponse.getPayload().isEmpty())
@@ -45,7 +46,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate category existence.
          */
         Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new FindCategoryRequest(detachRequest.categoryId(), null));
+                .findCategory(new ListCategoryRequest(detachRequest.categoryId(), null));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())
@@ -88,7 +89,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate product existence & ownership.
          */
         Response<Optional<ProductEntity>> findProductResponse = productService.findProduct(
-                new FindOneProductRequest(attachRequest.productId(), attachRequest.userId()));
+                new ListProductRelationRequest(attachRequest.productId(), attachRequest.userId()));
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
         if (findProductResponse.getPayload().isEmpty())
@@ -99,7 +100,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate category existence.
          */
         Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new FindCategoryRequest(attachRequest.categoryId(), null));
+                .findCategory(new ListCategoryRequest(attachRequest.categoryId(), null));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())

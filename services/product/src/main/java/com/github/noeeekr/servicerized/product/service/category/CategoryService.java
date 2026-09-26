@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.service;
+package com.github.noeeekr.servicerized.product.service.category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.CategoryRepository;
 import com.github.noeeekr.servicerized.product.repository.models.CategoryEntity;
-import com.github.noeeekr.servicerized.product.service.request.FindCategoryRequest;
+import com.github.noeeekr.servicerized.product.service.category.models.request.ListCategoryRequest;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
@@ -25,7 +25,7 @@ public class CategoryService {
      * 
      * @return
      */
-    public Response<Optional<CategoryEntity>> findCategory(FindCategoryRequest request) {
+    public Response<Optional<CategoryEntity>> findCategory(ListCategoryRequest request) {
         ResponseBuilder<Optional<CategoryEntity>> responseBuilder = Response.builder();
 
         if (request.getCategoryId() == null && request.getCategoryName() == null) {
