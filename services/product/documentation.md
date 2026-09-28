@@ -44,13 +44,14 @@ All endpoints present in this micro-service follow the rules for developing endp
 The current implementation for endpoints related to product operations can be found at [Product Endpoints](./src/main/java/com/github/noeeekr/servicerized/product/controller/ProductController.java).
 
 - Create Endpoints: Contains endpoints related to creating products.
-  - Create One: Creates a single product entity.
+  - Create One: Registers a single service on the user's group.
 ```
     POST to /api/product
     Body: JSON 
-        key: name          type: String (Max 256 Characters)
-        key: description   type: String (Max 256 Characters)
-        key: price         type: Integer (Only Positive)
+        key: name           type: String (Max 256 Characters)
+        key: description    type: String (Max 256 Characters)
+        key: price          type: Integer (Only Positive)
+        key: provisionHours type: Integer (Only Positive)
 
     Failure Causes:
         DOCUMENTATION_MISSING
