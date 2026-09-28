@@ -1,6 +1,8 @@
 package com.github.noeeekr.servicerized.response.client;
 
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.List;
 import lombok.Getter;
 
 
@@ -10,6 +12,9 @@ import lombok.Getter;
  * The header contains a payload field, which contains the actual data the response sends. The
  * header contains a error fiedl, which contains any errors that may happen while processing the
  * request.
+ * 
+ * This object is expected to be used only when sending client (in a structure way), for this
+ * reason, it is poorly typed.
  * 
  * @param payload The data to send to client.
  * @param err The error to send to client.
@@ -23,6 +28,18 @@ public class ClientResponse {
     public ClientResponse(ClientResponseDto payload) {
         this.createdAt = new Date();
         this.payload = payload.prepareToClient();
+        this.error = null;
+    }
+
+    public ClientResponse(Dictionary<?, ?> payload) {
+        this.createdAt = new Date();
+        this.payload = payload;
+        this.error = null;
+    }
+
+    public ClientResponse(List<?> payload) {
+        this.createdAt = new Date();
+        this.payload = payload;
         this.error = null;
     }
 
@@ -42,7 +59,7 @@ public class ClientResponse {
         return new ClientResponseDto() {
             @Override
             public Object prepareToClient() {
-                return "";
+                return null;
             }
         };
     }
