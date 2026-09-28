@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Embeddable
-public class ProductKindRelationId implements Serializable {
+public class ProductKindId implements Serializable {
     public static class METADATA {
         //
         // Refers to the column name of the class not the database
@@ -30,12 +30,12 @@ public class ProductKindRelationId implements Serializable {
     // Constructors
     //
 
-    public ProductKindRelationId() {
+    public ProductKindId() {
         this.productId = null;
         this.productKindId = null;
     }
 
-    public ProductKindRelationId(UUID productId, Long productKindId) {
+    public ProductKindId(UUID productId, Long productKindId) {
         this.productId = productId;
         this.productKindId = productKindId;
     }
@@ -53,7 +53,7 @@ public class ProductKindRelationId implements Serializable {
         if (o.getClass() != this.getClass())
             return false;
 
-        ProductKindRelationId t = (ProductKindRelationId) o;
+        ProductKindId t = (ProductKindId) o;
         if (t.getProductId() != this.getProductId())
             return false;
         if (t.getProductKindId() != this.getProductKindId())
