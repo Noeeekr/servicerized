@@ -67,7 +67,7 @@ set client_min_messages = WARNING;
 --changeset migrate-product-service:create-product-kinds-table
 
     create table product_kinds (
-        product_id bigint not null,
+        product_kind_id bigint not null,
         product_kind_name varchar(255) not null unique,
         primary key (product_id)
     );
