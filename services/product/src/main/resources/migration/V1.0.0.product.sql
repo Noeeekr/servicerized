@@ -63,3 +63,13 @@ set client_min_messages = WARNING;
 --rollback alter table if exists products.products_categories drop constraint if exists fk_category_id;
 --rollback alter table if exists products.products_categories drop constraint if exists fk_product_id;
 --rollback drop table if exists products.products_categories cascade;
+
+--changeset migrate-product-service:create-product-kinds-table
+
+    create table product_kinds (
+        product_id bigint not null,
+        product_kind_name varchar(255) not null unique,
+        primary key (product_id)
+    );
+
+--rollback drop table if exists product_kind cascade;

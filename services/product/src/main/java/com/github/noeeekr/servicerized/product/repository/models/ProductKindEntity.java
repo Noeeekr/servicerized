@@ -24,7 +24,7 @@ import jakarta.persistence.Table;
 @Table(name = ProductKindEntity.METADATA.TABLE_NAME)
 public class ProductKindEntity {
     public static class METADATA {
-        public static final String TABLE_NAME = "product_kind";
+        public static final String TABLE_NAME = "product_kinds";
 
         public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
     }
