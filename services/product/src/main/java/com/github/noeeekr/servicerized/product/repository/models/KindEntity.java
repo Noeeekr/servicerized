@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 /**
  * 
@@ -21,15 +22,18 @@ import jakarta.persistence.Table;
  * - virtual-service (virtual service)
  */
 
+@Getter
 @Entity
 @Table(name = KindEntity.METADATA.TABLE_NAME)
 public class KindEntity {
     public static class METADATA {
         public static final String TABLE_NAME = "product_kinds";
 
-        public static final String COLUMN_NAME_PRODUCT_ID = "productId";
+        public static final String COLUMN_NAME_KIND_ID = "id";
+        public static final String COLUMN_NAME_KIND_NAME = "name";
 
-        public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
+        public static final String DATABASE_COLUMN_NAME_KIND_ID = "product_kind_id";
+        public static final String DATABASE_COLUMN_NAME_KIND_NAME = "product_kind_name";
     }
 
     public static class Default {
@@ -56,7 +60,7 @@ public class KindEntity {
     //
 
     @Id
-    @Column(name = KindEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID, nullable = false,
+    @Column(name = KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_ID, nullable = false,
             unique = true)
     private Long id;
 
@@ -64,7 +68,8 @@ public class KindEntity {
     // Primitive Fields
     //
 
-    @Column(name = "product_kind_name", nullable = false, unique = true)
+    @Column(name = KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_NAME, nullable = false,
+            unique = true)
     private String name;
 }
 
