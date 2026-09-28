@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.product.controller;
 
-import java.util.Optional;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +54,8 @@ public class ProductController extends Controller {
                 ListProductCommandInterface requestedProduct =
                                 ListProductCommandInterface.upgrade(request);
 
-                Response<Optional<ProductEntity>> listProductResponse =
-                                productService.listProduct(requestedProduct);
+                Response<List<ProductEntity>> listProductResponse =
+                                productService.listProducts(requestedProduct);
                 if (listProductResponse.isSuccess() == false)
                         return this.handleFailure(listProductResponse.getFailure(),
                                         "Product (Controller)", "List Product (Endpoint)");
@@ -63,14 +63,13 @@ public class ProductController extends Controller {
                 /**
                  * Execute the target operation
                  */
-                Optional<ProductEntity> product = listProductResponse.getPayload();
-
+                List<ProductEntity> product = listProductResponse.getPayload();
                 if (product.isEmpty()) {
                         ClientResponse responseBody =
                                         new ClientResponse(ClientResponseDto.EmptyPayload);
                         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
                 }
-                return ResponseEntity.ok(new ClientResponse(product.get()));
+                return ResponseEntity.ok(new ClientResponse(product));
         }
 
         @PostMapping()

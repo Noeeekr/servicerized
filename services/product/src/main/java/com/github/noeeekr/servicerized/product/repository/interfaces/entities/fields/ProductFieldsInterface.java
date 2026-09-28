@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces.fields;
+package com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields;
 
 import java.util.UUID;
 

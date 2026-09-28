@@ -4,7 +4,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
-import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;

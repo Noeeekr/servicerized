@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.service.product.models.filters;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.product.repository.interfaces.filters.CategoryFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 
 public class CategoryFilter implements CategoryFilterableFieldsInterface {
     private UUID categoryId;

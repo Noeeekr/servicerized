@@ -2,7 +2,7 @@ package com.github.noeeekr.servicerized.product.repository.models;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CategoryInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.CategoryInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

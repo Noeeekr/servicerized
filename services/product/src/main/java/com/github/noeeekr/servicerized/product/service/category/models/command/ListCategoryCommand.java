@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.service.category.models.command;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.product.repository.interfaces.CategoryInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.CategoryInterface;
 
 public record ListCategoryCommand(UUID categoryId, String categoryName)
         implements CategoryInterface {

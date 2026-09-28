@@ -1,6 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces.filters;
-
-import com.github.noeeekr.servicerized.product.repository.interfaces.fields.CategoryFieldsInterface;
+package com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields;
 
 /**
  * CategorySearchableFieldsInterface isolates all the fields of category entity that can be used for

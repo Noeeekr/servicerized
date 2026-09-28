@@ -6,25 +6,29 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
 import com.github.noeeekr.servicerized.response.failure.Failures;
-import com.github.noeeekr.servicerized.product.repository.interfaces.filters.CategoryFilterableFieldsInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.filters.ProductFilterableFieldsInterface;
-import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.query.ProductRepositoryQueryBuilder;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
 
 @Repository
-public class ProductRepository {
+public class ProductRepository implements ProductRepositoryQueryBuilder {
     @PersistenceContext
     private EntityManager entityManager;
+
+    //
+    // Interface implementations
+    //
+    @Override 
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
 
     //
     // Create queries
@@ -90,7 +94,7 @@ public class ProductRepository {
      * @param limit a custom size for the list, defaults to 50 if > 50.
      * @return An ArrayList of products (ProductEntity)
      */
-    public Response<List<ProductEntity>> findProducts(int limit) {
+    public Response<List<ProductEntity>> listProducts(int limit) {
         List<ProductEntity> products;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
@@ -120,33 +124,26 @@ public class ProductRepository {
     }
 
     /**
-     * Finds a product that match a single product template & multiple categories condition.
+     * Finds a single product by the following parameters:
      * 
-     * @param limit a custom size for the list, defaults to 50 if > 50.
-     * @return An ArrayList of products (ProductEntity)
+     * - A single object of data the product must match. <br/>
+     * - A list of categories the product must contain.
+     * 
+     * @param productFilter a object containing the fields that the product must match.
+     * @param categoryFilters a list of objects containing the fields specifying the categories the
+     *        product must contain.
+     * @return A single product entity wrapped in a optional (to handle not found case) wrapped in
+     *         the default response for this project (to handle failures).
      */
     public Response<Optional<ProductEntity>> listProduct(
             ProductFilterableFieldsInterface productFilter,
             List<CategoryFilterableFieldsInterface> categoryFilters) {
-        CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ProductEntity> query = criteria.createQuery(ProductEntity.class);
-        Root<ProductCategoryEntity> relationRoot = query.from(ProductCategoryEntity.class);
-
-        List<Predicate> conditions = new ArrayList<>();
-
-        if (categoryFilters != null && categoryFilters.isEmpty() != false) {
-            conditions.add(this.getCategoryFiltersFor(relationRoot, categoryFilters));
-        }
-        if (productFilter != null) {
-            conditions.add(this.getProductFiltersFor(relationRoot, productFilter));
-        }
-
-        conditions.add(criteria.equal(relationRoot.get("deletedAt"), null));
+        CriteriaQuery<ProductEntity> listProductQuery =
+                this.buildListProductQuery(productFilter, categoryFilters);
 
         ProductEntity product;
         try {
-            TypedQuery<ProductEntity> typedQuery =
-                    entityManager.createQuery(query.where(conditions));
+            TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(listProductQuery);
             product = typedQuery.getSingleResult();
             return Response.success(Optional.of(product));
         } catch (NoResultException e) {
@@ -157,51 +154,36 @@ public class ProductRepository {
 
     }
 
-    //
-    // Helper functions
-    //
-    public Predicate getProductFiltersFor(Root<ProductCategoryEntity> relationRoot,
-            ProductFilterableFieldsInterface productFilter) {
-        CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-        List<Predicate> productConditions = new ArrayList<>();
-        Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
-
-        if (!productFilter.getName().isEmpty() && !productFilter.getName().isBlank()) {
-            Predicate predicate = criteria.equal(categoryJoin.get("name"), productFilter.getName());
-            productConditions.add(predicate);
-        }
-        if (productFilter.getId() != null) {
-            Predicate predicate = criteria.equal(categoryJoin.get("id"), productFilter.getId());
-            productConditions.add(predicate);
-        }
-
-        return criteria.and(productConditions);
-    }
-
-    public Predicate getCategoryFiltersFor(Root<ProductCategoryEntity> relationRoot,
+    /**
+     * Finds a list of products that match the parameters providen:
+     * 
+     * <ul>
+     * <li>A single object of data the productmust match.</li>
+     * <li>A list of categories the product must.</li>
+     * </ul>
+     * 
+     * @param productFilter a object containing the fields that the product must match.
+     * @param categoryFilters a list of objects containing the fields specifying the categories the
+     *        product must contain.
+     * @return A list of products wrapped in the default response for this project (to handle
+     *         failures).
+     */
+    public Response<List<ProductEntity>> listProducts(
+            ProductFilterableFieldsInterface productFilter,
             List<CategoryFilterableFieldsInterface> categoryFilters) {
-        CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-        /**
-         * Can possibly fail due to List iterator implementation
-         */
-        categoryFilters.removeIf((filter) -> {
-            /**
-             * Skips empty conditions
-             */
-            String categoryName = filter.getCategoryName();
-            if (categoryName == null || categoryName.isEmpty())
-                return true;
-            return false;
-        });
+        CriteriaQuery<ProductEntity> listProductQuery =
+                this.buildListProductQuery(productFilter, categoryFilters);
 
-        List<Predicate> categoryConditions = new ArrayList<>();
-        Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
-        categoryFilters.forEach((filter) -> {
-            Predicate predicate =
-                    criteria.equal(categoryJoin.get("name"), filter.getCategoryName());
-            categoryConditions.add(predicate);
-        });
-
-        return criteria.or(categoryConditions);
+        List<ProductEntity> products;
+        try {
+            TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(listProductQuery);
+            products = typedQuery.getResultList();
+            return Response.success(products);
+        } catch (NoResultException e) {
+            return Response.success(new ArrayList<>());
+        } catch (Exception e) {
+            return Response.fromFailure(new Failures.UnhandledException(e));
+        }
     }
+
 }

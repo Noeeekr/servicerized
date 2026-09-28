@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.dto;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.product.repository.interfaces.ProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
 import lombok.Builder;
 
 @Builder
