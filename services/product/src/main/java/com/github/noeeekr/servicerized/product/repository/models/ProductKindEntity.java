@@ -26,7 +26,7 @@ public class ProductKindEntity {
     public static class METADATA {
         public static final String TABLE_NAME = "product_kinds";
 
-        public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
+        public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
     }
 
     public static class Default {
@@ -53,7 +53,7 @@ public class ProductKindEntity {
     //
 
     @Id
-    @Column(name = ProductKindEntity.METADATA.COLUMN_NAME_PRODUCT_ID, nullable = false,
+    @Column(name = ProductKindEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID, nullable = false,
             unique = true)
     private Long id;
 
