@@ -42,7 +42,8 @@ public class PopulateCategories implements CustomSqlChange, CustomSqlRollback {
     @Override
     public SqlStatement[] generateStatements(Database database) throws CustomChangeException {
         /**
-         * AI generated list of generic service categories. Prompt: "names for service people can do as comissions" to Gemini 3.5 Flash-Lite.
+         * AI generated list of generic service categories. Prompt: "names for service people can do
+         * as comissions" to Gemini 3.5 Flash-Lite.
          **/
         String[] categoriesNames = {"Digital Art", "Character Design", "Concept Art",
                 "Anime Drawing", "Portrait Illustration", "Fan Art Commission", "Comic Strip",
@@ -82,11 +83,11 @@ public class PopulateCategories implements CustomSqlChange, CustomSqlRollback {
             }
         }
 
-        String fieldStatement = String.format("(%s.%s)", TABLE_NAME,
+        String fieldStatement = String.format("(%s)", TABLE_NAME,
                 CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME);
 
-        String statement = String.format("INSERT INTO %s %s VALUES %s", TABLE_NAME,
-                valuesStatementBuilder.toString(), fieldStatement);
+        String statement = String.format("INSERT INTO %s %s VALUES %s", TABLE_NAME, fieldStatement,
+                valuesStatementBuilder.toString());
         return new SqlStatement[] {new RawSqlStatement(statement)};
     }
 
