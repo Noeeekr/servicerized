@@ -33,7 +33,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
     //
     // Create queries
     //
-    public Response<ProductEntity> save(ProductEntity product) {
+    public Response<ProductEntity> persist(ProductEntity product) {
         try {
             entityManager.persist(product);
             entityManager.flush();

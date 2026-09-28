@@ -5,20 +5,21 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.models.KindEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.ProductKindEntity;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
 import com.github.noeeekr.servicerized.response.Response;
-import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
-@Transactional
 @AllArgsConstructor
 public class ProductService {
     public static class LIMITS {
@@ -28,6 +29,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductKindRepository productKindRepository;
+
+    @Transactional
     public Response<List<ProductEntity>> listProducts(ListProductCommandInterface command) {
         List<CategoryFilterableFieldsInterface> categoryFilters = null;
         ProductFilterableFieldsInterface productFilters = null;
@@ -54,6 +59,7 @@ public class ProductService {
     }
 
 
+    @Transactional
     public Response<Optional<ProductEntity>> listProduct(ListProductCommandInterface command) {
         List<CategoryFilterableFieldsInterface> categoryFilters = null;
         ProductFilterableFieldsInterface productFilters = null;
@@ -81,15 +87,22 @@ public class ProductService {
         return listProductResponse;
     }
 
+    @Transactional
     public Response<ProductEntity> createProduct(CreateProductCommandInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
-        try {
-            return productRepository
-                    .save(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
-        } catch (Exception e) {
-            return Response.<ProductEntity>builder().fail(new Failures.UnhandledException(e))
-                    .build();
-        }
+        Response<ProductEntity> persistProductRequest = productRepository
+                .persist(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
+        if (persistProductRequest.isSuccess() == false)
+            return persistProductRequest;
+
+        ProductKindEntity productKindEntity = new ProductKindEntity(productEntity.getId(),
+                KindEntity.Default.getVirtualServiceKind().getId());
+
+        Response<ProductKindEntity> persistProductKindEntityResponse =
+                productKindRepository.persist(productKindEntity);
+        if (persistProductKindEntityResponse.isSuccess() == false)
+            return Response.fromFailure(persistProductKindEntityResponse);
+        return persistProductRequest;
     }
 }
