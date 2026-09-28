@@ -1,8 +1,12 @@
 package com.github.noeeekr.servicerized.product.repository.models;
 
-import jakarta.persistence.Column;
+import java.util.UUID;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 /**
@@ -24,45 +28,30 @@ import jakarta.persistence.Table;
 @Table(name = ProductKindEntity.METADATA.TABLE_NAME)
 public class ProductKindEntity {
     public static class METADATA {
-        public static final String TABLE_NAME = "product_kinds";
-
-        public static final String COLUMN_NAME_PRODUCT_ID = "productId";
-    }
-
-    public static class Default {
-        public static final ProductKindEntity getVirtualServiceKind() {
-            return new ProductKindEntity(Long.valueOf(0), "virtual-service");
-        }
+        public static final String TABLE_NAME = "products_kinds";
     }
 
     //
     // Constructors
     //
-    public ProductKindEntity(Long id, String name) {
-        this.name = name;
-        this.id = id;
+    public ProductKindEntity(UUID productId, Long productKindId) {
+        this.id = new ProductKindId(productId, productKindId);
     }
 
-    public ProductKindEntity() {
-        this.name = null;
-        this.id = null;
-    }
+    @EmbeddedId
+    private ProductKindId id;
 
-    //
-    // Fields Containing Indexes & Primary Key
-    //
+    @OneToOne
+    @MapsId(ProductKindId.METADATA.COLUMN_NAME_PRODUCT_ID)
+    @JoinColumn(name = ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID,
+            foreignKey = @ForeignKey(name = "fk_product_id"))
+    private ProductEntity product;
 
-    @Id
-    @Column(name = ProductKindEntity.METADATA.COLUMN_NAME_PRODUCT_ID, nullable = false,
-            unique = true)
-    private Long id;
-
-    //
-    // Primitive Fields
-    //
-
-    @Column(name = "product_kind_name", nullable = false, unique = true)
-    private String name;
+    @OneToOne
+    @MapsId(ProductKindId.METADATA.COLUMN_NAME_PRODUCT_KIND_ID)
+    @JoinColumn(name = KindEntity.METADATA.COLUMN_NAME_KIND_ID,
+            foreignKey = @ForeignKey(name = "fk_product_kind_id"))
+    private KindEntity kind;
 }
 
 
