@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
+import com.github.noeeekr.servicerized.product.repository.VirtualProductRepository;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.KindEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.ProductKindEntity;
-import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.repository.models.VirtualProductEntity;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
 import com.github.noeeekr.servicerized.response.Response;
@@ -27,8 +29,9 @@ public class ProductService {
     }
 
     @Autowired
+    private VirtualProductRepository virtualProductRepository;
+    @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private ProductKindRepository productKindRepository;
 
@@ -88,21 +91,36 @@ public class ProductService {
     }
 
     @Transactional
-    public Response<ProductEntity> createProduct(CreateProductCommandInterface product) {
+    public Response<ProductEntity> createProduct(CreateVirtualProductCommandInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
+        /**
+         * Persist generic product object
+         */
         Response<ProductEntity> persistProductRequest = productRepository
                 .persist(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
         if (persistProductRequest.isSuccess() == false)
             return persistProductRequest;
 
+        /**
+         * Persist specific product kind object
+         */
         ProductKindEntity productKindEntity = new ProductKindEntity(productEntity.getId(),
                 KindEntity.Default.getVirtualServiceKind().getKindId());
 
-        Response<ProductKindEntity> persistProductKindEntityResponse =
+        Response<ProductKindEntity> persistProductKindResponse =
                 productKindRepository.persist(productKindEntity);
-        if (persistProductKindEntityResponse.isSuccess() == false)
-            return Response.fromFailure(persistProductKindEntityResponse);
+        if (persistProductKindResponse.isSuccess() == false)
+            return Response.fromFailure(persistProductKindResponse);
+
+        /**
+         * Persist specific product kind data
+         */
+        Response<VirtualProductEntity> persistProductServiceDataResponse = virtualProductRepository
+                .persist(new VirtualProductEntity(productEntity.getId(), product.getProvisionHours()));
+        if (persistProductServiceDataResponse.isSuccess() == false)
+            return Response.fromFailure(persistProductServiceDataResponse);
+
         return persistProductRequest;
     }
 }

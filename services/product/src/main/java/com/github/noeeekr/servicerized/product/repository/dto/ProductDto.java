@@ -2,9 +2,9 @@ package com.github.noeeekr.servicerized.product.repository.dto;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder 
 public class ProductDto implements ProductInterface {
     private UUID id;
     private UUID ownerId;

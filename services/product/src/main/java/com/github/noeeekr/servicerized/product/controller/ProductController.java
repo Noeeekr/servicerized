@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
-import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
-import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
@@ -75,7 +75,7 @@ public class ProductController extends Controller {
         @PostMapping()
         public ResponseEntity<ClientResponse> createProduct(
                         @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-                        @RequestBody CreateProductRequestInterface request) {
+                        @RequestBody CreateVirtualProductRequestInterface request) {
                 /**
                  * Handle authorization through common authorization package.
                  */
@@ -91,8 +91,9 @@ public class ProductController extends Controller {
                  * Build a 'create product' instance merging data from client with Api-populated
                  * fields.
                  */
-                CreateProductCommandInterface requestedProduct =
-                                CreateProductCommandInterface.upgrade(request, token.userId());
+                CreateVirtualProductCommandInterface requestedProduct =
+                                CreateVirtualProductCommandInterface.upgrade(request,
+                                                token.userId());
 
                 /**
                  * Execute the target operation.

@@ -93,12 +93,12 @@ alter table if exists products_kinds
 --changeset migrate-product-service:create-services-table
 create table services (
     provision_hours integer not null,
-    id bigint not null,
+    id uuid not null,
     primary key (id)
 );
 
 alter table if exists services
-    add constraint FKd03g7afddr2985p2t8ygo2arr
+    add constraint fk_product_id
     foreign key (id)
     references products.products;
 
