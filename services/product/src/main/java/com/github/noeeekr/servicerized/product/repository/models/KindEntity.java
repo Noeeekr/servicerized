@@ -29,8 +29,8 @@ public class KindEntity {
     public static class METADATA {
         public static final String TABLE_NAME = "product_kinds";
 
-        public static final String COLUMN_NAME_KIND_ID = "id";
-        public static final String COLUMN_NAME_KIND_NAME = "name";
+        public static final String COLUMN_NAME_KIND_ID = "kindId";
+        public static final String COLUMN_NAME_KIND_NAME = "kindName";
 
         public static final String DATABASE_COLUMN_NAME_KIND_ID = "product_kind_id";
         public static final String DATABASE_COLUMN_NAME_KIND_NAME = "product_kind_name";
@@ -45,14 +45,14 @@ public class KindEntity {
     //
     // Constructors
     //
-    public KindEntity(Long id, String name) {
-        this.name = name;
-        this.id = id;
+    public KindEntity(Long kindId, String kindName) {
+        this.kindName = kindName;
+        this.kindId = kindId;
     }
 
     public KindEntity() {
-        this.name = null;
-        this.id = null;
+        this.kindName = null;
+        this.kindId = null;
     }
 
     //
@@ -62,7 +62,7 @@ public class KindEntity {
     @Id
     @Column(name = KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_ID, nullable = false,
             unique = true)
-    private Long id;
+    private Long kindId;
 
     //
     // Primitive Fields
@@ -70,7 +70,7 @@ public class KindEntity {
 
     @Column(name = KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_NAME, nullable = false,
             unique = true)
-    private String name;
+    private String kindName;
 }
 
 

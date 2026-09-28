@@ -23,7 +23,7 @@ public class PopulateKinds implements CustomSqlChange, CustomSqlRollback {
         return String.format("Populated '%s' entity with '%d' default system rows. ",
                 KindEntity.class.getCanonicalName(),
                 // Uses the last id as a count
-                KindEntity.Default.getVirtualServiceKind().getId());
+                KindEntity.Default.getVirtualServiceKind().getKindId());
     }
 
 
@@ -31,7 +31,7 @@ public class PopulateKinds implements CustomSqlChange, CustomSqlRollback {
         StringBuilder valueStatement = new StringBuilder();
         KindEntity[] entities = {KindEntity.Default.getVirtualServiceKind()};
         List.of(entities).forEach((entity) -> {
-            valueStatement.append(String.format("(%d, %s)", entity.getId(), entity.getName()));
+            valueStatement.append(String.format("(%d, %s)", entity.getKindId(), entity.getKindName()));
         });
 
         String fieldStatement =

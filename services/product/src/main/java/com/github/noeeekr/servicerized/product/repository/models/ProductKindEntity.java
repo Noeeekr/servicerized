@@ -42,13 +42,13 @@ public class ProductKindEntity {
     private ProductKindId id;
 
     @OneToOne
-    @MapsId(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID)
+    @MapsId(ProductKindId.METADATA.COLUMN_NAME_PRODUCT_ID)
     @JoinColumn(name = ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID,
             foreignKey = @ForeignKey(name = "fk_product_id"))
     private ProductEntity product;
 
     @OneToOne
-    @MapsId(KindEntity.METADATA.COLUMN_NAME_KIND_ID)
+    @MapsId(ProductKindId.METADATA.COLUMN_NAME_PRODUCT_KIND_ID)
     @JoinColumn(name = KindEntity.METADATA.COLUMN_NAME_KIND_ID,
             foreignKey = @ForeignKey(name = "fk_product_kind_id"))
     private KindEntity kind;

@@ -97,7 +97,7 @@ public class ProductService {
             return persistProductRequest;
 
         ProductKindEntity productKindEntity = new ProductKindEntity(productEntity.getId(),
-                KindEntity.Default.getVirtualServiceKind().getId());
+                KindEntity.Default.getVirtualServiceKind().getKindId());
 
         Response<ProductKindEntity> persistProductKindEntityResponse =
                 productKindRepository.persist(productKindEntity);
