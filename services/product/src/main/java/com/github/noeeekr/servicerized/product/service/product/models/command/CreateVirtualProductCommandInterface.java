@@ -12,7 +12,7 @@ public interface CreateVirtualProductCommandInterface
     //
     public static CreateVirtualProductCommandInterface upgrade(
             CreateVirtualProductRequestInterface request, UUID ownerId) {
-        return new VirtualProductDto(null, ownerId, request.getName(), request.getPrice(),
-                request.getDescription(), request.getProvisionHours());
+        return new VirtualProductDto(null, ownerId, request.getProductName(), request.getProductPrice(),
+                request.getProductDescription(), request.getProvisionHours());
     }
 }

@@ -24,12 +24,12 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
         List<Predicate> productConditions = new ArrayList<>();
         Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
 
-        if (!productFilter.getName().isEmpty() && !productFilter.getName().isBlank()) {
-            Predicate predicate = criteria.equal(categoryJoin.get("name"), productFilter.getName());
+        if (!productFilter.getProductName().isEmpty() && !productFilter.getProductName().isBlank()) {
+            Predicate predicate = criteria.equal(categoryJoin.get("name"), productFilter.getProductName());
             productConditions.add(predicate);
         }
-        if (productFilter.getId() != null) {
-            Predicate predicate = criteria.equal(categoryJoin.get("id"), productFilter.getId());
+        if (productFilter.getProductId() != null) {
+            Predicate predicate = criteria.equal(categoryJoin.get("id"), productFilter.getProductId());
             productConditions.add(predicate);
         }
 

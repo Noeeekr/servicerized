@@ -8,8 +8,8 @@ public class ProductFilter implements ProductFilterableFieldsInterface {
     private String productName;
 
     public ProductFilter(ProductFilterableFieldsInterface product) {
-        this.productId = product.getId();
-        this.productName = product.getName();
+        this.productId = product.getProductId();
+        this.productName = product.getProductName();
     }
 
     public ProductFilter(UUID productId, String productName) {
@@ -17,11 +17,11 @@ public class ProductFilter implements ProductFilterableFieldsInterface {
         this.productName = productName;
     }
 
-    public UUID getId() {
+    public UUID getProductId() {
         return this.productId;
     }
 
-    public String getName() {
+    public String getProductName() {
         return this.productName;
     }
 }

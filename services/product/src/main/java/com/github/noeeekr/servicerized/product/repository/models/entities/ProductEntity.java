@@ -30,7 +30,7 @@ import lombok.Getter;
  * 
  * 1. The field 'deleted_at' (extended from Metrics) from this entity defines privative behavior.
  * Any entity instance where this field is not null should be considered private for its owner and
- * be ignored by default CRUD queries unless their domain rules strictly target them.
+ * be ignored by default CRUD queries unless their domain rules strictly targetProduct them.
  * 
  * <br/>
  * 
@@ -89,22 +89,41 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     public String description;
 
     //
+    // Getters
+    //
+    public UUID getProductId() {
+        return this.id;
+    }
+    public UUID getProductOwnerId() {
+        return this.ownerId;
+    }
+    public String getProductName() {
+        return this.name;
+    }
+    public Integer getProductPrice() {
+        return this.price;
+    }
+    public String getProductDescription() {
+        return this.description;
+    }
+
+    //
     // Transformators
     //
 
     public static ProductEntity from(CreateProductRequestInterface product) {
-        return ProductEntity.builder().name(product.getName()).description(product.getDescription())
-                .price(product.getPrice()).build();
+        return ProductEntity.builder().name(product.getProductName()).description(product.getProductDescription())
+                .price(product.getProductPrice()).build();
     }
 
     public static ProductEntity from(CreateProductCommandInterface product) {
-        return ProductEntity.builder().name(product.getName()).ownerId(product.getOwnerId())
-                .description(product.getDescription()).price(product.getPrice()).build();
+        return ProductEntity.builder().name(product.getProductName()).ownerId(product.getProductOwnerId())
+                .description(product.getProductDescription()).price(product.getProductPrice()).build();
     }
 
     public static ProductEntity from(CreateVirtualProductInterface product) {
-        return ProductEntity.builder().name(product.getName()).description(product.getDescription())
-                .price(product.getPrice()).build();
+        return ProductEntity.builder().name(product.getProductName()).description(product.getProductDescription())
+                .price(product.getProductPrice()).build();
     }
 
 

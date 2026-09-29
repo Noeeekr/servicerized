@@ -28,32 +28,32 @@ public class ProductDto implements ProductInterface {
         this.id = id;
     }
 
-    // Getters
+    // GetProductters
 
-    public UUID getId() {
+    public UUID getProductId() {
         return this.id;
     }
 
-    public UUID getOwnerId() {
+    public UUID getProductOwnerId() {
         return this.ownerId;
     }
 
-    public String getName() {
+    public String getProductName() {
         return this.name;
     }
 
-    public Integer getPrice() {
+    public Integer getProductPrice() {
         return this.price;
     }
 
-    public String getDescription() {
+    public String getProductDescription() {
         return this.description;
     }
 
     // Transformers
 
     public static ProductDto from(ProductInterface product) {
-        return new ProductDto(product.getId(), product.getOwnerId(), product.getName(),
-                product.getPrice(), product.getDescription());
+        return new ProductDto(product.getProductId(), product.getProductOwnerId(), product.getProductName(),
+                product.getProductPrice(), product.getProductDescription());
     }
 }

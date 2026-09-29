@@ -11,7 +11,7 @@ public interface CreateProductCommandInterface extends CreateProductInterface {
     //
     public static CreateProductCommandInterface upgrade(CreateProductRequestInterface request,
             UUID ownerId) {
-        return new ProductDto(null, ownerId, request.getName(), request.getPrice(),
-                request.getDescription());
+        return new ProductDto(null, ownerId, request.getProductName(), request.getProductPrice(),
+                request.getProductDescription());
     }
 }

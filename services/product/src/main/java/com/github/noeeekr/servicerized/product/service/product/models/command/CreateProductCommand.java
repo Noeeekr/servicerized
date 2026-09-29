@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CreateProductCommand implements CreateProductCommandInterface {
-    private UUID id;
-    private UUID ownerId;
+    private UUID productId;
+    private UUID productOwnerId;
 
-    private String name;
-    private String description;
+    private String productName;
+    private String productDescription;
     
-    private Integer price;
+    private Integer productPrice;
 }

@@ -4,18 +4,18 @@ import java.util.UUID;
 
 public interface ProductFieldsInterface {
     public interface Name {
-        public String getName();
+        public String getProductName();
     }
     public interface Description {
-        public String getDescription();
+        public String getProductDescription();
     }
     public interface Price {
-        public Integer getPrice();
+        public Integer getProductPrice();
     }
     public interface OwnerId {
-        public UUID getOwnerId();
+        public UUID getProductOwnerId();
     }
     public interface Id {
-        public UUID getId();
+        public UUID getProductId();
     }
 }
