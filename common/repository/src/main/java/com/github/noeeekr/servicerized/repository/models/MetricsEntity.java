@@ -22,7 +22,11 @@ import lombok.Setter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class MetricsEntity {
-    public static final class METADATA {
+    public static class METADATA {
+        public static final String COLUMN_NAME_CREATED_AT = "createdAt";
+        public static final String COLUMN_NAME_DELETED_AT = "deletedAt";
+        public static final String COLUMN_NAME_UPDATED_AT = "updatedAt";
+
         public static final String DATABASE_COLUMN_NAME_CREATED_AT = "created_at";
         public static final String DATABASE_COLUMN_NAME_DELETED_AT = "deleted_at";
         public static final String DATABASE_COLUMN_NAME_UPDATED_AT = "updated_at";
