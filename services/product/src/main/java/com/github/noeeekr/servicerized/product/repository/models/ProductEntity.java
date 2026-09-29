@@ -5,6 +5,7 @@ import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.CreateVirtualProductInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
@@ -60,7 +61,7 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     //
     // Fields - Indexes
     //
-    
+
     @Id
     @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
@@ -91,15 +92,21 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     // Transformators
     //
 
+    public static ProductEntity from(CreateProductRequestInterface product) {
+        return ProductEntity.builder().name(product.getName()).description(product.getDescription())
+                .price(product.getPrice()).build();
+    }
+
     public static ProductEntity from(CreateProductCommandInterface product) {
         return ProductEntity.builder().name(product.getName()).ownerId(product.getOwnerId())
                 .description(product.getDescription()).price(product.getPrice()).build();
     }
 
-    public static ProductEntity from(CreateProductRequestInterface product) {
+    public static ProductEntity from(CreateVirtualProductInterface product) {
         return ProductEntity.builder().name(product.getName()).description(product.getDescription())
                 .price(product.getPrice()).build();
     }
+
 
     //
     // Interface implementations
