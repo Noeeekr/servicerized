@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.models;
 
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.KindInterface;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,11 +22,10 @@ import lombok.Getter;
  * 
  * - virtual-service (virtual service)
  */
-
-@Getter
+@Getter 
 @Entity
 @Table(name = KindEntity.METADATA.TABLE_NAME)
-public class KindEntity {
+public class KindEntity implements KindInterface {
     public static class METADATA {
         public static final String TABLE_NAME = "product_kinds";
 
