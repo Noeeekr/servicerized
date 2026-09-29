@@ -2,7 +2,7 @@
 
 ## Introduction to Repository
 
-Repository folder manages the operations that affect the database remotely. Its subfolders are meant to provide utilities for consistency, simplicity and abstraction to these operations. 
+Repository folder provides classes that handle remote database operations. Its subfolders are meant to provide utilities for consistency, simplicity and abstraction to these operations. 
 
 ```dto/```: _Data Transfer Object_ folder provides classes, reflecting database entities, for consistent communication between different parts of system and domains. They are meant for general use and do not implement any significant business rules, for this reason, guaranteeing that they contain only the expected data is developer's responsability. Such examples of this are ```Client Dtos``` that extended these classes and guarantee they are safe for serialization as JSON and ```Internal Dtos``` that are used for inter-subsystem communication.
 
