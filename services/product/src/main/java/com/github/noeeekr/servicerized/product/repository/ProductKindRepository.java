@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository;
 
 import org.springframework.stereotype.Repository;
-import com.github.noeeekr.servicerized.product.repository.models.ProductKindEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductKindEntity;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.persistence.EntityManager;

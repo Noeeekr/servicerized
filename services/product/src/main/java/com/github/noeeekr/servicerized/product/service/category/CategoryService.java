@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.CategoryRepository;
-import com.github.noeeekr.servicerized.product.repository.models.CategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.product.service.category.models.command.ListCategoryCommand;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.ResponseBuilder;

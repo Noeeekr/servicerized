@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.models;
+package com.github.noeeekr.servicerized.product.repository.models.entities;
 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;

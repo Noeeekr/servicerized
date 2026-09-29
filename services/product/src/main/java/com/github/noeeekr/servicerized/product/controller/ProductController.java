@@ -15,7 +15,7 @@ import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
-import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;

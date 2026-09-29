@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
-import com.github.noeeekr.servicerized.product.repository.models.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.query.ProductRepositoryQueryBuilder;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.EntityManager;

@@ -14,7 +14,7 @@ import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.failures.Failures;
-import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.category.ProductCategoryService;
 import com.github.noeeekr.servicerized.product.service.category.models.command.AttachCategoryCommand;

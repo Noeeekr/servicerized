@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.models;
+package com.github.noeeekr.servicerized.product.repository.models.entities;
 
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.KindInterface;
 import jakarta.persistence.Column;

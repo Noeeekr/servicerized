@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.migrations;
 
-import com.github.noeeekr.servicerized.product.repository.models.CategoryEntity;
-import com.github.noeeekr.servicerized.product.repository.models.Models;
+import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.Models;
 import liquibase.change.custom.CustomSqlChange;
 import liquibase.change.custom.CustomSqlRollback;
 import liquibase.database.Database;

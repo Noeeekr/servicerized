@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.github.noeeekr.servicerized.product.repository.models.ProductCategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
 
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategoryEntity, UUID> {
