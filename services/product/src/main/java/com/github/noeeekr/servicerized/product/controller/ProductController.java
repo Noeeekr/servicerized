@@ -16,6 +16,7 @@ import com.github.noeeekr.servicerized.product.controller.models.request.CreateV
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.relations.VirtualProductInformation;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
@@ -98,8 +99,8 @@ public class ProductController extends Controller {
                 /**
                  * Execute the target operation.
                  */
-                Response<ProductEntity> createProductResponse =
-                                productService.createProduct(requestedProduct);
+                Response<VirtualProductInformation> createProductResponse =
+                                productService.createVirtualProduct(requestedProduct);
 
                 /**
                  * Handle the response

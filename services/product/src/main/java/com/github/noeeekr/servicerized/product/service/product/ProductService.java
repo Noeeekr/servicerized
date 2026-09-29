@@ -14,6 +14,7 @@ import com.github.noeeekr.servicerized.product.repository.models.entities.KindEn
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductKindEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.VirtualProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.relations.VirtualProductInformation;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
@@ -91,7 +92,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Response<ProductEntity> createProduct(CreateVirtualProductCommandInterface product) {
+    public Response<VirtualProductInformation> createVirtualProduct(
+            CreateVirtualProductCommandInterface product) {
         ProductEntity productEntity = ProductEntity.from(product);
 
         /**
@@ -100,7 +102,7 @@ public class ProductService {
         Response<ProductEntity> persistProductRequest = productRepository
                 .persist(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
         if (persistProductRequest.isSuccess() == false)
-            return persistProductRequest;
+            return Response.fromFailure(persistProductRequest);
 
         /**
          * Persist specific product kind object
@@ -116,11 +118,15 @@ public class ProductService {
         /**
          * Persist specific product kind data
          */
-        Response<VirtualProductEntity> persistProductServiceDataResponse = virtualProductRepository
-                .persist(new VirtualProductEntity(productEntity.getId(), product.getProvisionHours()));
-        if (persistProductServiceDataResponse.isSuccess() == false)
-            return Response.fromFailure(persistProductServiceDataResponse);
+        Response<VirtualProductEntity> persistVirtualProductResponse =
+                virtualProductRepository.persist(new VirtualProductEntity(productEntity.getId(),
+                        product.getProvisionHours()));
+        if (persistVirtualProductResponse.isSuccess() == false)
+            return Response.fromFailure(persistVirtualProductResponse);
 
-        return persistProductRequest;
+        VirtualProductInformation virtualProductInformation = new VirtualProductInformation(
+                persistVirtualProductResponse.getPayload(), persistProductRequest.getPayload(),
+                KindEntity.Default.getVirtualServiceKind());
+        return Response.success(virtualProductInformation);
     }
 }

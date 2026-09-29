@@ -13,4 +13,9 @@ public class VirtualProductDto implements VirtualProductInterface {
         this.provisionHours = provisionHours;
         this.productId = productId;
     }
+
+    public VirtualProductDto(VirtualProductInterface product) {
+        this.provisionHours = product.getProvisionHours();
+        this.productId = product.getProductId();
+    }
 }
