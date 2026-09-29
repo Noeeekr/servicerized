@@ -1,6 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
 import java.util.UUID;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.VirtualProductInterface;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
@@ -16,13 +17,13 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = VirtualProductEntity.METADATA.TABLE_NAME)
-public class VirtualProductEntity {
+public class VirtualProductEntity implements VirtualProductInterface {
     public static final class METADATA {
         public static final String TABLE_NAME = "services";
     }
 
     @Id
-    private UUID virtualProductId;
+    private UUID productId;
 
     /**
      * Defines the amount of time the service provider believes this service takes to be completed
@@ -39,8 +40,8 @@ public class VirtualProductEntity {
             foreignKey = @ForeignKey(name = "fk_product_id"))
     private ProductEntity product;
 
-    public VirtualProductEntity(UUID virtualProductId, int provisionHours) {
-        this.virtualProductId = virtualProductId;
+    public VirtualProductEntity(UUID productId, int provisionHours) {
         this.provisionHours = provisionHours;
+        this.productId = productId;
     }
 }

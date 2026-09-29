@@ -4,4 +4,7 @@ public interface VirtualProductFieldsInterface {
     public interface ProvisionHours {
         public int getProvisionHours();
     }
+    public interface Id extends ProductFieldsInterface.Id {
+
+    }
 }

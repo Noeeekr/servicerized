@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces.entities.relations;
+package com.github.noeeekr.servicerized.product.repository.interfaces.relations;
 
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.KindInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;

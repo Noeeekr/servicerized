@@ -4,7 +4,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.operations.CreateVirtualProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.CreateVirtualProductInformationInterface;
 import com.github.noeeekr.servicerized.product.repository.models.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
@@ -94,15 +94,19 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     public UUID getProductId() {
         return this.id;
     }
+
     public UUID getProductOwnerId() {
         return this.ownerId;
     }
+
     public String getProductName() {
         return this.name;
     }
+
     public Integer getProductPrice() {
         return this.price;
     }
+
     public String getProductDescription() {
         return this.description;
     }
@@ -112,18 +116,21 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     //
 
     public static ProductEntity from(CreateProductRequestInterface product) {
-        return ProductEntity.builder().name(product.getProductName()).description(product.getProductDescription())
-                .price(product.getProductPrice()).build();
+        return ProductEntity.builder().name(product.getProductName())
+                .description(product.getProductDescription()).price(product.getProductPrice())
+                .build();
     }
 
     public static ProductEntity from(CreateProductCommandInterface product) {
-        return ProductEntity.builder().name(product.getProductName()).ownerId(product.getProductOwnerId())
-                .description(product.getProductDescription()).price(product.getProductPrice()).build();
+        return ProductEntity.builder().name(product.getProductName())
+                .ownerId(product.getProductOwnerId()).description(product.getProductDescription())
+                .price(product.getProductPrice()).build();
     }
 
-    public static ProductEntity from(CreateVirtualProductInterface product) {
-        return ProductEntity.builder().name(product.getProductName()).description(product.getProductDescription())
-                .price(product.getProductPrice()).build();
+    public static ProductEntity from(CreateVirtualProductInformationInterface product) {
+        return ProductEntity.builder().name(product.getProductName())
+                .description(product.getProductDescription()).price(product.getProductPrice())
+                .build();
     }
 
 

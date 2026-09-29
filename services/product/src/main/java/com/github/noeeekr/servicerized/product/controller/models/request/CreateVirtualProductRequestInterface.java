@@ -6,9 +6,7 @@ import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fi
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes({@JsonSubTypes.Type(value = CreateProductRequestInterface.class,
-                name = "create-product-request"),})
-public interface CreateVirtualProductRequestInterface extends CreateProductRequestInterface,
-                VirtualProductFieldsInterface.ProvisionHours {
+        name = "create-product-request"),})
+public interface CreateVirtualProductRequestInterface
+        extends CreateProductRequestInterface, VirtualProductFieldsInterface.ProvisionHours {
 }
-
-
