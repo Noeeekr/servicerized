@@ -1,7 +1,7 @@
 package com.github.noeeekr.servicerized.product.controller.models.dto;
 
 import java.util.UUID;
-import com.github.noeeekr.servicerized.product.repository.dto.VirtualProductDto;
+import com.github.noeeekr.servicerized.product.repository.models.dto.VirtualProductDto;
 
 /**
  * VirtualProductClientDto extends VirtualProductDto making it a client safe class.

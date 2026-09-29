@@ -1,6 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
-import com.github.noeeekr.servicerized.product.repository.dto.ProductCategoryRelationDto;
+import com.github.noeeekr.servicerized.product.repository.models.dto.ProductCategoryRelationDto;
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.CascadeType;
