@@ -3,24 +3,26 @@ package com.github.noeeekr.servicerized.product.service.product.models.command;
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.CreateVirtualProductInformationInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.relations.VirtualProductInformationInterface;
 import com.github.noeeekr.servicerized.product.repository.models.dto.KindDto;
 import com.github.noeeekr.servicerized.product.repository.models.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.repository.models.dto.VirtualProductDto;
 import com.github.noeeekr.servicerized.product.repository.models.dto.VirtualProductInformationDto;
 import com.github.noeeekr.servicerized.product.repository.models.entities.KindEntity;
+import lombok.AllArgsConstructor;
+import lombok.experimental.Delegate;
 
 public interface CreateVirtualProductCommandInterface
                 extends CreateVirtualProductInformationInterface {
 
         /**
-         * VirtualProductInformationAdapter satisfies java interface constraints.
+         * CreateVirtualProductCommandAdapter satisfies java interface constraints.
          */
-        public class VirtualProductInformationAdapter extends VirtualProductInformationDto
-                        implements CreateVirtualProductCommandInterface {
-                public VirtualProductInformationAdapter(VirtualProductInformationDto dto) {
-                        super(dto);
-                }
-        };
+        @AllArgsConstructor 
+        public final class VirtualProductInformationAdapter implements CreateVirtualProductCommandInterface {
+                @Delegate 
+                private VirtualProductInformationInterface virtualProductInformation;
+        }
 
         //
         // Transformators
