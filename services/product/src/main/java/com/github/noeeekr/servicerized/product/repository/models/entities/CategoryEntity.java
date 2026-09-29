@@ -43,7 +43,7 @@ import lombok.Getter;
 @Getter
 @Table(name = CategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class CategoryEntity extends MetricsEntity implements CategoryInterface {
-    public static final class METADATA {
+    public static final class METADATA extends MetricsEntity.METADATA {
         public static final String TABLE_NAME = "categories";
 
         //
@@ -51,6 +51,7 @@ public class CategoryEntity extends MetricsEntity implements CategoryInterface {
         //
 
         public static final String COLUMN_NAME_CATEGORY_ID = "categoryId";
+        public static final String COLUMN_NAME_CATEGORY_NAME = "categoryName";
 
         //
         // Refers to database fields names

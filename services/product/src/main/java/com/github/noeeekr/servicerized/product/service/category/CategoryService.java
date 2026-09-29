@@ -2,19 +2,16 @@ package com.github.noeeekr.servicerized.product.service.category;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.CategoryRepository;
 import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.product.service.category.models.command.ListCategoryCommand;
 import com.github.noeeekr.servicerized.response.Response;
-import com.github.noeeekr.servicerized.response.ResponseBuilder;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
 
 @Service
-@Transactional
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
@@ -25,34 +22,31 @@ public class CategoryService {
      * 
      * @return
      */
-    public Response<Optional<CategoryEntity>> findCategory(ListCategoryCommand request) {
-        ResponseBuilder<Optional<CategoryEntity>> responseBuilder = Response.builder();
-
-        if (request.getCategoryId() == null && request.getCategoryName() == null) {
-            return responseBuilder.success(Optional.<CategoryEntity>empty()).build();
-        }
-
+    @Transactional
+    public Response<List<CategoryEntity>> listCategories(ListCategoryCommand request) {
         List<CategoryEntity> categories = new ArrayList<>();
         try {
-            List<CategoryEntity> fetchedCategories;
-            if (request.getCategoryName() == null) {
-                fetchedCategories = categoryRepository.findCategory(request.categoryId());
-            } else if (request.getCategoryId() == null) {
-                fetchedCategories = categoryRepository.findCategory(request.categoryName());
-            } else {
-                fetchedCategories = categoryRepository.findCategory(request.getCategoryName(),
+            Response<List<CategoryEntity>> response;
+
+            if (!request.categoryIdExists() && !request.categoryNameExists()) {
+                response = categoryRepository.findCategories();
+            } else if (request.categoryNameExists() && request.categoryIdExists()) {
+                response = categoryRepository.findCategory(request.getCategoryName(),
                         request.getCategoryId());
+            } else if (request.categoryNameExists()) {
+                response = categoryRepository.findCategories(request.categoryName());
+            } else {
+                response = categoryRepository.findCategory(request.categoryId());
             }
-            categories.addAll(fetchedCategories);
+
+            if (!response.isSuccess())
+                return response;
+            categories.addAll(response.getPayload());
         } catch (Exception e) {
-            return responseBuilder.fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
 
-        if (categories.size() == 0) {
-            return responseBuilder.success(Optional.empty()).build();
-        }
-
-        return responseBuilder.success(Optional.of(categories.get(0))).build();
+        return Response.success(categories);
     }
 
 }

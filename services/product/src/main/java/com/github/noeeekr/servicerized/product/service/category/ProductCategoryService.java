@@ -1,6 +1,7 @@
 package com.github.noeeekr.servicerized.product.service.category;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class ProductCategoryService {
         /**
          * Data Integrity: Validate category existence.
          */
-        Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new ListCategoryCommand(detachRequest.categoryId(), null));
+        Response<List<CategoryEntity>> findCategoryResponse = categoryService
+                .listCategories(new ListCategoryCommand(detachRequest.categoryId(), null, 1));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())
@@ -108,8 +109,8 @@ public class ProductCategoryService {
         /**
          * Data Integrity: Validate category existence.
          */
-        Response<Optional<CategoryEntity>> findCategoryResponse = categoryService
-                .findCategory(new ListCategoryCommand(attachRequest.categoryId(), null));
+        Response<List<CategoryEntity>> findCategoryResponse = categoryService
+                .listCategories(new ListCategoryCommand(attachRequest.categoryId(), null, 1));
         if (findCategoryResponse.isSuccess() == false)
             return Response.fromFailure(findCategoryResponse);
         if (findCategoryResponse.getPayload().isEmpty())
