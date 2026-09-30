@@ -16,6 +16,11 @@
     <artifactId>common-response</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
     <name>Common Response Package</name>
     <description>This package provides internal response models that are domain logic neutral and can be used across different services.</description>
 
