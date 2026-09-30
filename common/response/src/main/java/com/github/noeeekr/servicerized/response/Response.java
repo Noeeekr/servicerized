@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.response;
 
+import java.util.Objects;
 import com.github.noeeekr.servicerized.response.failure.Failure;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,48 +52,25 @@ public class Response<PayloadType> {
      */
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (this == o)
             return true;
-        if (o == null)
+        if (!(o instanceof Response<?> other))
             return false;
-        if (o.getClass() != this.getClass())
+        if (this.success != other.success)
             return false;
-        Response<?> response = (Response<?>) o;
-        if (this.success == true) {
-            return this.payloadEquals(response.getPayload());
-        } else {
-            return this.failureEquals(response.getFailure());
+
+        if (this.success) {
+            return Objects.equals(this.payload, other.payload);
         }
-    }
 
-    /**
-     * payloadEquals() checks if the response payload is the same as the target one.
-     * 
-     * @param p The target/expected payload.
-     * @return a boolean that is true if both are equal.
-     */
-    private boolean payloadEquals(Object p) {
-        if (this.payload.getClass() != p.getClass())
-            return false;
-        return this.payload.equals(p);
-    }
+        if (this.failure == null || other.failure == null) {
+            return this.failure == other.failure;
+        }
 
-    /**
-     * failureEquals() checks if the response failure is the same as the target one.
-     * 
-     * @param f The target/expected failure.
-     * @return a boolean that is true if both are equal.
-     */
-    public boolean failureEquals(Failure f) {
-        if (this.failure == f)
-            return true;
-        if (this.failure.getClass() != f.getClass())
-            return false;
-        if (this.failure.getClientSafeMessage() != f.getClientSafeMessage())
-            return false;
-        if (this.failure.code() != f.code())
-            return false;
-        return true;
+        return this.failure.getClass() == other.failure.getClass()
+                && Objects.equals(this.failure.getClientSafeMessage(),
+                        other.failure.getClientSafeMessage())
+                && this.failure.code() == other.failure.code();
     }
 
     /**
