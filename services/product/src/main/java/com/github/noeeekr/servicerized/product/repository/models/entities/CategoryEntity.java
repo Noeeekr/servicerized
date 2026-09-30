@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
+import java.util.Objects;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.CategoryInterface;
@@ -41,7 +42,7 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Getter
-@NoArgsConstructor 
+@NoArgsConstructor
 @Table(name = CategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     public static final class METADATA extends MetricsEntity.METADATA {
@@ -76,4 +77,30 @@ public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME, nullable = false,
             unique = true)
     private String categoryName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (this.getClass() != o.getClass())
+            return false;
+        CategoryEntity category = (CategoryEntity) o;
+        if (this.getCategoryId() != category.getCategoryId())
+            return false;
+        if (this.getCategoryName() != category.getCategoryName())
+            return false;
+        return true;
+    }
+
+    /**
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getCategoryId().toString(), this.getCategoryName().toString());
+    }
 }
