@@ -82,25 +82,14 @@ public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null)
+        if (!(o instanceof CategoryEntity other))
             return false;
-        if (this.getClass() != o.getClass())
-            return false;
-        CategoryEntity category = (CategoryEntity) o;
-        if (this.getCategoryId() != category.getCategoryId())
-            return false;
-        if (this.getCategoryName() != category.getCategoryName())
-            return false;
-        return true;
+        return Objects.equals(this.categoryId, other.categoryId)
+                && Objects.equals(this.categoryName, other.categoryName);
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
-        return Objects.hash(this.getCategoryId().toString(), this.getCategoryName().toString());
+        return Objects.hash(categoryId, categoryName);
     }
 }
