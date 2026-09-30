@@ -5,6 +5,8 @@ databaseChangeLog:
       changes:
         - customChange:
             class: com.github.noeeekr.servicerized.product.repository.migrations.PopulateCategories
+        - customChange:
+            class: com.github.noeeekr.servicerized.product.repository.migrations.PopulateKinds
   - changeSet:
       id: tag-release-v1.0
       author: servicerized
