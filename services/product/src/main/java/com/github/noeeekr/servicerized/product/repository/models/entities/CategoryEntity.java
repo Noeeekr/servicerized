@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * CategoryEntity defines the data format for a category that a product can have.
@@ -40,6 +41,7 @@ import lombok.Getter;
  */
 @Entity
 @Getter
+@NoArgsConstructor 
 @Table(name = CategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     public static final class METADATA extends MetricsEntity.METADATA {
