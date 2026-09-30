@@ -16,7 +16,10 @@
 	<packaging>jar</packaging>
 	
 	<properties>
-		<main.basedir>${basedir}/../..</main.basedir>
+    	<main.basedir>${basedir}/../..</main.basedir>
+	
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 	</properties>
 	
 	<dependencies>
