@@ -37,7 +37,7 @@ public class AuthenticationControllerUnitTest {
         @Test
         public void signUpSuccess() throws Exception {
                 given(authenticationService.createUserAccount(any()))
-                                .willReturn(Response.<User>builder().success(new User()).build());
+                                .willReturn(Response.success(new User()));
 
                 // Request Content Creation : Create & Validate POST request content
                 SignUpRequest request = SignUpRequest.builder().userName("TestUser")
