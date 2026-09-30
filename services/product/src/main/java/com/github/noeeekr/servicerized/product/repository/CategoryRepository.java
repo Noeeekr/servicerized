@@ -31,8 +31,7 @@ public class CategoryRepository {
         CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
         Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
 
-        query.where(criteria
-                .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
+        query.where(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT).isNull());
 
         List<CategoryEntity> categories = new ArrayList<>();
         try {
@@ -54,8 +53,8 @@ public class CategoryRepository {
         Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
 
         List<Predicate> requiredConditionals = new ArrayList<>();
-        requiredConditionals.add(criteria
-                .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
+        requiredConditionals
+                .add(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT).isNull());
         requiredConditionals.add(criteria.equal(
                 categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_ID), categoryId));
         query.where(criteria.and(requiredConditionals));
@@ -78,8 +77,8 @@ public class CategoryRepository {
         Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
 
         List<Predicate> requiredConditionals = new ArrayList<>();
-        requiredConditionals.add(criteria
-                .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
+        requiredConditionals
+                .add(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT).isNull());
         requiredConditionals.add(
                 criteria.like(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
                         "%" + categoryName + "%"));
@@ -103,8 +102,8 @@ public class CategoryRepository {
         Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
 
         List<Predicate> requiredConditionals = new ArrayList<>();
-        requiredConditionals.add(criteria
-                .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
+        requiredConditionals
+                .add(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT).isNull());
         requiredConditionals.add(
                 criteria.like(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
                         "%" + categoryName + "%"));
