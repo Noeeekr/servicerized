@@ -15,11 +15,6 @@ create table products.products (
     primary key (product_id)
 );
 
-alter table products.products
-    add constraint fk_product_owner_id
-    foreign key (product_owner_id)
-    references identity.users;
-
 --rollback alter table products.products drop constraint if exists fk_product_owner_id;
 --rollback drop table if exists products.products cascade;
 
