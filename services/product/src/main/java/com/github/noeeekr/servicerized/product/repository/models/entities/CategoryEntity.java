@@ -69,9 +69,9 @@ public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_ID, nullable = false,
             unique = true)
-    public UUID categoryId;
+    private UUID categoryId;
 
     @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME, nullable = false,
             unique = true)
-    public String categoryName;
+    private String categoryName;
 }
