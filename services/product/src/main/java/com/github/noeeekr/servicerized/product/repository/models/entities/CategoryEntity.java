@@ -6,7 +6,6 @@ import com.github.noeeekr.servicerized.product.repository.interfaces.entities.Ca
 import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -67,7 +66,6 @@ public class CategoryEntity extends MetricsEntity implements CategoryInterface {
     }
 
     @Id
-    @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_ID, nullable = false,
             unique = true)

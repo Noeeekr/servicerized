@@ -11,7 +11,6 @@ import com.github.noeeekr.servicerized.repository.models.MetricsEntity;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -63,7 +62,6 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
     //
 
     @Id
-    @GeneratedValue()
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID)
     public UUID id;
