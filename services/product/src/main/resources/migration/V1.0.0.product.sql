@@ -46,11 +46,11 @@ alter table if exists products.products_categories
     references products.categories;
 
 alter table if exists products.products_categories
-    add constraint fk_product_id
+    add constraint fk_category_target_product_id
     foreign key (product_id)
     references products.products;
 
---rollback alter table if exists products.products_categories drop constraint if exists fk_product_id;
+--rollback alter table if exists products.products_categories drop constraint if exists fk_category_target_product_id;
 --rollback alter table if exists products.products_categories drop constraint if exists fk_category_id;
 --rollback drop table if exists products.products_categories cascade;
 
@@ -77,7 +77,7 @@ alter table if exists products_kinds
     references product_kinds;
 
 alter table if exists products_kinds
-    add constraint fk_product_id
+    add constraint fk_kind_target_product_id
     foreign key (id)
     references products.products;
 
@@ -93,9 +93,9 @@ create table services (
 );
 
 alter table if exists services
-    add constraint fk_product_id
+    add constraint fk_virtual_product_target_product_id
     foreign key (id)
     references products.products;
 
---rollback alter table if exists services drop constraint if exists FKd03g7afddr2985p2t8ygo2arr;
+--rollback alter table if exists services drop constraint if exists fk_virtual_product_target_product_id;
 --rollback drop table if exists services cascade;

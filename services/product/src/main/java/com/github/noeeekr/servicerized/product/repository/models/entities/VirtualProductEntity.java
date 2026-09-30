@@ -37,7 +37,7 @@ public class VirtualProductEntity implements VirtualProductInterface {
     @MapsId
     @OneToOne
     @JoinColumn(name = ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID,
-            foreignKey = @ForeignKey(name = "fk_product_id"))
+            foreignKey = @ForeignKey(name = "fk_virtual_product_target_product_id"))
     private ProductEntity product;
 
     public VirtualProductEntity(UUID productId, int provisionHours) {

@@ -44,7 +44,7 @@ public class ProductKindEntity {
     @OneToOne
     @MapsId(ProductKindId.METADATA.COLUMN_NAME_PRODUCT_ID)
     @JoinColumn(name = ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID,
-            foreignKey = @ForeignKey(name = "fk_product_id"))
+            foreignKey = @ForeignKey(name = "fk_kind_target_product_id"))
     private ProductEntity product;
 
     @OneToOne

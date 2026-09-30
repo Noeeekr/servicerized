@@ -28,7 +28,7 @@ public class ProductCategoryEntity extends MetricsEntity implements ClientRespon
     private ProductCategoryKey productCategoryKey = new ProductCategoryKey();
 
     @JoinColumn(name = "product_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_product_id"))
+            foreignKey = @ForeignKey(name = "fk_category_target_product_id"))
     @MapsId(ProductCategoryKey.METADATA.COLUMN_NAME_PRODUCT_ID)
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     private ProductEntity product;
