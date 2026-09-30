@@ -57,7 +57,7 @@ public class AuthenticationService {
 
         // Section: Handle Previous Section Errors
         if (createGroupResponse.isSuccess() == false) {
-            return Response.<User>builder().fail(createGroupResponse.getFailure()).build();
+            return Response.fromFailure(createGroupResponse.getFailure());
         }
 
         return createUserResponse;
@@ -89,9 +89,8 @@ public class AuthenticationService {
             break;
         }
         if (failedConfirmation) {
-            return Response.<User>builder().fail(new UserFailure.EmailConfirmationPending(
-                    "Por favor, confirme seu e-mail através do link enviado para sua caixa de entrada antes de continuar."))
-                    .build();
+            return Response.fromFailure(new UserFailure.EmailConfirmationPending(
+                    "Por favor, confirme seu e-mail através do link enviado para sua caixa de entrada antes de continuar."));
         }
 
         return response;

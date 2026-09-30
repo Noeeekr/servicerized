@@ -30,10 +30,9 @@ public class UserDao {
             List<UserEmailConfirmation> confirmations =
                     session.createQuery("FROM UserEmailConfirmation c WHERE c.user.email = :email",
                             UserEmailConfirmation.class).setParameter("email", email).list();
-            return Response.<List<UserEmailConfirmation>>builder().success(confirmations).build();
+            return Response.success(confirmations);
         } catch (Exception e) {
-            return Response.<List<UserEmailConfirmation>>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 
@@ -43,9 +42,9 @@ public class UserDao {
                     .createQuery("FROM User u WHERE u.email = :email AND u.deletedAt = null",
                             User.class)
                     .setParameter("email", email).uniqueResult();
-            return Response.<User>builder().success(u).build();
+            return Response.success(u);
         } catch (Exception e) {
-            return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 
@@ -55,11 +54,11 @@ public class UserDao {
             tx = session.beginTransaction();
             session.persist(u);
             tx.commit();
-            return Response.<User>builder().success(u).build();
+            return Response.success(u);
         } catch (Exception e) {
             if (tx != null)
                 tx.rollback();
-            return Response.<User>builder().fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 }

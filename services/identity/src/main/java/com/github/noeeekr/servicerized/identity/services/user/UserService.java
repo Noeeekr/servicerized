@@ -101,7 +101,7 @@ public class UserService {
                 return response.fail(sendConfirmationResponse.getFailure());
         }
 
-        return Response.<User>builder().success(user).build();
+        return Response.success(user);
     }
 
     protected URI createEmailConfirmationUri(UUID confirmationToken) {
@@ -120,6 +120,6 @@ public class UserService {
     protected Response<User> handleUserAlreadyExists() {
         Failure failure =
                 new UserFailure.ResourceFound("O nome de usuário ou e-mail já foram escolhidos. ");
-        return Response.<User>builder().fail(failure).build();
+        return Response.fromFailure(failure);
     }
 }

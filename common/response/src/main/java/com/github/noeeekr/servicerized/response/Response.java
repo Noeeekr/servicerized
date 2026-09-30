@@ -2,10 +2,12 @@ package com.github.noeeekr.servicerized.response;
 
 import com.github.noeeekr.servicerized.response.failure.Failure;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder 
+@NoArgsConstructor 
+@AllArgsConstructor 
 public class Response<PayloadType> {
     private boolean success;
     private PayloadType payload;
@@ -33,6 +35,52 @@ public class Response<PayloadType> {
         return this.failure;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (o == null)
+            return false;
+        if (o.getClass() != this.getClass())
+            return false;
+        Response<?> response = (Response<?>) o;
+        if (this.success == false) {
+            return this.payloadEquals(response.getPayload());
+        } else {
+            return this.failureEquals(response.getFailure());
+        }
+    }
+
+    /**
+     * payloadEquals() checks if the response payload is the same as the target one.
+     * 
+     * @param p The target/expected payload.
+     * @return a boolean that is true if both are equal.
+     */
+    private boolean payloadEquals(Object p) {
+        if (this.payload.getClass() != p.getClass())
+            return false;
+        return this.payload.equals(p);
+    }
+
+    /**
+     * failureEquals() checks if the response failure is the same as the target one.
+     * 
+     * @param f The target/expected failure.
+     * @return a boolean that is true if both are equal.
+     */
+    public boolean failureEquals(Failure f) {
+        if (this.failure == f)
+            return true;
+        if (this.failure.getClass() != f.getClass())
+            return false;
+        if (this.failure.getClientSafeMessage() != f.getClientSafeMessage())
+            return false;
+        if (this.failure.code() != f.code())
+            return false;
+        return true;
+    }
+
     /**
      * success() creates a successfull response, containing the expected payload.
      * 
@@ -41,7 +89,7 @@ public class Response<PayloadType> {
      * @return A new successfull response.
      */
     public static <T> Response<T> success(T payload) {
-        return Response.<T>builder().success(payload).build();
+        return Response.<T>builder().payload(payload).success(true).build();
     }
 
     /**
@@ -52,7 +100,7 @@ public class Response<PayloadType> {
      * @return A new failed response with the same failure.
      */
     public static <T> Response<T> fromFailure(Response<?> originalResponse) {
-        return Response.<T>builder().fail(originalResponse.getFailure()).build();
+        return Response.fromFailure(originalResponse.getFailure());
     }
 
 
@@ -64,6 +112,6 @@ public class Response<PayloadType> {
      * @return A new failed response.
      */
     public static <T> Response<T> fromFailure(Failure failure) {
-        return Response.<T>builder().fail(failure).build();
+        return Response.<T>builder().failure(failure).success(false).build();
     }
 }

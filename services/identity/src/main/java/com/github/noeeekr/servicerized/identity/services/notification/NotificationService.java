@@ -48,10 +48,10 @@ public class NotificationService {
 
             mailSender.send(message);
 
-            return Response.builder().success().build();
+            return Response.success(null);
         } catch (Exception e) {
             // MessagingException, NullPointerException
-            return Response.builder().fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 }

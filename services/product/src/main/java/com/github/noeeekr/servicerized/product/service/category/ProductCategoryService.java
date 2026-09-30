@@ -74,8 +74,7 @@ public class ProductCategoryService {
             entity = productCategoryRepository.findRelation(detachRequest.productId(),
                     detachRequest.categoryId(), Limit.of(1));
         } catch (Exception e) {
-            return Response.<ProductCategoryEntity>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
 
         if (entity == null)
@@ -85,8 +84,7 @@ public class ProductCategoryService {
         try {
             productCategoryRepository.delete(entity);
         } catch (Exception e) {
-            return Response.<ProductCategoryEntity>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
 
         return Response.success(entity);
@@ -130,11 +128,9 @@ public class ProductCategoryService {
             entity = productCategoryRepository.save(Objects.requireNonNull(entity,
                     "Cannot persist null 'Product Category Entity' in 'Category Service' method 'attachCategory'"));
         } catch (NullPointerException e) {
-            return Response.<ProductCategoryEntity>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         } catch (Exception e) {
-            return Response.<ProductCategoryEntity>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
 
         return Response.success(entity);

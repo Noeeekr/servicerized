@@ -39,18 +39,17 @@ public class UserEmailConfirmationDao {
 
             if (updatedAmount == 0) {
                 tx.rollback();
-                Response<?> response = Response.<Boolean>builder().fail(
-                        new UserFailure.ResourceNotFound("Código de confirmação não encontrado. "))
-                        .build();
+                Response<?> response = Response.fromFailure(
+                        new UserFailure.ResourceNotFound("Código de confirmação não encontrado. "));
                 return response;
             }
 
             tx.commit();
-            return Response.<Boolean>builder().success().build();
+            return Response.success(null);
         } catch (Exception e) {
             if (tx != null)
                 tx.rollback();
-            return Response.<Boolean>builder().fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 
@@ -61,12 +60,11 @@ public class UserEmailConfirmationDao {
             tx = session.beginTransaction();
             session.persist(u);
             tx.commit();
-            return Response.<UserEmailConfirmation>builder().success(u).build();
+            return Response.success(u);
         } catch (Exception e) {
             if (tx != null)
                 tx.rollback();
-            return Response.<UserEmailConfirmation>builder()
-                    .fail(new Failures.UnhandledException(e)).build();
+            return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
 }
