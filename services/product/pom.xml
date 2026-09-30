@@ -20,6 +20,13 @@
 	</properties>
 	
 	<dependencies>
+        <!-- Data Types -->
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
         <!-- Internal Communication -->
         <dependency>
             <groupId>com.github.noeeekr</groupId>
@@ -86,7 +93,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 
 		<!-- Logging -->
 		<!-- Hibernate Logging Dependency -->

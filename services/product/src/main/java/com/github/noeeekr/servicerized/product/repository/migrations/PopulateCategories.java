@@ -1,5 +1,7 @@
 package com.github.noeeekr.servicerized.product.repository.migrations;
 
+import java.util.UUID;
+import com.github.f4b6a3.uuid.UuidCreator;
 import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.Models;
 import liquibase.change.custom.CustomSqlChange;
@@ -75,16 +77,20 @@ public class PopulateCategories implements CustomSqlChange, CustomSqlRollback {
                 "Virtual Event Hosting", "Trivia Hosting", "D&D Campaign DMing",
                 "Tabletop RPG Session", "General Consultation"};
 
+
         StringBuilder valuesStatementBuilder = new StringBuilder();
         for (int i = 0; i < categoriesNames.length; i++) {
-            valuesStatementBuilder.append(String.format("(%s)", categoriesNames[i]));
+            UUID uuidV7 = UuidCreator.getTimeOrderedEpoch();
+            valuesStatementBuilder
+                    .append(String.format("('%s', '%s')", uuidV7.toString(), categoriesNames[i]));
             if (i != categoriesNames.length - 1) {
                 valuesStatementBuilder.append(", ");
             }
         }
 
-        String fieldStatement = String.format("(%s)", TABLE_NAME,
-                CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME);
+        String fieldStatement =
+                String.format("(%s, %s)", CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_ID,
+                        CategoryEntity.METADATA.DATABASE_COLUMN_NAME_CATEGORY_NAME);
 
         String statement = String.format("INSERT INTO %s %s VALUES %s", TABLE_NAME, fieldStatement,
                 valuesStatementBuilder.toString());

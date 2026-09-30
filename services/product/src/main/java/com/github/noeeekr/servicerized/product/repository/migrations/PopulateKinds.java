@@ -31,11 +31,11 @@ public class PopulateKinds implements CustomSqlChange, CustomSqlRollback {
         StringBuilder valueStatement = new StringBuilder();
         KindEntity[] entities = {KindEntity.Default.getVirtualServiceKind()};
         List.of(entities).forEach((entity) -> {
-            valueStatement.append(String.format("(%d, %s)", entity.getKindId(), entity.getKindName()));
+            valueStatement.append(String.format("(%d, '%s')", entity.getKindId(), entity.getKindName()));
         });
 
         String fieldStatement =
-                String.format("(%s, %s)", KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_ID,
+                String.format("(%s, '%s')", KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_ID,
                         KindEntity.METADATA.DATABASE_COLUMN_NAME_KIND_NAME);
         String statement = String.format("INSERT INTO %s %s VALUES %s",
                 KindEntity.METADATA.TABLE_NAME, fieldStatement, valueStatement.toString());
