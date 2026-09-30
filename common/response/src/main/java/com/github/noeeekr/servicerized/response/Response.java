@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@Builder 
-@NoArgsConstructor 
-@AllArgsConstructor 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Response<PayloadType> {
     private boolean success;
     private PayloadType payload;
@@ -35,6 +35,20 @@ public class Response<PayloadType> {
         return this.failure;
     }
 
+    /**
+     * (non-Javadoc)
+     * 
+     * equals(Object o) checks if the response (and its payload, failure, success etc) are
+     * equivalent to another response object. For success response type only checks fields that are
+     * expected on success and on failure type only checks fields that are expected on failure.
+     * 
+     * @implNote equals(Object o) depends on the payload to actually implement equals(Object o)
+     *           validation correctly to be fully precise.
+     * 
+     * @param o A object to check if is a response.
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -44,7 +58,7 @@ public class Response<PayloadType> {
         if (o.getClass() != this.getClass())
             return false;
         Response<?> response = (Response<?>) o;
-        if (this.success == false) {
+        if (this.success == true) {
             return this.payloadEquals(response.getPayload());
         } else {
             return this.failureEquals(response.getFailure());
