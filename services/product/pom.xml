@@ -82,7 +82,12 @@
             <artifactId>liquibase-core</artifactId>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.noeeekr</groupId>
+            <artifactId>pg-database-service</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        
 		<!-- Spring Boot Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
