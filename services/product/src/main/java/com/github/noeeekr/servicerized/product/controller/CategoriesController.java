@@ -30,122 +30,120 @@ import com.github.noeeekr.servicerized.response.client.ClientResponse;
 @RestController
 @RequestMapping("/api")
 public class CategoriesController extends Controller {
-    @Autowired
-    private ProductCategoryService productCategoryService;
+        @Autowired
+        private ProductCategoryService productCategoryService;
 
-    @Autowired
-    private AuthorizationService authorizationService;
+        @Autowired
+        private AuthorizationService authorizationService;
 
-    @Autowired
-    private CategoryService categoryService;
+        @Autowired
+        private CategoryService categoryService;
 
-    @GetMapping("/product/category")
-    public ResponseEntity<ClientResponse> listCategories(
-            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie) {
-        /**
-         * Authorization: Requires user to contain credentials that are not expired.
-         */
-        if (authorizationService.isTokenExpired(authorizationCookie)) {
-            return this.handleFailure(
-                    new Failures.AuthorizationFailed(
-                            "Falha de autorização: Credenciais não encontradas.", true),
-                    CategoriesController.class.getCanonicalName(), "List Categories (Endpoint)",
-                    "Authorization Service");
-        } ;
+        @GetMapping("/product/category")
+        public ResponseEntity<ClientResponse> listCategories(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie) {
+                /**
+                 * Authorization: Requires user to contain credentials that are not expired.
+                 */
+                if (authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Falha de autorização: Credenciais não encontradas.", true),
+                                        CategoriesController.class.getCanonicalName(),
+                                        "List Categories (Endpoint)", "Authorization Service");
+                } ;
 
-        Response<List<CategoryEntity>> listCategoriesResponse =
-                categoryService.listCategories(new ListCategoryCommand());
-        if (!listCategoriesResponse.isSuccess())
-            this.handleFailure(listCategoriesResponse.getFailure(), "Category (Controller)",
-                    "List Categories (Endpoint)");
-        List<CategoryEntity> categories = listCategoriesResponse.getPayload();
-        
-        return ResponseEntity.ok(new ClientResponse(categories));
-    }
+                Response<List<CategoryEntity>> listCategoriesResponse = categoryService
+                                .listCategories(new ListCategoryCommand(null, null, 50));
+                if (!listCategoriesResponse.isSuccess())
+                        this.handleFailure(listCategoriesResponse.getFailure(),
+                                        "Category (Controller)", "List Categories (Endpoint)");
+                List<CategoryEntity> categories = listCategoriesResponse.getPayload();
 
-    @PutMapping("/product/{productId}/category/{categoryId}")
-    public ResponseEntity<ClientResponse> attachCategory(
-            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-            @RequestParam("categoryId") UUID categoryId,
-            @RequestParam("productId") UUID productId) {
-        /**
-         * Authorization: Requires user to contain credentials that are not expired.
-         */
-        if (authorizationService.isTokenExpired(authorizationCookie)) {
-            return this.handleFailure(
-                    new Failures.AuthorizationFailed(
-                            "Falha de autorização: Credenciais não encontradas.", true),
-                    CategoriesController.class.getCanonicalName(), "Attach Category (Endpoint)",
-                    "Authorization Service");
-        } ;
-
-        /**
-         * Preparation: Recover user data & create request.
-         */
-        AuthorizationToken authorizationToken =
-                authorizationService.getPayload(authorizationCookie);
-        AttachCategoryCommand attachCategoryRequest =
-                new AttachCategoryCommand(authorizationToken.userId(), productId, categoryId);
-
-        /**
-         * Execution: Trigger the target operations.
-         */
-        Response<ProductCategoryEntity> attachCategoryResponse =
-                productCategoryService.attachCategory(attachCategoryRequest);
-
-        /**
-         * Error Handling
-         */
-        if (attachCategoryResponse.isSuccess() == false) {
-            return this.handleFailure(attachCategoryResponse.getFailure(),
-                    CategoriesController.class.getCanonicalName(), "Attach Category (Endpoint)",
-                    "Categories Service");
+                return ResponseEntity.ok(new ClientResponse(categories));
         }
 
-        return new ResponseEntity<>(new ClientResponse(attachCategoryResponse.getPayload()),
-                HttpStatus.CREATED);
-    }
+        @PutMapping("/product/{productId}/category/{categoryId}")
+        public ResponseEntity<ClientResponse> attachCategory(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+                        @RequestParam("categoryId") UUID categoryId,
+                        @RequestParam("productId") UUID productId) {
+                /**
+                 * Authorization: Requires user to contain credentials that are not expired.
+                 */
+                if (authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Falha de autorização: Credenciais não encontradas.", true),
+                                        CategoriesController.class.getCanonicalName(),
+                                        "Attach Category (Endpoint)", "Authorization Service");
+                } ;
 
-    @DeleteMapping("/product/{productId}/category/{categoryId}")
-    public ResponseEntity<ClientResponse> dettachCategory(
-            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-            @RequestParam("categoryId") UUID categoryId,
-            @RequestParam("productId") UUID productId) {
-        /**
-         * Authorization: Requires user to contain credentials that are not expired.
-         */
-        if (authorizationService.isTokenExpired(authorizationCookie)) {
-            return this.handleFailure(
-                    new Failures.AuthorizationFailed(
-                            "Falha de autorização: Credenciais não encontradas.", true),
-                    CategoriesController.class.getCanonicalName(), "Attach Category (Endpoint)",
-                    "Authorization Service");
-        } ;
+                /**
+                 * Preparation: Recover user data & create request.
+                 */
+                AuthorizationToken authorizationToken =
+                                authorizationService.getPayload(authorizationCookie);
+                AttachCategoryCommand attachCategoryRequest = new AttachCategoryCommand(
+                                authorizationToken.userId(), productId, categoryId);
 
-        /**
-         * Preparation: Recover user data & create request.
-         */
-        AuthorizationToken authorizationToken =
-                authorizationService.getPayload(authorizationCookie);
-        DetachCategoryCommand dettachCategoryRequest =
-                new DetachCategoryCommand(authorizationToken.userId(), productId, categoryId);
+                /**
+                 * Execution: Trigger the target operations.
+                 */
+                Response<ProductCategoryEntity> attachCategoryResponse =
+                                productCategoryService.attachCategory(attachCategoryRequest);
 
-        /**
-         * Execution: Trigger the target operations.
-         */
-        Response<ProductCategoryEntity> dettachCategoryResponse =
-                productCategoryService.dettachCategory(dettachCategoryRequest);
+                /**
+                 * Error Handling
+                 */
+                if (attachCategoryResponse.isSuccess() == false) {
+                        return this.handleFailure(attachCategoryResponse.getFailure(),
+                                        CategoriesController.class.getCanonicalName(),
+                                        "Attach Category (Endpoint)", "Categories Service");
+                }
 
-        /**
-         * Error Handling
-         */
-        if (dettachCategoryResponse.isSuccess() == false) {
-            return this.handleFailure(dettachCategoryResponse.getFailure(),
-                    CategoriesController.class.getCanonicalName(), "Dettach Category (Endpoint)",
-                    "Categories Service");
+                return new ResponseEntity<>(new ClientResponse(attachCategoryResponse.getPayload()),
+                                HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<>(new ClientResponse(dettachCategoryResponse.getPayload()),
-                HttpStatus.OK);
-    }
+        @DeleteMapping("/product/{productId}/category/{categoryId}")
+        public ResponseEntity<ClientResponse> dettachCategory(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+                        @RequestParam("categoryId") UUID categoryId,
+                        @RequestParam("productId") UUID productId) {
+                /**
+                 * Authorization: Requires user to contain credentials that are not expired.
+                 */
+                if (authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Falha de autorização: Credenciais não encontradas.", true),
+                                        CategoriesController.class.getCanonicalName(),
+                                        "Attach Category (Endpoint)", "Authorization Service");
+                } ;
+
+                /**
+                 * Preparation: Recover user data & create request.
+                 */
+                AuthorizationToken authorizationToken =
+                                authorizationService.getPayload(authorizationCookie);
+                DetachCategoryCommand dettachCategoryRequest = new DetachCategoryCommand(
+                                authorizationToken.userId(), productId, categoryId);
+
+                /**
+                 * Execution: Trigger the target operations.
+                 */
+                Response<ProductCategoryEntity> dettachCategoryResponse =
+                                productCategoryService.dettachCategory(dettachCategoryRequest);
+
+                /**
+                 * Error Handling
+                 */
+                if (dettachCategoryResponse.isSuccess() == false) {
+                        return this.handleFailure(dettachCategoryResponse.getFailure(),
+                                        CategoriesController.class.getCanonicalName(),
+                                        "Dettach Category (Endpoint)", "Categories Service");
+                }
+
+                return new ResponseEntity<>(
+                                new ClientResponse(dettachCategoryResponse.getPayload()),
+                                HttpStatus.OK);
+        }
 }
