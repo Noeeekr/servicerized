@@ -93,6 +93,28 @@ public class Response<PayloadType> {
     }
 
     /**
+     * success() swtiches the success payload of the response with another response's payload.
+     * 
+     * @param payload Another response.
+     * @return a reference for this response.
+     */
+    public Response<PayloadType> replacePayload(Response<PayloadType> payload) {
+        this.payload = payload.getPayload();
+        return this;
+    }
+
+    /**
+     * success() swtiches the success payload of the response with another payload.
+     * 
+     * @param payload The expected payload.
+     * @return a reference for this response.
+     */
+    public Response<PayloadType> replacePayload(PayloadType payload) {
+        this.payload = payload;
+        return this;
+    }
+
+    /**
      * fromFailure() creates a failed response. Extracts the failure of the original response.
      * 
      * @param <T> The target type of the new response.
