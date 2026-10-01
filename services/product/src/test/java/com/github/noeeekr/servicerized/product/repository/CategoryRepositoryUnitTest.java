@@ -79,16 +79,42 @@ public class CategoryRepositoryUnitTest {
                 .getResultList();
     }
 
-    // Section --- Test Find Category By Id
+    // Test --- Find Category By Id
 
     @Test
     public void findCategoryByIdTest() {
-        CategoryEntity category = this.arrangeFindCategoryByIdTest();
-        Response<List<CategoryEntity>> response = this.executeFindCategoryByIdTest(category);
-        this.validateFindCategoryByIdTest(response, category);
+        CategoryEntity category = this.arrangeSingleCategory();
+        Response<List<CategoryEntity>> response =
+                categoryRepository.findCategory(category.getCategoryId());
+        this.validateFindCategoryResponse("Find Categories By Id",
+                List.of(response, Response.success(List.of(category))));
     }
 
-    public CategoryEntity arrangeFindCategoryByIdTest() {
+    // Test --- Find Category By Name & Id
+
+    @Test
+    public void findCategoryByNameAndIdTest() {
+        CategoryEntity category = this.arrangeSingleCategory();
+        Response<List<CategoryEntity>> response = categoryRepository
+                .findCategory(category.getCategoryName(), category.getCategoryId());
+        this.validateFindCategoryResponse("Find Categories By Name And Id",
+                List.of(response, Response.success(List.of(category))));
+    }
+
+    // Test --- Categories By Name
+
+    @Test
+    public void findCategoriesByNameTest() {
+        CategoryEntity category = this.arrangeSingleCategory();
+        Response<List<CategoryEntity>> response =
+                categoryRepository.findCategories(category.getCategoryName());
+        this.validateFindCategoryResponse("Find Categories By Name",
+                List.of(response, Response.success(List.of(category))));
+    }
+
+    // Section --- Test Arrangers
+
+    public CategoryEntity arrangeSingleCategory() {
         /**
          * Create some test categories
          */
@@ -98,109 +124,42 @@ public class CategoryRepositoryUnitTest {
         query.select(category)
                 .where(criteria.equal(
                         category.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-                        CategoryRepositoryUnitTest.targetCategories.get(0).getCategoryName()));
+                        CategoryRepositoryUnitTest.targetCategories.get(3).getCategoryName()));
 
         return this.entityManager.createQuery(query).getSingleResult();
     }
 
-    public Response<List<CategoryEntity>> executeFindCategoryByIdTest(CategoryEntity category) {
-        return categoryRepository.findCategory(category.getCategoryId());
-    }
+    // Section --- Test Validators
 
-    public void validateFindCategoryByIdTest(Response<List<CategoryEntity>> recievedResponse,
-            CategoryEntity targetEntity) {
-        if (!recievedResponse.isSuccess()) {
-            fail("Test Error: Bad Response. Expected: Success Response. Recieved: Failed Response. Reason: "
-                    + recievedResponse.getFailure().message());
+    /**
+     * validateFindCategoryResponse() tests if the responses match the expected response and fails
+     * the test if they don't.
+     * 
+     * @param testName the test name for logs.
+     * @param testResponses a list of responses to check, the first is marked as the expected one in
+     *        logs.
+     */
+    public void validateFindCategoryResponse(String testName,
+            List<Response<List<CategoryEntity>>> testResponses) {
+        if (testResponses.size() != 2) {
+            fail("Error: Bad Test Validator Call: Failed to Validate Test Responses: Response List too Small (<=1).");
             return;
         }
 
-        Response<List<CategoryEntity>> expectedResponse = Response.success(List.of(targetEntity));
-
+        Response<List<CategoryEntity>> expectedResponse = testResponses.get(0);
+        Response<List<CategoryEntity>> currentResponse = testResponses.get(1);
         try {
-            assertEquals(expectedResponse, recievedResponse);
+            for (int i = 1; i < testResponses.size(); i++) {
+                currentResponse = testResponses.get(i);
+                assertEquals(expectedResponse, currentResponse);
+            }
         } catch (Exception e) {
-            DebugLogger.displayEntity("Recieved Response", recievedResponse,
-                    "Test Validator (Find Category Id Test)", "Category Repository (Unit Test)");
-            DebugLogger.displayEntity("Expected Response", expectedResponse,
-                    "Test Validator (Find Category Id Test)", "Category Repository (Unit Test)");
+            String testDomain = String.format("Test Validator (%s)", testName);
+            DebugLogger.displayEntity("Recieved Response", currentResponse, testDomain,
+                    "Category Repository (Unit Test)");
+            DebugLogger.displayEntity("Expected Response", expectedResponse, testDomain,
+                    "Category Repository (Unit Test)");
             fail("Test Failed: Response format conflict. Expected: Success Response. Recieved: Failed Response.");
         }
     }
-
-    // @Transactional
-    // public Response<List<CategoryEntity>> findCategory(UUID categoryId) {
-    // CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-    // CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
-    // Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
-
-    // List<Predicate> requiredConditionals = new ArrayList<>();
-    // requiredConditionals.add(criteria
-    // .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
-    // requiredConditionals.add(criteria.equal(
-    // categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_ID), categoryId));
-    // query.where(criteria.and(requiredConditionals));
-
-    // List<CategoryEntity> categories = new ArrayList<>();
-    // try {
-    // categories.add(entityManager.createQuery(query).getSingleResult());
-    // return Response.success(categories);
-    // } catch (NoResultException e) {
-    // return Response.success(categories);
-    // } catch (Exception e) {
-    // return Response.fromFailure(new Failures.UnhandledException(e));
-    // }
-    // };
-
-    // @Transactional
-    // public Response<List<CategoryEntity>> findCategories(String categoryName) {
-    // CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-    // CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
-    // Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
-
-    // List<Predicate> requiredConditionals = new ArrayList<>();
-    // requiredConditionals.add(criteria
-    // .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
-    // requiredConditionals.add(
-    // criteria.like(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-    // "%" + categoryName + "%"));
-    // query.where(criteria.and(requiredConditionals));
-
-    // List<CategoryEntity> categories = new ArrayList<>();
-    // try {
-    // categories.addAll(entityManager.createQuery(query).getResultList());
-    // return Response.success(categories);
-    // } catch (NoResultException e) {
-    // return Response.success(categories);
-    // } catch (Exception e) {
-    // return Response.fromFailure(new Failures.UnhandledException(e));
-    // }
-    // };
-
-    // @Transactional
-    // public Response<List<CategoryEntity>> findCategory(String categoryName, UUID categoryId) {
-    // CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-    // CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
-    // Root<CategoryEntity> categoryQuery = query.from(CategoryEntity.class);
-
-    // List<Predicate> requiredConditionals = new ArrayList<>();
-    // requiredConditionals.add(criteria
-    // .equal(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_DELETED_AT), null));
-    // requiredConditionals.add(
-    // criteria.like(categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-    // "%" + categoryName + "%"));
-    // requiredConditionals.add(criteria.equal(
-    // categoryQuery.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_ID), categoryId));
-    // query.where(criteria.and(requiredConditionals));
-
-    // List<CategoryEntity> categories = new ArrayList<>();
-    // try {
-    // categories.add(entityManager.createQuery(query).getSingleResult());
-    // return Response.success(categories);
-    // } catch (NoResultException e) {
-    // return Response.success(categories);
-    // } catch (Exception e) {
-    // return Response.fromFailure(new Failures.UnhandledException(e));
-    // }
-    // };
 }
