@@ -1,8 +1,7 @@
 # Servicerized
 Provide or rent services as much as you want.
 
-[Pt-BR]
-[En-US]
+[English](README.md) | [Português do Brasil](README.pt-BR.md)
 
 ## Introduction
 
