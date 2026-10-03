@@ -83,6 +83,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
                     "SELECT p FROM ProductEntity p WHERE p.ownerId = :ownerId AND p.id = :productId AND p.deletedAt IS null",
                     ProductEntity.class);
             query.setParameter("productId", productId);
+            query.setParameter("ownerId", ownerId);
             product = query.setMaxResults(1).getSingleResult();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
