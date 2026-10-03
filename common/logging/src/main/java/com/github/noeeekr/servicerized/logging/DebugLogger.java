@@ -20,16 +20,27 @@ public class DebugLogger {
     public static void displayEntity(String message, Object entity, String... domains) {
         String formattedDomains = DebugLogger.formatDomain(DebugLogger.class.getName(),
                 DebugLogger.formatDomain(domains));
-        message = String.format("%s: ", message);
+        message = String.format("Description: %s ", message);
 
         try {
             String json = objectMapper.writeValueAsString(entity);
-            log.debug(String.format("%s%s\n\tEntity:\n%s", message, formattedDomains, json));
+            log.debug(String.format("%s\n\t%s\n\tEntity:\n%s", message, formattedDomains, json));
         } catch (Exception e) {
             DebugLogger.printStackTrace(new Failures.UnhandledException(e), domains);
             log.debug(String.format("%sUnable to display entity '%s'\n %s", formattedDomains,
                     entity.getClass().getName(), e.getMessage()));
         }
+    }
+
+    public static void displayFailure(Failure failure, String... domains) {
+        if (failure.error() != null) {
+            DebugLogger.displayThrowable(failure.error(), domains);
+            return;
+        }
+
+        String.format("%s\n\tStatus Code: %s\n\tClient Fault: %b", failure.message(),
+                failure.code().getReasonPhrase(), failure.isClientFault());
+        DebugLogger.displayEntity(failure.message(), failure, domains);
     }
 
     public static void displayThrowable(Throwable ex, String... domains) {
