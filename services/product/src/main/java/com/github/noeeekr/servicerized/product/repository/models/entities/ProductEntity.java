@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.ProductInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.CreateVirtualProductInformationInterface;
 import com.github.noeeekr.servicerized.product.repository.models.dto.ProductDto;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateProductCommandInterface;
@@ -43,10 +44,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor 
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = ProductEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
-public class ProductEntity extends MetricsEntity implements ProductInterface, ClientResponseDto {
+public class ProductEntity extends MetricsEntity
+        implements ProductInterface, ProductFilterableFieldsInterface, ClientResponseDto {
     /**
      * METADATA defines a single source of truth for external references to this table names to be
      * used across this micro-service, providing consistency and easy maintence.
