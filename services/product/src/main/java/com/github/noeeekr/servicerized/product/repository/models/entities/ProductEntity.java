@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * ProductEntity defines the format of data for a user product.
@@ -42,6 +43,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Builder
+@NoArgsConstructor 
 @AllArgsConstructor
 @Table(name = ProductEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class ProductEntity extends MetricsEntity implements ProductInterface, ClientResponseDto {
