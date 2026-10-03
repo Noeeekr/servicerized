@@ -1,5 +1,6 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
+import java.util.Objects;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateProductRequestInterface;
@@ -132,6 +133,16 @@ public class ProductEntity extends MetricsEntity implements ProductInterface, Cl
                 .build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ProductEntity product))
+            return false;
+        return Objects.equals(this.description, product.description)
+                && Objects.equals(this.name, product.name)
+                && Objects.equals(this.price, product.price);
+    }
 
     //
     // Interface implementations
