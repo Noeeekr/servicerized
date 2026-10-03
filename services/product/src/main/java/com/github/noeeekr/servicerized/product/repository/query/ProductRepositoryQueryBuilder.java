@@ -8,6 +8,7 @@ import com.github.noeeekr.servicerized.product.repository.models.entities.Produc
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -28,8 +29,10 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
             conditions.add(this.getProductFiltersFor(relationRoot, productFilter));
         }
 
-        conditions.add(criteria.equal(relationRoot.get("deletedAt"), null));
+        conditions.add(relationRoot.get("deletedAt").isNull());
+        
+        Join<ProductCategoryEntity, ProductEntity> productJoin = relationRoot.join("product");
 
-        return query.where(conditions);
+        return query.select(productJoin).where(conditions);
     }
 }

@@ -23,23 +23,19 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
             ProductFilterableFieldsInterface productFilter) {
         CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
         List<Predicate> productConditions = new ArrayList<>();
-        Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
+        Join<ProductCategoryEntity, ProductEntity> productJoin = relationRoot.join("product");
 
         if (!productFilter.getProductName().isEmpty()
                 && !productFilter.getProductName().isBlank()) {
-            Predicate predicate = criteria.equal(
-                    categoryJoin
-                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
-                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-                    productFilter.getProductName());
+            Predicate predicate =
+                    criteria.equal(productJoin.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_NAME),
+                            productFilter.getProductName());
             productConditions.add(predicate);
         }
         if (productFilter.getProductId() != null) {
-            Predicate predicate = criteria.equal(
-                    categoryJoin
-                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
-                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-                    productFilter.getProductId());
+            Predicate predicate =
+                    criteria.equal(productJoin.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID),
+                            productFilter.getProductId());
             productConditions.add(predicate);
         }
 
@@ -54,12 +50,10 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
         });
 
         List<Predicate> categoryConditions = new ArrayList<>();
-        Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
+        Join<ProductCategoryEntity, CategoryEntity> categoryJoin = relationRoot.join("category");
         categoryFilters.forEach((filter) -> {
             Predicate predicate = criteria.equal(
-                    categoryJoin
-                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
-                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
+                    categoryJoin.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
                     filter.getCategoryName());
             categoryConditions.add(predicate);
         });
