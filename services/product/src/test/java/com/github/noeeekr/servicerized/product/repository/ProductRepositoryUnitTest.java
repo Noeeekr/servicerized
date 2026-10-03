@@ -2,16 +2,34 @@ package com.github.noeeekr.servicerized.product.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.support.TransactionTemplate;
 import com.github.noeeekr.servicerized.logging.DebugLogger;
+import com.github.noeeekr.servicerized.product.repository.databases.CategoryRepositoryTestDatabase;
+import com.github.noeeekr.servicerized.product.repository.databases.CategoryRepositoryTestDatabaseFactory;
+import com.github.noeeekr.servicerized.product.repository.databases.ProductCategoryRepositoryTestDatabase;
+import com.github.noeeekr.servicerized.product.repository.databases.ProductCategoryRepositoryTestDatabaseFactory;
+import com.github.noeeekr.servicerized.product.repository.databases.ProductRepositoryTestDatabase;
+import com.github.noeeekr.servicerized.product.repository.databases.ProductRepositoryTestDatabaseFactory;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryKey;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.CategoryFilter;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -21,28 +39,64 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles({"in-memory-db"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProductRepositoryUnitTest {
-    public final String getDomain() {
-        return "Product Repository (Unit Test)";
-    }
 
+    // Section --- Autowired fields
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private ProductRepository productRepository;
+    // Section --- Unique fields
 
-    @Autowired
+    private ProductCategoryRepositoryTestDatabase productCategoryTestDatabase;
+    private CategoryRepositoryTestDatabase categoryTestDatabase;
     private ProductRepositoryTestDatabase productTestDatabase;
 
+    // Section --- Constructors
+
+    @Autowired
+    public ProductRepositoryUnitTest(
+            ProductCategoryRepositoryTestDatabaseFactory productCategoryTestDatabaseFactory,
+            CategoryRepositoryTestDatabaseFactory categoryTestDatabaseFactory,
+            ProductRepositoryTestDatabaseFactory productTestDatabaseFactory) {
+        this.productTestDatabase = productTestDatabaseFactory.New();
+        this.categoryTestDatabase = categoryTestDatabaseFactory.New();
+        this.productCategoryTestDatabase = productCategoryTestDatabaseFactory.New(() -> {
+            return List.of();
+        });
+    }
+
+    // Section --- Test class preparators
+
+    @BeforeAll
+    public void prepareDatabase() {
+        transactionTemplate.executeWithoutResult((status) -> {
+            this.productTestDatabase.prepareTestDatabase();
+            this.categoryTestDatabase.prepareTestDatabase();
+            this.productCategoryTestDatabase
+                    .prepareTestDatabase(ProductCategoryRepositoryTestDatabase
+                            .getRelations(this.productTestDatabase, this.categoryTestDatabase));
+        });
+    }
+
+    // Section --- Final fields
+
+    public final String getDomain() {
+        return "Product Repository (Unit Test)";
+    }
 
     // Test --- List Product
 
     @Test
     public void testListRandomProductSuccess() {
-        Response<ProductEntity> response = productRepository.listProduct();
+        Response<Optional<ProductEntity>> response = productRepository.listProduct();
         this.validateListRandomProductSuccess("List Random (Success Test)", response);
     }
 
@@ -50,34 +104,49 @@ public class ProductRepositoryUnitTest {
     public void testListProductByIdSuccess() {
         ProductEntity product = this.arrangePersistedProduct();
         System.out.println(product.getProductId());
-        Response<ProductEntity> response = productRepository.listProduct(product.getProductId());
-        this.validateListProduct("List By Id (Success Test)", Response.success(product), response);
+        Response<Optional<ProductEntity>> response =
+                productRepository.listProduct(product.getProductId());
+        this.validateListProduct("List By Id (Success Test)",
+                Response.success(Optional.of(product)), response);
     }
 
     @Test
     public void testListProductByIdAndOwnerIdSuccess() {
         ProductEntity product = this.arrangePersistedProduct();
         System.out.println(product.getProductId());
-        Response<ProductEntity> response =
+        Response<Optional<ProductEntity>> response =
                 productRepository.listProduct(product.getProductId(), product.getOwnerId());
         this.validateListProduct("List By Id And Owner Id (Success Test)",
-                Response.success(product), response);
+                Response.success(Optional.of(product)), response);
     }
 
-    // @Test
-    // public void testListProductByIdAndCategoriesSuccess() {
-    // ProductEntity product = this.arrangePersistedProduct();
-    // System.out.println(product.getProductId());
+    @Test
+    public void testListProductByIdAndCategoriesSuccess() {
+        ProductEntity product = this.arrangePersistedProduct();
 
-    // ProductFilterableFieldsInterface productFilter = new ProductFilter(product);
-    // List<CategoryFilterableFieldsInterface> productCategoryFilter =
-    // List.of(new CategoryFilter());
+        ProductCategoryEntity relation =
+                this.productCategoryTestDatabase.getPersistedRelations().get(1);
+        ProductCategoryKey key = relation.getProductCategoryKey();
 
-    // Response<ProductEntity> response =
-    // productRepository.listProduct(product.getProductId(), null);
-    // this.validateListProduct("List By Id And Owner Id (Success Test)",
-    // Response.success(product), response);
-    // }
+        CategoryEntity category = this.categoryTestDatabase.findPersistedById(key.getCategoryId());
+
+        ProductFilterableFieldsInterface productFilter = new ProductFilter(product);
+        List<CategoryFilterableFieldsInterface> productCategoryFilter =
+                List.of(new CategoryFilter(category.getCategoryId(), category.getCategoryName()));
+
+        Response<Optional<ProductEntity>> response;
+
+        try {
+            response = productRepository.listProduct(productFilter, productCategoryFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+            return;
+        }
+
+        this.validateListProduct("List By Id And Owner Id (Success Test)",
+                Response.success(Optional.of(product)), response);
+    }
 
     // Test --- Persist Product
 
@@ -125,7 +194,7 @@ public class ProductRepositoryUnitTest {
      * @throws AssertionFailedError
      */
     public void validateListRandomProductSuccess(String testName,
-            Response<ProductEntity> recievedResponse) throws AssertionFailedError {
+            Response<Optional<ProductEntity>> recievedResponse) throws AssertionFailedError {
         if (!recievedResponse.isSuccess()) {
             if (recievedResponse.getFailure().error() == null) {
                 fail("Response Failure Detected: No Exceptions were Thrown.");
@@ -136,8 +205,14 @@ public class ProductRepositoryUnitTest {
             fail("Response Failure Detected: Exception Available in Debug Logs.");
         }
 
+        if (recievedResponse.getPayload().isEmpty()) {
+            DebugLogger.displayThrowable(recievedResponse.getFailure().error(), this.getDomain(),
+                    testName, "Validate List Random Success", "Listed Product Not Found");
+            fail("Product Not Found: Recieved a Empty Optional.");
+        }
+
         boolean found = this.productTestDatabase.getPersistedProducts()
-                .contains(recievedResponse.getPayload());
+                .contains(recievedResponse.getPayload().get());
         if (!found) {
             DebugLogger.displayThrowable(recievedResponse.getFailure().error(), this.getDomain(),
                     testName, "Validate List Random Success", "Listed Product Not Found");
@@ -156,8 +231,9 @@ public class ProductRepositoryUnitTest {
      * 
      * @throws AssertionFailedError
      */
-    public void validateListProduct(String testName, Response<ProductEntity> expectedResponse,
-            Response<ProductEntity> recievedResponse) throws AssertionFailedError {
+    public void validateListProduct(String testName,
+            Response<Optional<ProductEntity>> expectedResponse,
+            Response<Optional<ProductEntity>> recievedResponse) throws AssertionFailedError {
         if (expectedResponse.isSuccess() != recievedResponse.isSuccess()) {
             DebugLogger.displayFailure(recievedResponse.getFailure(), this.getDomain(), testName,
                     "List Product (Validator)", "Failure Exception");
@@ -172,14 +248,22 @@ public class ProductRepositoryUnitTest {
     }
 
     public void validateListProductSuccess(String testName,
-            Response<ProductEntity> expectedResponse, Response<ProductEntity> recievedResponse)
-            throws AssertionFailedError {
-        assertEquals(expectedResponse, recievedResponse);
+            Response<Optional<ProductEntity>> expectedResponse,
+            Response<Optional<ProductEntity>> recievedResponse) throws AssertionFailedError {
+        try {
+            assertEquals(expectedResponse, recievedResponse);
+        } catch (AssertionFailedError e) {
+            DebugLogger.displayEntity(testName, expectedResponse, this.getDomain(),
+                    "Validate Success Payload", "Expected");
+            DebugLogger.displayEntity(testName, recievedResponse, this.getDomain(),
+                    "Validate Success Payload", "Recieved");
+            fail(e.getMessage());
+        }
     }
 
     public void validateListProductFailure(String testName,
-            Response<ProductEntity> expectedResponse, Response<ProductEntity> recievedResponse)
-            throws AssertionFailedError {
+            Response<Optional<ProductEntity>> expectedResponse,
+            Response<Optional<ProductEntity>> recievedResponse) throws AssertionFailedError {
         try {
             assertEquals(expectedResponse, recievedResponse);
         } catch (Exception e) {
@@ -234,7 +318,8 @@ public class ProductRepositoryUnitTest {
     public void validatePersistSuccess(Response<ProductEntity> expectedResponse,
             Response<ProductEntity> recievedResponse) throws AssertionFailedError {
         // Reflect populated fields for assert compatibility.
-        // Dont affect the test negatively as long exists, if don't then a test for population
+        // Dont affect the test negatively as long exists, if don't then a test for
+        // population
         // handles the issue.
 
         ProductEntity expectedProduct = expectedResponse.getPayload();

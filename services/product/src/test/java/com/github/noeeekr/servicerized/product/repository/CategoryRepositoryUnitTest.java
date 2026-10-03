@@ -8,8 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.support.TransactionTemplate;
 import com.github.noeeekr.servicerized.logging.DebugLogger;
+import com.github.noeeekr.servicerized.product.repository.databases.CategoryRepositoryTestDatabase;
+import com.github.noeeekr.servicerized.product.repository.databases.CategoryRepositoryTestDatabaseFactory;
 import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.EntityManager;
@@ -18,24 +22,32 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles({"in-memory-db"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CategoryRepositoryUnitTest {
 
     @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     private CategoryRepositoryTestDatabase categoryTestDatabase;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private EntityManager entityManager;
+    public CategoryRepositoryUnitTest(
+            CategoryRepositoryTestDatabaseFactory categoryTestDatabaseFactory) {
+        this.categoryTestDatabase = categoryTestDatabaseFactory.New();
+    }
 
     @BeforeAll
     public void prepareDatabase() {
-        this.categoryTestDatabase.prepareTestDatabase();
+        transactionTemplate.executeWithoutResult((status) -> {
+            this.categoryTestDatabase.prepareTestDatabase();
+        });
     }
-
 
     // Test --- Find Category By Id
 
