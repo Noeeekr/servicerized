@@ -23,7 +23,7 @@ import lombok.Getter;
 @Transactional
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CategoryRepositoryTestDatabasePrepator {
+public class CategoryRepositoryTestDatabase {
 
     @Autowired
     private EntityManager entityManager;

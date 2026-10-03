@@ -23,7 +23,7 @@ import jakarta.persistence.criteria.Root;
 public class CategoryRepositoryUnitTest {
 
     @Autowired
-    private CategoryRepositoryTestDatabasePrepator categoryTestDatabase;
+    private CategoryRepositoryTestDatabase categoryTestDatabase;
 
     @Autowired
     private CategoryRepository categoryRepository;
