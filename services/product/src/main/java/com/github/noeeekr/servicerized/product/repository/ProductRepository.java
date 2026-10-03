@@ -34,7 +34,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
     //
     // Create queries
     //
-    @Transactional 
+    @Transactional
     public Response<ProductEntity> persist(ProductEntity product) {
         try {
             entityManager.persist(product);
@@ -58,7 +58,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
-                    "SELECT p FROM ProductEntity p WHERE p.id = :productId AND p.deletedAt = null",
+                    "SELECT p FROM ProductEntity p WHERE p.id = :productId AND p.deletedAt IS null",
                     ProductEntity.class);
             query.setParameter("productId", productId);
             product = query.getSingleResult();
@@ -80,7 +80,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
-                    "SELECT p FROM ProductEntity p WHERE p.ownerId = :ownerId AND p.id = :productId AND p.deletedAt = null",
+                    "SELECT p FROM ProductEntity p WHERE p.ownerId = :ownerId AND p.id = :productId AND p.deletedAt IS null",
                     ProductEntity.class);
             query.setParameter("productId", productId);
             product = query.getSingleResult();
@@ -100,7 +100,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         List<ProductEntity> products;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
-                    "SELECT p FROM ProductEntity p WHERE p.deletedAt = null", ProductEntity.class);
+                    "SELECT p FROM ProductEntity p WHERE p.deletedAt IS null", ProductEntity.class);
             products = query.getResultList();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
@@ -117,7 +117,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
-                    "SELECT p FROM ProductEntity p WHERE p.deletedAt = null", ProductEntity.class);
+                    "SELECT p FROM ProductEntity p WHERE p.deletedAt IS null", ProductEntity.class);
             product = query.getSingleResult();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
