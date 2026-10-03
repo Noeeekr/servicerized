@@ -61,7 +61,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
                     "SELECT p FROM ProductEntity p WHERE p.id = :productId AND p.deletedAt IS null",
                     ProductEntity.class);
             query.setParameter("productId", productId);
-            product = query.getSingleResult();
+            product = query.setMaxResults(1).getSingleResult();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
@@ -83,7 +83,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
                     "SELECT p FROM ProductEntity p WHERE p.ownerId = :ownerId AND p.id = :productId AND p.deletedAt IS null",
                     ProductEntity.class);
             query.setParameter("productId", productId);
-            product = query.getSingleResult();
+            product = query.setMaxResults(1).getSingleResult();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
@@ -101,7 +101,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
                     "SELECT p FROM ProductEntity p WHERE p.deletedAt IS null", ProductEntity.class);
-            products = query.getResultList();
+            products = query.setMaxResults(50).getResultList();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
@@ -118,7 +118,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
                     "SELECT p FROM ProductEntity p WHERE p.deletedAt IS null", ProductEntity.class);
-            product = query.getSingleResult();
+            product = query.setMaxResults(1).getSingleResult();
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
@@ -146,7 +146,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(listProductQuery);
-            product = typedQuery.getSingleResult();
+            product = typedQuery.setMaxResults(1).getSingleResult();
             return Response.success(Optional.of(product));
         } catch (NoResultException e) {
             return Response.success(Optional.empty());
@@ -179,7 +179,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         List<ProductEntity> products;
         try {
             TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(listProductQuery);
-            products = typedQuery.getResultList();
+            products = typedQuery.setMaxResults(50).getResultList();
             return Response.success(products);
         } catch (NoResultException e) {
             return Response.success(new ArrayList<>());
