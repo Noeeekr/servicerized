@@ -12,8 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 @Table(name = ProductCategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class ProductCategoryEntity extends MetricsEntity implements ClientResponseDto {
     public static final class METADATA {
