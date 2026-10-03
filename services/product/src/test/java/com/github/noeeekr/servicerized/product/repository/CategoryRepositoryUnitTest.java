@@ -3,81 +3,39 @@ package com.github.noeeekr.servicerized.product.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.util.List;
-import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import com.github.noeeekr.servicerized.logging.DebugLogger;
 import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.response.Response;
-import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles({"in-memory-db"})
 public class CategoryRepositoryUnitTest {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private CategoryRepositoryTestDatabasePrepator categoryTestDatabase;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
-    private static List<CategoryEntity> targetCategories =
-            List.of(new CategoryEntity(null, "000001"), new CategoryEntity(null, "000002"),
-                    new CategoryEntity(null, "000003"), new CategoryEntity(null, "000004"),
-                    new CategoryEntity(null, "000005"), new CategoryEntity(null, "000006"));
-
-    // Section --- Test preparation
+    @Autowired
+    private EntityManager entityManager;
 
     @BeforeAll
-    @Transactional
-    public static void prepareTestDatabase(@Autowired EntityManager entityManager,
-            @Autowired PlatformTransactionManager transactionManager) {
-        Objects.requireNonNull(transactionManager);
-        new TransactionTemplate(transactionManager).executeWithoutResult((status) -> {
-            CategoryRepositoryUnitTest.prepareDatabaseCategories(entityManager);
-            CategoryRepositoryUnitTest.targetCategories =
-                    CategoryRepositoryUnitTest.getPrepareDatabaseCategoriesResults(entityManager);
-        });
+    public void prepareDatabase() {
+        this.categoryTestDatabase.prepareTestDatabase();
     }
 
-    public static void prepareDatabaseCategories(EntityManager entityManager) {
-        for (int i = 0; i < CategoryRepositoryUnitTest.targetCategories.size(); i++) {
-            entityManager.persist(CategoryRepositoryUnitTest.targetCategories.get(i));
-        }
-    }
-
-    public static List<CategoryEntity> getPrepareDatabaseCategoriesResults(
-            EntityManager entityManager) {
-        List<String> categoriesByName =
-                CategoryRepositoryUnitTest.targetCategories.stream().<String>map((category) -> {
-                    return category.getCategoryName();
-                }).toList();
-
-        CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
-        CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
-        Root<CategoryEntity> category = query.from(CategoryEntity.class);
-
-        query.select(category)
-                .where(category.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME)
-                        .in(categoriesByName))
-                .orderBy(List.of(criteria
-                        .asc(category.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME))));
-
-        return entityManager.createQuery(query)
-                .setHint("jakarta.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS)
-                .getResultList();
-    }
 
     // Test --- Find Category By Id
 
@@ -121,10 +79,9 @@ public class CategoryRepositoryUnitTest {
         CriteriaBuilder criteria = this.entityManager.getCriteriaBuilder();
         CriteriaQuery<CategoryEntity> query = criteria.createQuery(CategoryEntity.class);
         Root<CategoryEntity> category = query.from(CategoryEntity.class);
-        query.select(category)
-                .where(criteria.equal(
-                        category.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
-                        CategoryRepositoryUnitTest.targetCategories.get(3).getCategoryName()));
+        query.select(category).where(criteria.equal(
+                category.get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
+                this.categoryTestDatabase.getPersistedCategories().get(3).getCategoryName()));
 
         return this.entityManager.createQuery(query).getSingleResult();
     }
