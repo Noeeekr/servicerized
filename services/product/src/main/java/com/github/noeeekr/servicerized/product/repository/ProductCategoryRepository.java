@@ -10,11 +10,11 @@ import com.github.noeeekr.servicerized.product.repository.models.entities.Produc
 
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategoryEntity, UUID> {
-        @Query("SELECT pc from ProductCategoryEntity pc WHERE pc.product.id = :productId AND pc.category.categoryId = :categoryId AND pc.deletedAt = null")
+        @Query("SELECT pc FROM ProductCategoryEntity pc WHERE pc.product.id = :productId AND pc.category.categoryId = :categoryId AND pc.deletedAt IS NULL")
         public ProductCategoryEntity findRelation(@Param("productId") UUID productId,
                         @Param("categoryId") UUID categoryId, Limit limit);
 
-        @Query("SELECT pc from ProductCategoryEntity pc JOIN pc.category c WHERE pc.product.id = :productId AND c.categoryName = :categoryName AND pc.deletedAt = null")
+        @Query("SELECT pc FROM ProductCategoryEntity pc JOIN pc.category c WHERE pc.product.id = :productId AND c.categoryName = :categoryName AND pc.deletedAt IS NULL")
         public ProductCategoryEntity findRelation(@Param("productId") UUID productId,
                         @Param("categoryName") String categoryName, Limit limit);
 }
