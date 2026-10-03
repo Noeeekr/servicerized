@@ -6,6 +6,7 @@ import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fi
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
+import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -24,12 +25,21 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
         List<Predicate> productConditions = new ArrayList<>();
         Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
 
-        if (!productFilter.getProductName().isEmpty() && !productFilter.getProductName().isBlank()) {
-            Predicate predicate = criteria.equal(categoryJoin.get("name"), productFilter.getProductName());
+        if (!productFilter.getProductName().isEmpty()
+                && !productFilter.getProductName().isBlank()) {
+            Predicate predicate = criteria.equal(
+                    categoryJoin
+                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
+                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
+                    productFilter.getProductName());
             productConditions.add(predicate);
         }
         if (productFilter.getProductId() != null) {
-            Predicate predicate = criteria.equal(categoryJoin.get("id"), productFilter.getProductId());
+            Predicate predicate = criteria.equal(
+                    categoryJoin
+                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
+                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
+                    productFilter.getProductId());
             productConditions.add(predicate);
         }
 
@@ -39,24 +49,18 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
     public default Predicate getCategoryFiltersFor(Root<ProductCategoryEntity> relationRoot,
             List<CategoryFilterableFieldsInterface> categoryFilters) {
         CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
-        /**
-         * Can possibly fail due to List iterator implementation
-         */
         categoryFilters.removeIf((filter) -> {
-            /**
-             * Skips empty conditions
-             */
-            String categoryName = filter.getCategoryName();
-            if (categoryName == null || categoryName.isEmpty())
-                return true;
-            return false;
+            return filter.getCategoryName() == null || filter.getCategoryName().isEmpty();
         });
 
         List<Predicate> categoryConditions = new ArrayList<>();
         Join<ProductCategoryEntity, ProductEntity> categoryJoin = relationRoot.join("category");
         categoryFilters.forEach((filter) -> {
-            Predicate predicate =
-                    criteria.equal(categoryJoin.get("name"), filter.getCategoryName());
+            Predicate predicate = criteria.equal(
+                    categoryJoin
+                            .get(ProductCategoryEntity.METADATA.COLUMN_NAME_PRODUCT_CATEGORY_KEY)
+                            .get(CategoryEntity.METADATA.COLUMN_NAME_CATEGORY_NAME),
+                    filter.getCategoryName());
             categoryConditions.add(predicate);
         });
 
