@@ -54,7 +54,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
      * @param productId the ID of the target product.
      * @return a default response object containing the product on success.
      */
-    public Response<ProductEntity> listProduct(UUID productId) {
+    public Response<Optional<ProductEntity>> listProduct(UUID productId) {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
@@ -62,10 +62,12 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
                     ProductEntity.class);
             query.setParameter("productId", productId);
             product = query.setMaxResults(1).getSingleResult();
+        } catch (NoResultException e) {
+            return Response.success(Optional.empty());
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
-        return Response.success(product);
+        return Response.success(Optional.of(product));
     }
 
     /**
@@ -76,7 +78,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
      * @param ownerId the ID of the owner of the product.
      * @return a default response object containing the product on success.
      */
-    public Response<ProductEntity> listProduct(UUID productId, UUID ownerId) {
+    public Response<Optional<ProductEntity>> listProduct(UUID productId, UUID ownerId) {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
@@ -85,10 +87,12 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
             query.setParameter("productId", productId);
             query.setParameter("ownerId", ownerId);
             product = query.setMaxResults(1).getSingleResult();
+        } catch (NoResultException e) {
+            return Response.success(Optional.empty());
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
-        return Response.success(product);
+        return Response.success(Optional.of(product));
     }
 
     /**
@@ -114,16 +118,18 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
      * 
      * @return A product (ProductEntity)
      */
-    public Response<ProductEntity> listProduct() {
+    public Response<Optional<ProductEntity>> listProduct() {
         ProductEntity product;
         try {
             TypedQuery<ProductEntity> query = entityManager.createQuery(
                     "SELECT p FROM ProductEntity p WHERE p.deletedAt IS null", ProductEntity.class);
             product = query.setMaxResults(1).getSingleResult();
+        } catch (NoResultException e) {
+            return Response.success(Optional.empty());
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
-        return Response.success(product);
+        return Response.success(Optional.of(product));
     }
 
     /**
