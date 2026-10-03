@@ -30,9 +30,9 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
         }
 
         conditions.add(relationRoot.get("deletedAt").isNull());
-        
+
         Join<ProductCategoryEntity, ProductEntity> productJoin = relationRoot.join("product");
 
-        return query.select(productJoin).where(conditions);
+        return query.select(productJoin).where(criteria.and(conditions));
     }
 }

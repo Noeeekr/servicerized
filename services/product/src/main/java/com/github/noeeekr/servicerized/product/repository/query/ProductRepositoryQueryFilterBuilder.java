@@ -32,6 +32,7 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
                             productFilter.getProductName());
             productConditions.add(predicate);
         }
+        
         if (productFilter.getProductId() != null) {
             Predicate predicate =
                     criteria.equal(productJoin.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID),
@@ -46,7 +47,7 @@ interface ProductRepositoryQueryFilterBuilder extends RepositoryHelperInterface 
             List<CategoryFilterableFieldsInterface> categoryFilters) {
         CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
         categoryFilters.removeIf((filter) -> {
-            return filter.getCategoryName() == null || filter.getCategoryName().isEmpty();
+            return filter.getCategoryName() == null && filter.getCategoryName().isEmpty();
         });
 
         List<Predicate> categoryConditions = new ArrayList<>();
