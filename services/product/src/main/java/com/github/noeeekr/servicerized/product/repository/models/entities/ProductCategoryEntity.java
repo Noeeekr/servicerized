@@ -12,18 +12,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor
 @Table(name = ProductCategoryEntity.METADATA.TABLE_NAME, schema = Models.SCHEMA)
 public class ProductCategoryEntity extends MetricsEntity implements ClientResponseDto {
     public static final class METADATA {
         public static final String TABLE_NAME = "products_categories";
+
+        public static final String COLUMN_NAME_PRODUCT_CATEGORY_KEY = "productCategoryKey";
     }
 
     public ProductCategoryEntity(ProductCategoryKey key) {
         this.productCategoryKey = key;
+    }
+
+    public ProductCategoryEntity(ProductEntity product, CategoryEntity category) {
+        this.productCategoryKey =
+                new ProductCategoryKey(product.getProductId(), category.getCategoryId());
+        this.category = category;
+        this.product = product;
     }
 
     @EmbeddedId
