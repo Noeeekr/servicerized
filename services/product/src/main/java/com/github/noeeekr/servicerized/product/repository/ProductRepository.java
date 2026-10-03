@@ -16,6 +16,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.transaction.Transactional;
 
 @Repository
 public class ProductRepository implements ProductRepositoryQueryBuilder {
@@ -25,7 +26,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
     //
     // Interface implementations
     //
-    @Override 
+    @Override
     public EntityManager getEntityManager() {
         return this.entityManager;
     }
@@ -33,6 +34,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
     //
     // Create queries
     //
+    @Transactional 
     public Response<ProductEntity> persist(ProductEntity product) {
         try {
             entityManager.persist(product);
