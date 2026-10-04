@@ -40,8 +40,10 @@ public class VirtualProductEntity implements VirtualProductInterface {
             foreignKey = @ForeignKey(name = "fk_virtual_product_target_product_id"))
     private ProductEntity product;
 
-    public VirtualProductEntity(UUID productId, int provisionHours) {
+    public VirtualProductEntity(ProductEntity product, int provisionHours) {
         this.provisionHours = provisionHours;
-        this.productId = productId;
+
+        this.productId = product.getProductId();
+        this.product = product;
     }
 }
