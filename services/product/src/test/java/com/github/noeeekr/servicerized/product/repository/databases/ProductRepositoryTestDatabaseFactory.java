@@ -11,16 +11,16 @@ import jakarta.persistence.EntityManager;
 public class ProductRepositoryTestDatabaseFactory {
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
-    PlatformTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 
     @Autowired
-    TransactionTemplate transactionTemplate;
+    private TransactionTemplate transactionTemplate;
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     public ProductRepositoryTestDatabase New() {
         return new ProductRepositoryTestDatabase(transactionTemplate, entityManager,
