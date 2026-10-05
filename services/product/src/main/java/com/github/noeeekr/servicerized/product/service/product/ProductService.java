@@ -32,9 +32,9 @@ public class ProductService {
     @Autowired
     private VirtualProductRepository virtualProductRepository;
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private ProductKindRepository productKindRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Transactional
     public Response<List<ProductEntity>> listProducts(ListProductCommandInterface command) {
@@ -93,21 +93,22 @@ public class ProductService {
 
     @Transactional
     public Response<VirtualProductInformation> createVirtualProduct(
-            CreateVirtualProductCommandInterface product) {
-        ProductEntity productEntity = ProductEntity.from(product);
+            CreateVirtualProductCommandInterface createCommand) {
+        ProductEntity product = ProductEntity.from(createCommand);
 
         /**
          * Persist generic product object
          */
         Response<ProductEntity> persistProductRequest = productRepository
-                .persist(Objects.requireNonNull(productEntity, "Product Entity Cannot be null"));
+                .persist(Objects.requireNonNull(product, "Product Entity Cannot be null"));
         if (persistProductRequest.isSuccess() == false)
             return Response.fromFailure(persistProductRequest);
-
+        product = persistProductRequest.getPayload();
+        
         /**
          * Persist specific product kind object
          */
-        ProductKindEntity productKindEntity = new ProductKindEntity(productEntity.getId(),
+        ProductKindEntity productKindEntity = new ProductKindEntity(product.getId(),
                 KindEntity.Default.getVirtualServiceKind().getKindId());
 
         Response<ProductKindEntity> persistProductKindResponse =
@@ -118,9 +119,8 @@ public class ProductService {
         /**
          * Persist specific product kind data
          */
-        Response<VirtualProductEntity> persistVirtualProductResponse =
-                virtualProductRepository.persist(new VirtualProductEntity(productEntity.getId(),
-                        product.getProvisionHours()));
+        Response<VirtualProductEntity> persistVirtualProductResponse = virtualProductRepository
+                .persist(new VirtualProductEntity(product, createCommand.getProvisionHours()));
         if (persistVirtualProductResponse.isSuccess() == false)
             return Response.fromFailure(persistVirtualProductResponse);
 
