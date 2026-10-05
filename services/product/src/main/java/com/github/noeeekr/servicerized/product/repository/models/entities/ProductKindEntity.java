@@ -1,6 +1,5 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
-import java.util.UUID;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -8,6 +7,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -25,6 +26,8 @@ import jakarta.persistence.Table;
  */
 
 @Entity
+@Getter
+@NoArgsConstructor
 @Table(name = ProductKindEntity.METADATA.TABLE_NAME)
 public class ProductKindEntity {
     public static class METADATA {
@@ -34,8 +37,11 @@ public class ProductKindEntity {
     //
     // Constructors
     //
-    public ProductKindEntity(UUID productId, Long productKindId) {
-        this.id = new ProductKindId(productId, productKindId);
+    public ProductKindEntity(ProductEntity product, KindEntity kind) {
+        this.id = new ProductKindId(product.getProductId(), kind.getKindId());
+        
+        this.product = product;
+        this.kind = kind;
     }
 
     @EmbeddedId
