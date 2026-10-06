@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -24,6 +25,7 @@ import lombok.Getter;
  */
 @Getter 
 @Entity
+@NoArgsConstructor 
 @Table(name = KindEntity.METADATA.TABLE_NAME)
 public class KindEntity implements KindInterface {
     public static class METADATA {
@@ -48,11 +50,6 @@ public class KindEntity implements KindInterface {
     public KindEntity(Long kindId, String kindName) {
         this.kindName = kindName;
         this.kindId = kindId;
-    }
-
-    public KindEntity() {
-        this.kindName = null;
-        this.kindId = null;
     }
 
     //

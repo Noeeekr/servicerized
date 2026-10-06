@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.github.noeeekr.servicerized.product.repository.KindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
 import com.github.noeeekr.servicerized.product.repository.VirtualProductRepository;
@@ -35,6 +36,8 @@ public class ProductService {
     private ProductKindRepository productKindRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private KindRepository kindRepository;
 
     @Transactional
     public Response<List<ProductEntity>> listProducts(ListProductCommandInterface command) {
@@ -104,12 +107,12 @@ public class ProductService {
         if (persistProductRequest.isSuccess() == false)
             return Response.fromFailure(persistProductRequest);
         product = persistProductRequest.getPayload();
-        
+
         /**
          * Persist specific product kind object
          */
-        ProductKindEntity productKindEntity = new ProductKindEntity(product.getId(),
-                KindEntity.Default.getVirtualServiceKind().getKindId());
+        KindEntity kind = kindRepository.getReferenceManager().getVirtualServiceKind();
+        ProductKindEntity productKindEntity = new ProductKindEntity(product, kind);
 
         Response<ProductKindEntity> persistProductKindResponse =
                 productKindRepository.persist(productKindEntity);

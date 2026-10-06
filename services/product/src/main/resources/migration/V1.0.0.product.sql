@@ -65,20 +65,19 @@ create table product_kinds (
 
 --changeset migrate-product-service:create-products-kinds-relation-table
 create table products_kinds (
-    kindId bigint not null,
-    kind_id bigint not null unique,
-    id uuid not null,
-    primary key (kindId, id)
+    product_kind_id bigint not null,
+    product_id uuid not null,
+    primary key (product_kind_id, product_id)
 );
 
 alter table if exists products_kinds
     add constraint fk_product_kind_id
-    foreign key (kind_id)
+    foreign key (product_kind_id)
     references product_kinds;
 
 alter table if exists products_kinds
     add constraint fk_kind_target_product_id
-    foreign key (id)
+    foreign key (product_id)
     references products.products;
 
 --rollback alter table if exists products_kinds drop constraint if exists fk_product_id;
@@ -88,13 +87,13 @@ alter table if exists products_kinds
 --changeset migrate-product-service:create-services-table
 create table services (
     provision_hours integer not null,
-    id uuid not null,
-    primary key (id)
+    product_id uuid not null,
+    primary key (product_id)
 );
 
 alter table if exists services
     add constraint fk_virtual_product_target_product_id
-    foreign key (id)
+    foreign key (product_id)
     references products.products;
 
 --rollback alter table if exists services drop constraint if exists fk_virtual_product_target_product_id;
