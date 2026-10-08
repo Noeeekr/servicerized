@@ -3,6 +3,7 @@ package com.github.noeeekr.servicerized.product.service.product;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.noeeekr.servicerized.product.repository.KindRepository;
@@ -92,6 +93,11 @@ public class ProductService {
         if (listProductResponse.isSuccess() == false)
             return Response.fromFailure(listProductResponse);
         return listProductResponse;
+    }
+
+    @Transactional
+    public Response<Optional<ProductEntity>> listProduct(UUID productId, UUID ownerId) {
+        return productRepository.listProduct(productId, ownerId);
     }
 
     @Transactional

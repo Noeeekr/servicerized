@@ -1,6 +1,5 @@
 package com.github.noeeekr.servicerized.product.service.category;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,10 +16,6 @@ import com.github.noeeekr.servicerized.product.service.category.models.command.A
 import com.github.noeeekr.servicerized.product.service.category.models.command.DetachCategoryCommand;
 import com.github.noeeekr.servicerized.product.service.category.models.command.ListCategoryCommand;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
-import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommand;
-import com.github.noeeekr.servicerized.product.service.product.models.filters.CategoryFilter;
-import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilter;
-import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
@@ -40,9 +35,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate product existence & ownership.
          */
         Response<Optional<ProductEntity>> findProductResponse =
-                productService.listProduct(new ListProductCommand(new ListFilter(
-                        Arrays.asList(new CategoryFilter(detachRequest.categoryId(), "")),
-                        new ProductFilter(detachRequest.productId(), ""))));
+                productService.listProduct(detachRequest.productId(), detachRequest.userId());
 
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
@@ -95,9 +88,7 @@ public class ProductCategoryService {
          * Data Integrity: Validate product existence & ownership.
          */
         Response<Optional<ProductEntity>> findProductResponse =
-                productService.listProduct(new ListProductCommand(new ListFilter(
-                        Arrays.asList(new CategoryFilter(attachRequest.categoryId(), "")),
-                        new ProductFilter(attachRequest.productId(), ""))));
+                productService.listProduct(attachRequest.productId(), attachRequest.userId());
         if (findProductResponse.isSuccess() == false)
             return Response.fromFailure(findProductResponse);
         if (findProductResponse.getPayload().isEmpty())
@@ -119,7 +110,8 @@ public class ProductCategoryService {
          * Create entity to be persisted.
          */
         ProductCategoryEntity entity = new ProductCategoryEntity(
-                new ProductCategoryKey(attachRequest.productId(), attachRequest.categoryId()));
+                findProductResponse.getPayload().get(),
+                findCategoryResponse.getPayload().get(0));
 
         /**
          * Execute persist operation & Handle exceptions.
