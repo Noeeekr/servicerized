@@ -2,6 +2,7 @@ package com.github.noeeekr.servicerized.authorization.cookie;
 
 import java.util.UUID;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * AuthorizationCookieService must be extended in order to be scannable and manageable by spring
