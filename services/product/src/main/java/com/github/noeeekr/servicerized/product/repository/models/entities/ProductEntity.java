@@ -133,6 +133,7 @@ public class ProductEntity extends MetricsEntity
 
     public static ProductEntity from(CreateVirtualProductInformationInterface product) {
         return ProductEntity.builder().name(product.getProductName())
+                .ownerId(product.getProductOwnerId())
                 .description(product.getProductDescription()).price(product.getProductPrice())
                 .build();
     }
