@@ -18,15 +18,16 @@ public class ProductDto implements ProductInterface {
     }
 
     public ProductDto(UUID id, UUID ownerId, String name, Integer price, String description) {
-        if (id.version() != 7) {
+        if (id != null && id.version() != 7) {
             throw new IllegalArgumentException(String.format(
                     "Create dto for entity 'product': Required UUID version on field 'id' to be 'v7' found 'v%d'.",
                     id.version()));
         }
-        if (ownerId.version() != 7) {
+        if (ownerId == null || ownerId.version() != 7) {
+            String foundVersion = ownerId == null ? "null" : "v" + ownerId.version();
             throw new IllegalArgumentException(String.format(
-                    "Create dto for entity 'product': Required UUID version on field 'ownerId' to be 'v7' found 'v%d'.",
-                    ownerId.version()));
+                    "Create dto for entity 'product': Required UUID version on field 'ownerId' to be 'v7' found '%s'.",
+                    foundVersion));
         }
         this.description = description;
         this.ownerId = ownerId;
