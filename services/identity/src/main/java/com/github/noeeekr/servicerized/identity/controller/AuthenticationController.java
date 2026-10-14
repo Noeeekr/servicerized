@@ -83,8 +83,7 @@ public class AuthenticationController extends Controller {
                                         AuthenticationController.class.getName(),
                                         "Signup Confirmation Endpoint");
 
-                return new ResponseEntity<>(new ClientResponse(ClientResponse.getEmptyPayload()),
-                                HttpStatus.OK);
+                return new ResponseEntity<>(ClientResponse.empty(), HttpStatus.OK);
         }
 
         @PostMapping
