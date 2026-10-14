@@ -55,12 +55,7 @@ public class ClientResponse {
         this.error = err;
     }
 
-    public static ClientResponseDto getEmptyPayload() {
-        return new ClientResponseDto() {
-            @Override
-            public Object prepareToClient() {
-                return null;
-            }
-        };
+    public static ClientResponse empty() {
+        return new ClientResponse(null, null);
     }
 }
