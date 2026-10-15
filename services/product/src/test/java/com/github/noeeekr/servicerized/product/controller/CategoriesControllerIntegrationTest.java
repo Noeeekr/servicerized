@@ -6,8 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.containsString;
-
+import java.util.Objects;
 import java.util.UUID;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -50,13 +51,14 @@ public class CategoriesControllerIntegrationTest {
     public void listCategoriesSuccess() throws Exception {
         UUID ownerId = UuidCreator.getTimeOrderedEpoch();
 
-        mockMvc.perform(get("/api/product/category")
-                .cookie(authorizationCookie(ownerId))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString("Digital Art")));
+        MediaType contentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+        MediaType expectedContentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+        Matcher<String> matcher = Objects.requireNonNull(containsString("Digital Art"));
+
+        mockMvc.perform(get("/api/product/category").cookie(authorizationCookie(ownerId))
+                .accept(MediaType.APPLICATION_JSON).contentType(contentType))
+                .andExpect(status().isOk()).andExpect(content().contentType(expectedContentType))
+                .andExpect(content().string(matcher));
     }
 
     /**
@@ -66,18 +68,19 @@ public class CategoriesControllerIntegrationTest {
     public void attachCategorySuccess() throws Exception {
         UUID ownerId = UuidCreator.getTimeOrderedEpoch();
         ProductEntity product = createProduct(ownerId, "Integration test attach product");
-        CategoryEntity category =
-                createCategory("Integration test attach category");
+        CategoryEntity category = createCategory("Integration test attach category");
+
+        MediaType contentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+        MediaType expectedContentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(put("/api/product/{productId}/category/{categoryId}",
                 product.getProductId(), category.getCategoryId())
-                .queryParam("productId", product.getProductId().toString())
-                .queryParam("categoryId", category.getCategoryId().toString())
-                .cookie(authorizationCookie(ownerId))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .queryParam("productId", product.getProductId().toString())
+                        .queryParam("categoryId", category.getCategoryId().toString())
+                        .cookie(authorizationCookie(ownerId)).accept(MediaType.APPLICATION_JSON)
+                        .contentType(contentType))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(expectedContentType));
     }
 
     /**
@@ -87,29 +90,26 @@ public class CategoriesControllerIntegrationTest {
     public void detachCategorySuccess() throws Exception {
         UUID ownerId = UuidCreator.getTimeOrderedEpoch();
         ProductEntity product = createProduct(ownerId, "Integration test detach product");
-        CategoryEntity category =
-                createCategory("Integration test detach category");
+        CategoryEntity category = createCategory("Integration test detach category");
         entityManager.persist(new ProductCategoryEntity(product, category));
         entityManager.flush();
 
+        MediaType contentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+        MediaType expectedContentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+
+
         mockMvc.perform(delete("/api/product/{productId}/category/{categoryId}",
                 product.getProductId(), category.getCategoryId())
-                .queryParam("productId", product.getProductId().toString())
-                .queryParam("categoryId", category.getCategoryId().toString())
-                .cookie(authorizationCookie(ownerId))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                        .queryParam("productId", product.getProductId().toString())
+                        .queryParam("categoryId", category.getCategoryId().toString())
+                        .cookie(authorizationCookie(ownerId)).accept(MediaType.APPLICATION_JSON)
+                        .contentType(contentType))
+                .andExpect(status().isOk()).andExpect(content().contentType(expectedContentType));
     }
 
     private ProductEntity createProduct(UUID ownerId, String name) {
-        ProductEntity product = ProductEntity.builder()
-                .ownerId(ownerId)
-                .name(name)
-                .price(90)
-                .description("Prepared for category integration test")
-                .build();
+        ProductEntity product = ProductEntity.builder().ownerId(ownerId).name(name).price(90)
+                .description("Prepared for category integration test").build();
         entityManager.persist(product);
         entityManager.flush();
         return product;

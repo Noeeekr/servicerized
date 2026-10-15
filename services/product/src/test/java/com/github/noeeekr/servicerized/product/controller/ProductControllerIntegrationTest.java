@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,13 +57,15 @@ public class ProductControllerIntegrationTest {
         request.setProductDescription("Created through the product endpoint");
         request.setProvisionHours(3);
 
-        mockMvc.perform(post("/api/product")
-                .cookie(authorizationCookie(ownerId))
-                .content(objectMapper.writeValueAsString(request))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        String content = Objects.requireNonNull(objectMapper.writeValueAsString(request));
+        MediaType contentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+
+        MediaType expectedContentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(post("/api/product").cookie(authorizationCookie(ownerId)).content(content)
+                .accept(MediaType.APPLICATION_JSON).contentType(contentType))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(expectedContentType))
                 .andExpect(jsonPath("$.payload.productName")
                         .value("Integration test virtual product"));
     }
@@ -74,12 +76,9 @@ public class ProductControllerIntegrationTest {
     @Test
     public void listProductSuccess() throws Exception {
         UUID ownerId = UuidCreator.getTimeOrderedEpoch();
-        ProductEntity product = ProductEntity.builder()
-                .ownerId(ownerId)
-                .name("Integration test listed product")
-                .price(75)
-                .description("Product returned by the list endpoint")
-                .build();
+        ProductEntity product =
+                ProductEntity.builder().ownerId(ownerId).name("Integration test listed product")
+                        .price(75).description("Product returned by the list endpoint").build();
         CategoryEntity category = new CategoryEntity(null, "Integration test listed category");
         entityManager.persist(product);
         entityManager.persist(category);
@@ -87,16 +86,16 @@ public class ProductControllerIntegrationTest {
         entityManager.persist(new ProductCategoryEntity(product, category));
         entityManager.flush();
 
-        mockMvc.perform(post("/api/product/list")
-                .cookie(authorizationCookie(ownerId))
+        MediaType contentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+        MediaType expectedContentType = Objects.requireNonNull(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(post("/api/product/list").cookie(authorizationCookie(ownerId))
                 .content("{\"productFilter\":{\"productId\":null,"
                         + "\"productName\":\"Integration test listed product\"},"
                         + "\"categoryFilter\":[{\"categoryId\":null,"
                         + "\"categoryName\":\"Integration test listed category\"}]}")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON).contentType(contentType))
+                .andExpect(status().isOk()).andExpect(content().contentType(expectedContentType))
                 .andExpect(jsonPath("$.payload[0].productName")
                         .value("Integration test listed product"));
     }
