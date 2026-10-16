@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.KindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
@@ -20,6 +21,7 @@ import com.github.noeeekr.servicerized.product.repository.models.relations.Virtu
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -137,5 +139,20 @@ public class ProductService {
                 persistVirtualProductResponse.getPayload(), persistProductRequest.getPayload(),
                 KindEntity.Default.getVirtualServiceKind());
         return Response.success(virtualProductInformation);
+    }
+
+    @Transactional
+    public Response<Integer> deleteVirtualProduct(ProductFilter filter) {
+
+        if (filter.isEmpty())
+            return Response
+                    .fromFailure(new Failures.BadRequest("filtros de produto não definidos"));
+
+        Response<Integer> markDeletedResponse = this.productRepository.markDeleted(filter);
+        if (!markDeletedResponse.isSuccess())
+            return markDeletedResponse;
+
+        return markDeletedResponse;
+
     }
 }

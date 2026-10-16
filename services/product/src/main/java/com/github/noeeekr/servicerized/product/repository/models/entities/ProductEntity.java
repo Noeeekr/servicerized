@@ -53,10 +53,11 @@ public class ProductEntity extends MetricsEntity
      * METADATA defines a single source of truth for external references to this table names to be
      * used across this micro-service, providing consistency and easy maintence.
      */
-    public static final class METADATA {
+    public static final class METADATA extends MetricsEntity.METADATA {
         public static final String TABLE_NAME = "products";
 
         public static final String COLUMN_NAME_PRODUCT_ID = "id";
+        public static final String COLUMN_NAME_PRODUCT_OWNER_ID = "ownerId";
         public static final String COLUMN_NAME_PRODUCT_NAME = "name";
 
         public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
@@ -115,6 +116,10 @@ public class ProductEntity extends MetricsEntity
         return this.description;
     }
 
+    public boolean isEmpty() {
+        return this.id != null && this.name != null && this.ownerId != null
+                && this.description != null && this.price != null;
+    }
     //
     // Transformators
     //
@@ -133,9 +138,8 @@ public class ProductEntity extends MetricsEntity
 
     public static ProductEntity from(CreateVirtualProductInformationInterface product) {
         return ProductEntity.builder().name(product.getProductName())
-                .ownerId(product.getProductOwnerId())
-                .description(product.getProductDescription()).price(product.getProductPrice())
-                .build();
+                .ownerId(product.getProductOwnerId()).description(product.getProductDescription())
+                .price(product.getProductPrice()).build();
     }
 
     @Override
