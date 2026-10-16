@@ -15,6 +15,21 @@ public class Failures {
 
         @Override
         public boolean isClientFault() {
+            return clientFault;
+        }
+    }
+
+    public record BadRequest(String message) implements Failure {
+        public String message() {
+            return "Parametros inválidos: " + message;
+        }
+
+        public HttpStatus code() {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        @Override
+        public boolean isClientFault() {
             return true;
         }
     }

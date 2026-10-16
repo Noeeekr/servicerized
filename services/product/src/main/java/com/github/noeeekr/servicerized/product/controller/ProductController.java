@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.github.noeeekr.servicerized.product.service.authorization.Authorizati
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
 import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
@@ -116,5 +118,24 @@ public class ProductController extends Controller {
                 return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
         }
 
+        @DeleteMapping()
+        public ResponseEntity<ClientResponse> deleteProduct(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+                        @RequestBody ProductFilter requestBody) {
+                if (this.authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Cookie de autorização não encontrado. ", true),
+                                        ProductController.class.getCanonicalName(),
+                                        "Create Product (Method)");
+                } ;
 
+                Response<Integer> deleteVirtualProductResponse =
+                                this.productService.deleteVirtualProduct(requestBody);
+                if (!deleteVirtualProductResponse.isSuccess())
+                        return this.handleFailure(deleteVirtualProductResponse.getFailure(),
+                                        "Product (Controller)", "Delete Product (Endpoint)",
+                                        "Delete Virtual Product (Service)");
+
+                return ResponseEntity.status(HttpStatus.OK).body(ClientResponse.empty());
+        }
 }

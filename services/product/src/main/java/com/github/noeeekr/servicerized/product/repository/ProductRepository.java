@@ -16,6 +16,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -44,6 +45,7 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }
     }
+
     //
     // Select queries
     //
@@ -195,4 +197,20 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
         }
     }
 
+    //
+    // Delete queries
+    //
+
+    public Response<Integer> markDeleted(ProductFilterableFieldsInterface productFilter) {
+        CriteriaUpdate<ProductEntity> query = this.buildMarkProductDeletedQuery(productFilter);
+
+        int affectedRows;
+        try {
+            affectedRows = this.entityManager.createQuery(query).executeUpdate();
+        } catch (Exception e) {
+            return Response.fromFailure(new Failures.UnhandledException(e));
+        }
+
+        return Response.success(affectedRows);
+    }
 }
