@@ -19,6 +19,7 @@ import com.github.noeeekr.servicerized.product.repository.models.entities.Produc
 import com.github.noeeekr.servicerized.product.repository.models.entities.VirtualProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.relations.VirtualProductInformation;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.DeleteVirtualProductCommand;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
@@ -142,11 +143,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Response<Integer> deleteVirtualProduct(ProductFilter filter) {
+    public Response<Integer> deleteOwnedVirtualProduct(DeleteVirtualProductCommand command) {
+        ProductFilter filter = command.getProductFilter();
 
         if (filter.isEmpty())
             return Response
                     .fromFailure(new Failures.BadRequest("filtros de produto não definidos"));
+
+        filter.replaceOwnerId(command.getProductOwnerId());
 
         Response<Integer> markDeletedResponse = this.productRepository.markDeleted(filter);
         if (!markDeletedResponse.isSuccess())

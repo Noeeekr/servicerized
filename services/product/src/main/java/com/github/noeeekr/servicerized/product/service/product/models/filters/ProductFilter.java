@@ -35,4 +35,9 @@ public class ProductFilter implements ProductFilterableFieldsInterface {
     public boolean isEmpty() {
         return this.productId != null && this.productName != null && this.productOwnerId != null;
     }
+
+    public ProductFilter replaceOwnerId(UUID productOwnerId) {
+        this.productOwnerId = productOwnerId;
+        return this;
+    }
 }

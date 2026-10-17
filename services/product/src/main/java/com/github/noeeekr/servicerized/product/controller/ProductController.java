@@ -21,6 +21,7 @@ import com.github.noeeekr.servicerized.product.repository.models.relations.Virtu
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
 import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.DeleteVirtualProductCommand;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
@@ -119,9 +120,11 @@ public class ProductController extends Controller {
         }
 
         @DeleteMapping()
-        public ResponseEntity<ClientResponse> deleteProduct(
+        public ResponseEntity<ClientResponse> deleteOwnedProduct(
                         @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
                         @RequestBody ProductFilter requestBody) {
+                AuthorizationToken token =
+                                this.authorizationService.getPayload(authorizationCookie);
                 if (this.authorizationService.isTokenExpired(authorizationCookie)) {
                         return this.handleFailure(new Failures.AuthorizationFailed(
                                         "Cookie de autorização não encontrado. ", true),
@@ -129,8 +132,11 @@ public class ProductController extends Controller {
                                         "Create Product (Method)");
                 } ;
 
+                DeleteVirtualProductCommand command =
+                                new DeleteVirtualProductCommand(token.userId(), requestBody);
+
                 Response<Integer> deleteVirtualProductResponse =
-                                this.productService.deleteVirtualProduct(requestBody);
+                                this.productService.deleteOwnedVirtualProduct(command);
                 if (!deleteVirtualProductResponse.isSuccess())
                         return this.handleFailure(deleteVirtualProductResponse.getFailure(),
                                         "Product (Controller)", "Delete Product (Endpoint)",
