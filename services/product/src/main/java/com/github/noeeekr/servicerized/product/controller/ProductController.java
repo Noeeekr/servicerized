@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
+import com.github.noeeekr.servicerized.product.controller.models.dto.DeleteVirtualProductDto;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
@@ -142,6 +143,8 @@ public class ProductController extends Controller {
                                         "Product (Controller)", "Delete Product (Endpoint)",
                                         "Delete Virtual Product (Service)");
 
-                return ResponseEntity.status(HttpStatus.OK).body(ClientResponse.empty());
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(new ClientResponse(new DeleteVirtualProductDto(
+                                                deleteVirtualProductResponse.getPayload())));
         }
 }
