@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.controller.Controller;
 import com.github.noeeekr.servicerized.product.controller.models.dto.DeleteVirtualProductDto;
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
+import com.github.noeeekr.servicerized.product.controller.models.request.UpdateVirtualProductInformationRequest;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
 import com.github.noeeekr.servicerized.product.failures.Failures;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
@@ -24,6 +26,7 @@ import com.github.noeeekr.servicerized.product.service.product.ProductService;
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.DeleteVirtualProductCommand;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.UpdateVirtualProductInformationCommand;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.client.ClientResponse;
@@ -118,6 +121,32 @@ public class ProductController extends Controller {
                 ClientResponse responseBody =
                                 new ClientResponse(createProductResponse.getPayload());
                 return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+        }
+
+        @PatchMapping()
+        public ResponseEntity<ClientResponse> updateProduct(
+                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+                        @RequestBody UpdateVirtualProductInformationRequest request) {
+                /**
+                 * Handle authorization through common authorization package.
+                 */
+                AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
+                if (authorizationService.isTokenExpired(authorizationCookie)) {
+                        return this.handleFailure(new Failures.AuthorizationFailed(
+                                        "Cookie de autorização não encontrado. ", true),
+                                        ProductController.class.getCanonicalName(),
+                                        "Create Product (Method)");
+                }
+
+                UpdateVirtualProductInformationCommand command =
+                                UpdateVirtualProductInformationCommand.upgrade(token.userId(),
+                                                request);
+
+                this.productService.updateOwnedVirtualProductInformation(command);
+
+
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                                .body(ClientResponse.empty());
         }
 
         @DeleteMapping()
