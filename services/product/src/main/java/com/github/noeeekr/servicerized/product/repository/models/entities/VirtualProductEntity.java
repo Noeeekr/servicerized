@@ -20,6 +20,9 @@ import lombok.Getter;
 public class VirtualProductEntity implements VirtualProductInterface {
     public static final class METADATA {
         public static final String TABLE_NAME = "services";
+
+        public static final String COLUMN_NAME_PROVISION_HOURS = "provisionHours";
+        public static final String COLUMN_NAME_PRODUCT_ID = "productId";
     }
 
     @Id
@@ -34,7 +37,7 @@ public class VirtualProductEntity implements VirtualProductInterface {
     /**
      * The product this entity data increments.
      */
-    @MapsId
+    @MapsId(VirtualProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID)
     @OneToOne
     @JoinColumn(name = ProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID,
             foreignKey = @ForeignKey(name = "fk_virtual_product_target_product_id"))

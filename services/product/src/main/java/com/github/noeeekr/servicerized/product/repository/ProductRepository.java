@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.query.ProductRepositoryQueryBuilder;
 import com.github.noeeekr.servicerized.response.Response;
@@ -192,6 +193,21 @@ public class ProductRepository implements ProductRepositoryQueryBuilder {
             return Response.success(products);
         } catch (NoResultException e) {
             return Response.success(new ArrayList<>());
+        } catch (Exception e) {
+            return Response.fromFailure(new Failures.UnhandledException(e));
+        }
+    }
+
+    //
+    // Update queries
+    //
+    public Response<Integer> updateSingle(UpdateProductFieldsInterface productFields,
+            ProductFilterableFieldsInterface productFilter) {
+        CriteriaUpdate<ProductEntity> updateProductQuery =
+                this.buildUpdateProductQuery(productFields, productFilter);
+        try {
+            Integer updateAmount = entityManager.createQuery(updateProductQuery).executeUpdate();
+            return Response.success(updateAmount);
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
         }

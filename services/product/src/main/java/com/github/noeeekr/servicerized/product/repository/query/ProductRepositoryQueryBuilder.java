@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -18,6 +20,7 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
     public default CriteriaQuery<ProductEntity> buildListProductQuery(
             ProductFilterableFieldsInterface productFilter,
             List<CategoryFilterableFieldsInterface> categoryFilters) {
+
         CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery<ProductEntity> query = criteria.createQuery(ProductEntity.class);
         Root<ProductCategoryEntity> relationRoot = query.from(ProductCategoryEntity.class);
@@ -25,10 +28,13 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
         List<Predicate> conditions = new ArrayList<>();
 
         if (categoryFilters != null && categoryFilters.isEmpty() != false) {
-            conditions.add(this.getCategoryFiltersFor(relationRoot, categoryFilters));
+            Join<ProductCategoryEntity, CategoryEntity> categoryJoin =
+                    relationRoot.join("category");
+            conditions.add(this.getCategoryFiltersFor(categoryJoin, categoryFilters));
         }
         if (productFilter != null) {
-            conditions.add(this.getProductFiltersFor(relationRoot, productFilter));
+            Join<ProductCategoryEntity, ProductEntity> productJoin = relationRoot.join("product");
+            conditions.add(this.getProductFiltersFor(productJoin, productFilter));
         }
 
         conditions.add(relationRoot.get("deletedAt").isNull());
@@ -36,6 +42,7 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
         Join<ProductCategoryEntity, ProductEntity> productJoin = relationRoot.join("product");
 
         return query.select(productJoin).where(criteria.and(conditions));
+
     }
 
     public default CriteriaUpdate<ProductEntity> buildMarkProductDeletedQuery(
@@ -44,25 +51,49 @@ public interface ProductRepositoryQueryBuilder extends ProductRepositoryQueryFil
         CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
         CriteriaUpdate<ProductEntity> query = criteria.createCriteriaUpdate(ProductEntity.class);
 
-        Root<ProductEntity> productRoot = query.from(ProductEntity.class);
+        Root<ProductEntity> product = query.from(ProductEntity.class);
 
-        query.set(productRoot.get(ProductEntity.METADATA.COLUMN_NAME_DELETED_AT),
-                LocalDateTime.now());
+        query.set(product.get(ProductEntity.METADATA.COLUMN_NAME_DELETED_AT), LocalDateTime.now());
 
         List<Predicate> conditions = new ArrayList<>();
-        if (filter.getProductId() != null) {
-            conditions.add(productRoot.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID)
-                    .equalTo(filter.getProductId()));
+        if (filter != null && filter.isEmpty() != false) {
+            conditions.add(this.getProductFiltersFor(product, filter));
         }
-        if (filter.getProductName() != null) {
-            conditions.add(productRoot.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_NAME)
-                    .equalTo(filter.getProductName()));
+        return query.where(criteria.or(conditions));
+    }
+
+    public default CriteriaUpdate<ProductEntity> buildUpdateProductQuery(
+            UpdateProductFieldsInterface productFields, ProductFilterableFieldsInterface filter) {
+
+        CriteriaBuilder criteria = this.getEntityManager().getCriteriaBuilder();
+        CriteriaUpdate<ProductEntity> query = criteria.createCriteriaUpdate(ProductEntity.class);
+
+        Root<ProductEntity> product = query.from(ProductEntity.class);
+
+        query.set(product.get(ProductEntity.METADATA.COLUMN_NAME_DELETED_AT), LocalDateTime.now());
+
+        List<Predicate> conditions = new ArrayList<>();
+        if (filter != null && filter.isEmpty() != false) {
+            conditions.add(this.getProductFiltersFor(product, filter));
         }
-        if (filter.getProductOwnerId() != null) {
-            conditions.add(productRoot.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_OWNER_ID)
-                    .equalTo(filter.getProductOwnerId()));
+
+        if (productFields.getProductName() != null && !productFields.getProductName().isBlank()) {
+            query.set(product.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_NAME),
+                    productFields.getProductName());
+        }
+
+        if (productFields.getProductPrice() != null) {
+            query.set(product.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_PRICE),
+                    productFields.getProductPrice());
+        }
+
+        if (productFields.getProductDescription() != null
+                && !productFields.getProductDescription().isBlank()) {
+            query.set(product.get(ProductEntity.METADATA.COLUMN_NAME_PRODUCT_DESCRIPTION),
+                    productFields.getProductDescription());
         }
 
         return query.where(criteria.or(conditions));
+
     }
 }

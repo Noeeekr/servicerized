@@ -57,8 +57,10 @@ public class ProductEntity extends MetricsEntity
         public static final String TABLE_NAME = "products";
 
         public static final String COLUMN_NAME_PRODUCT_ID = "id";
-        public static final String COLUMN_NAME_PRODUCT_OWNER_ID = "ownerId";
         public static final String COLUMN_NAME_PRODUCT_NAME = "name";
+        public static final String COLUMN_NAME_PRODUCT_PRICE = "price";
+        public static final String COLUMN_NAME_PRODUCT_OWNER_ID = "ownerId";
+        public static final String COLUMN_NAME_PRODUCT_DESCRIPTION = "description";
 
         public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
         public static final String DATABASE_COLUMN_NAME_PRODUCT_OWNER_ID = "product_owner_id";

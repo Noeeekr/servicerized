@@ -13,6 +13,8 @@ import com.github.noeeekr.servicerized.product.repository.ProductRepository;
 import com.github.noeeekr.servicerized.product.repository.VirtualProductRepository;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.CategoryFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateVirtualProductFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.entities.KindEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductKindEntity;
@@ -21,8 +23,10 @@ import com.github.noeeekr.servicerized.product.repository.models.relations.Virtu
 import com.github.noeeekr.servicerized.product.service.product.models.command.CreateVirtualProductCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.command.DeleteVirtualProductCommand;
 import com.github.noeeekr.servicerized.product.service.product.models.command.ListProductCommandInterface;
+import com.github.noeeekr.servicerized.product.service.product.models.command.UpdateVirtualProductInformationCommandInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ListFilterInterface;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
+import com.github.noeeekr.servicerized.product.service.product.models.filters.VirtualProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -143,12 +147,43 @@ public class ProductService {
     }
 
     @Transactional
+    public Response<Integer> updateOwnedVirtualProductInformation(
+            UpdateVirtualProductInformationCommandInterface command) {
+
+        ProductFilterableFieldsInterface filter = command.getProductFilter();
+        if (filter == null)
+            return Response.fromFailure(new Failures.BadRequest(
+                    "filtros de produto não definidos. Incapaz de localizar o produto alvo"));
+
+        UpdateProductFieldsInterface productFields = command.getProduct();
+        if (productFields != null) {
+            Response<Integer> updateSingleResponse =
+                    this.productRepository.updateSingle(productFields, filter);
+            if (!updateSingleResponse.isSuccess())
+                return updateSingleResponse;
+        }
+
+        UpdateVirtualProductFieldsInterface virtualProductFields = command.getVirtualProduct();
+        if (virtualProductFields != null) {
+            Response<Integer> updateSingleResponse = this.virtualProductRepository.updateSingle(
+                    virtualProductFields, new VirtualProductFilter(filter.getProductId()));
+            if (!updateSingleResponse.isSuccess())
+                return updateSingleResponse;
+        }
+
+        return Response.fromFailure(
+                new com.github.noeeekr.servicerized.response.failure.Failures.NotImplemented(
+                        "update owned product information method is not implemented",
+                        "Product (Service)"));
+    }
+
+    @Transactional
     public Response<Integer> deleteOwnedVirtualProduct(DeleteVirtualProductCommand command) {
         ProductFilter filter = command.getProductFilter();
 
         if (filter.isEmpty())
-            return Response
-                    .fromFailure(new Failures.BadRequest("filtros de produto não definidos"));
+            return Response.fromFailure(new Failures.BadRequest(
+                    "filtros de produto não definidos. Incapaz de localizar o produto alvo"));
 
         filter.replaceOwnerId(command.getProductOwnerId());
 
