@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.github.noeeekr.servicerized.product.failures.Failures;
+import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.KindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductRepository;
@@ -152,7 +152,7 @@ public class ProductService {
 
         ProductFilterableFieldsInterface filter = command.getProductFilter();
         if (filter == null)
-            return Response.fromFailure(new Failures.BadRequest(
+            return Response.fromFailure(new ServiceFailures.BadRequest(
                     "filtros de produto não definidos. Incapaz de localizar o produto alvo"));
 
         UpdateProductFieldsInterface productFields = command.getProduct();
@@ -171,10 +171,8 @@ public class ProductService {
                 return updateSingleResponse;
         }
 
-        return Response.fromFailure(
-                new com.github.noeeekr.servicerized.response.failure.Failures.NotImplemented(
-                        "update owned product information method is not implemented",
-                        "Product (Service)"));
+        return Response.fromFailure(new ServiceFailures.NotImplemented(
+                "update owned product information method is not implemented", "Product (Service)"));
     }
 
     @Transactional
@@ -182,7 +180,7 @@ public class ProductService {
         ProductFilter filter = command.getProductFilter();
 
         if (filter.isEmpty())
-            return Response.fromFailure(new Failures.BadRequest(
+            return Response.fromFailure(new ServiceFailures.BadRequest(
                     "filtros de produto não definidos. Incapaz de localizar o produto alvo"));
 
         filter.replaceOwnerId(command.getProductOwnerId());
