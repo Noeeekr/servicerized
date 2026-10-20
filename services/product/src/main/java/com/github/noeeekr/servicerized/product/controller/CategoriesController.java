@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.noeeekr.servicerized.authorization.cookie.AuthorizationToken;
 import com.github.noeeekr.servicerized.authorization.Authorization;
 import com.github.noeeekr.servicerized.controller.Controller;
-import com.github.noeeekr.servicerized.product.failures.Failures;
+import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.models.entities.CategoryEntity;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductCategoryEntity;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
@@ -46,7 +46,7 @@ public class CategoriesController extends Controller {
                  * Authorization: Requires user to contain credentials that are not expired.
                  */
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Falha de autorização: Credenciais não encontradas.", true),
                                         CategoriesController.class.getCanonicalName(),
                                         "List Categories (Endpoint)", "Authorization Service");
@@ -71,7 +71,7 @@ public class CategoriesController extends Controller {
                  * Authorization: Requires user to contain credentials that are not expired.
                  */
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Falha de autorização: Credenciais não encontradas.", true),
                                         CategoriesController.class.getCanonicalName(),
                                         "Attach Category (Endpoint)", "Authorization Service");
@@ -113,7 +113,7 @@ public class CategoriesController extends Controller {
                  * Authorization: Requires user to contain credentials that are not expired.
                  */
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Falha de autorização: Credenciais não encontradas.", true),
                                         CategoriesController.class.getCanonicalName(),
                                         "Attach Category (Endpoint)", "Authorization Service");

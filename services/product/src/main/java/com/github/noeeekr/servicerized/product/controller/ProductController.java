@@ -18,7 +18,7 @@ import com.github.noeeekr.servicerized.product.controller.models.dto.DeleteVirtu
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.controller.models.request.UpdateVirtualProductInformationRequest;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
-import com.github.noeeekr.servicerized.product.failures.Failures;
+import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.relations.VirtualProductInformation;
 import com.github.noeeekr.servicerized.product.service.authorization.AuthorizationService;
@@ -49,7 +49,7 @@ public class ProductController extends Controller {
                  * Handle authorization through common authorization package.
                  */
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Cookie de autorização não encontrado. ", true),
                                         ProductController.class.getCanonicalName(),
                                         "Create Product (Method)");
@@ -89,7 +89,7 @@ public class ProductController extends Controller {
                  */
                 AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Cookie de autorização não encontrado. ", true),
                                         ProductController.class.getCanonicalName(),
                                         "Create Product (Method)");
@@ -132,7 +132,7 @@ public class ProductController extends Controller {
                  */
                 AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
                 if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Cookie de autorização não encontrado. ", true),
                                         ProductController.class.getCanonicalName(),
                                         "Create Product (Method)");
@@ -156,7 +156,7 @@ public class ProductController extends Controller {
                 AuthorizationToken token =
                                 this.authorizationService.getPayload(authorizationCookie);
                 if (this.authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new Failures.AuthorizationFailed(
+                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
                                         "Cookie de autorização não encontrado. ", true),
                                         ProductController.class.getCanonicalName(),
                                         "Create Product (Method)");
