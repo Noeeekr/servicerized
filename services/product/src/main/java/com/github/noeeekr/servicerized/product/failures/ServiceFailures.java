@@ -22,7 +22,7 @@ public class ServiceFailures extends Failures {
 
     public record BadRequest(String message) implements Failure {
         public String message() {
-            return "Parametros inválidos: " + message;
+            return "incapaz de completar a requisição: " + message;
         }
 
         public HttpStatus code() {
