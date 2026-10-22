@@ -98,3 +98,17 @@ alter table if exists services
 
 --rollback alter table if exists services drop constraint if exists fk_virtual_product_target_product_id;
 --rollback drop table if exists services cascade;
+
+--changeset migrate-product-service:create-product-inventories-table
+    create table product_inventories (
+        product_available_amount integer,
+        product_id uuid not null,
+        primary key (product_id)
+    );
+    alter table if exists product_inventories 
+       add constraint fk_product_inventory_id 
+       foreign key (product_id) 
+       references products.products;
+       
+--rollback alter table if exists product_inventories drop constraint if exists fk_product_inventory_id;
+--rollback drop table if exists product_inventories cascade;
