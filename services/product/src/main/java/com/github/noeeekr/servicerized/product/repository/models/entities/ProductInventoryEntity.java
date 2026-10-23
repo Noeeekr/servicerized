@@ -34,6 +34,7 @@ public class ProductInventoryEntity {
      * across codebase for consistency.
      */
     public static class METADATA {
+        public static final String TABLE_NAME = "ProductInventoryEntity";
         public static final String DATABASE_TABLE_NAME = "product_inventories";
 
         public static final String COLUMN_NAME_PRODUCT_ID = "productId";
