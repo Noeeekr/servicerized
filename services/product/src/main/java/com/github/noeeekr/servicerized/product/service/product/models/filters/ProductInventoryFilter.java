@@ -15,4 +15,8 @@ public class ProductInventoryFilter implements ProductInventoryFilterableFieldsI
     public UUID getProductId() {
         return this.productId;
     }
+
+    public boolean isEmpty() {
+        return this.productId == null;
+    }
 }
