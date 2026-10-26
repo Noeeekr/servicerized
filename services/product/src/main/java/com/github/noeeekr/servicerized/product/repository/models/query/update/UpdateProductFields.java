@@ -1,4 +1,4 @@
-package com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.update;
+package com.github.noeeekr.servicerized.product.repository.models.query.update;
 
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
 

@@ -11,6 +11,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
 
+/**
+ * @deprecated Currently, there is no need for this class, only {@link VirtualProductEntity} is
+ *             available, which manages its inventory itself. Still, it is kept for future updates.
+ */
 @Component
 public class ProductInventoryRepositoryQueryFilterBuilder {
     @PersistenceContext

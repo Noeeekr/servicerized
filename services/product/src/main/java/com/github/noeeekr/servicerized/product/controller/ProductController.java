@@ -35,145 +35,134 @@ import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController extends Controller {
-        @Autowired
-        private ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-        @Autowired
-        private AuthorizationService authorizationService;
+    @Autowired
+    private AuthorizationService authorizationService;
 
-        @PostMapping("/list")
-        public ResponseEntity<ClientResponse> listProduct(
-                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-                        @RequestBody ListProductRequest request) {
-                /**
-                 * Handle authorization through common authorization package.
-                 */
-                if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
-                                        "Cookie de autorização não encontrado. ", true),
-                                        ProductController.class.getCanonicalName(),
-                                        "Create Product (Method)");
-                }
-
-                /**
-                 * Build a 'list product' instance by upgrading simple JSON to complex java
-                 * structures.
-                 */
-                ListProductCommandInterface requestedProduct =
-                                ListProductCommandInterface.upgrade(request);
-
-                Response<List<ProductEntity>> listProductResponse =
-                                productService.listProducts(requestedProduct);
-                if (listProductResponse.isSuccess() == false)
-                        return this.handleFailure(listProductResponse.getFailure(),
-                                        "Product (Controller)", "List Product (Endpoint)");
-
-                /**
-                 * Execute the target operation
-                 */
-                List<ProductEntity> product = listProductResponse.getPayload();
-                if (product.isEmpty()) {
-                        ClientResponse responseBody =
-                                        new ClientResponse(ClientResponseDto.EmptyPayload);
-                        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
-                }
-                return ResponseEntity.ok(new ClientResponse(product));
+    @PostMapping("/list")
+    public ResponseEntity<ClientResponse> listProduct(
+            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+            @RequestBody ListProductRequest request) {
+        /**
+         * Handle authorization through common authorization package.
+         */
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
+            return this.handleFailure(
+                    new ServiceFailures.AuthorizationFailed(
+                            "Cookie de autorização não encontrado. ", true),
+                    ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
 
-        @PostMapping()
-        public ResponseEntity<ClientResponse> createProduct(
-                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-                        @RequestBody CreateVirtualProductRequestInterface request) {
-                /**
-                 * Handle authorization through common authorization package.
-                 */
-                AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
-                if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
-                                        "Cookie de autorização não encontrado. ", true),
-                                        ProductController.class.getCanonicalName(),
-                                        "Create Product (Method)");
-                }
+        /**
+         * Build a 'list product' instance by upgrading simple JSON to complex java structures.
+         */
+        ListProductCommandInterface requestedProduct = ListProductCommandInterface.upgrade(request);
 
-                /**
-                 * Build a 'create product' instance merging data from client with Api-populated
-                 * fields.
-                 */
-                CreateVirtualProductCommandInterface requestedProduct =
-                                CreateVirtualProductCommandInterface.upgrade(request,
-                                                token.userId());
+        Response<List<ProductEntity>> listProductResponse =
+                productService.listProducts(requestedProduct);
+        if (listProductResponse.isSuccess() == false)
+            return this.handleFailure(listProductResponse.getFailure(), "Product (Controller)",
+                    "List Product (Endpoint)");
 
-                /**
-                 * Execute the target operation.
-                 */
-                Response<VirtualProductInformation> createProductResponse =
-                                productService.createVirtualProduct(requestedProduct);
+        /**
+         * Execute the target operation
+         */
+        List<ProductEntity> product = listProductResponse.getPayload();
+        if (product.isEmpty()) {
+            ClientResponse responseBody = new ClientResponse(ClientResponseDto.EmptyPayload);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+        }
+        return ResponseEntity.ok(new ClientResponse(product));
+    }
 
-                /**
-                 * Handle the response
-                 */
-                if (createProductResponse.isSuccess() == false) {
-                        return this.handleFailure(createProductResponse.getFailure(),
-                                        ProductController.class.getCanonicalName(),
-                                        "Create Product (Method)");
-                }
-
-                ClientResponse responseBody =
-                                new ClientResponse(createProductResponse.getPayload());
-                return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    @PostMapping()
+    public ResponseEntity<ClientResponse> createProduct(
+            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+            @RequestBody CreateVirtualProductRequestInterface request) {
+        /**
+         * Handle authorization through common authorization package.
+         */
+        AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
+            return this.handleFailure(
+                    new ServiceFailures.AuthorizationFailed(
+                            "Cookie de autorização não encontrado. ", true),
+                    ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
 
-        @PatchMapping()
-        public ResponseEntity<ClientResponse> updateProduct(
-                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-                        @RequestBody UpdateVirtualProductInformationRequest request) {
-                /**
-                 * Handle authorization through common authorization package.
-                 */
-                AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
-                if (authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
-                                        "Cookie de autorização não encontrado. ", true),
-                                        ProductController.class.getCanonicalName(),
-                                        "Create Product (Method)");
-                }
+        /**
+         * Build a 'create product' instance merging data from client with Api-populated fields.
+         */
+        CreateVirtualProductCommandInterface requestedProduct =
+                CreateVirtualProductCommandInterface.upgrade(request, token.userId());
 
-                UpdateVirtualProductInformationCommand command =
-                                UpdateVirtualProductInformationCommand.upgrade(token.userId(),
-                                                request);
+        /**
+         * Execute the target operation.
+         */
+        Response<VirtualProductInformation> createProductResponse =
+                productService.createVirtualProduct(requestedProduct);
 
-                this.productService.updateOwnedVirtualProductInformation(command);
-
-
-                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                                .body(ClientResponse.empty());
+        /**
+         * Handle the response
+         */
+        if (createProductResponse.isSuccess() == false) {
+            return this.handleFailure(createProductResponse.getFailure(),
+                    ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
 
-        @DeleteMapping()
-        public ResponseEntity<ClientResponse> deleteOwnedProduct(
-                        @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
-                        @RequestBody ProductFilter requestBody) {
-                AuthorizationToken token =
-                                this.authorizationService.getPayload(authorizationCookie);
-                if (this.authorizationService.isTokenExpired(authorizationCookie)) {
-                        return this.handleFailure(new ServiceFailures.AuthorizationFailed(
-                                        "Cookie de autorização não encontrado. ", true),
-                                        ProductController.class.getCanonicalName(),
-                                        "Create Product (Method)");
-                } ;
+        ClientResponse responseBody = new ClientResponse(createProductResponse.getPayload());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    }
 
-                DeleteVirtualProductCommand command =
-                                new DeleteVirtualProductCommand(token.userId(), requestBody);
-
-                Response<Integer> deleteVirtualProductResponse =
-                                this.productService.deleteOwnedVirtualProduct(command);
-                if (!deleteVirtualProductResponse.isSuccess())
-                        return this.handleFailure(deleteVirtualProductResponse.getFailure(),
-                                        "Product (Controller)", "Delete Product (Endpoint)",
-                                        "Delete Virtual Product (Service)");
-
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(new ClientResponse(new DeleteVirtualProductDto(
-                                                deleteVirtualProductResponse.getPayload())));
+    @PatchMapping()
+    public ResponseEntity<ClientResponse> updateProduct(
+            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+            @RequestBody UpdateVirtualProductInformationRequest request) {
+        /**
+         * Handle authorization through common authorization package.
+         */
+        AuthorizationToken token = authorizationService.getPayload(authorizationCookie);
+        if (authorizationService.isTokenExpired(authorizationCookie)) {
+            return this.handleFailure(
+                    new ServiceFailures.AuthorizationFailed(
+                            "Cookie de autorização não encontrado. ", true),
+                    ProductController.class.getCanonicalName(), "Create Product (Method)");
         }
+
+        UpdateVirtualProductInformationCommand command =
+                UpdateVirtualProductInformationCommand.upgrade(token.userId(), request);
+
+        this.productService.updateOwnedVirtualProductInformation(command);
+
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(ClientResponse.empty());
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<ClientResponse> deleteOwnedProduct(
+            @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
+            @RequestBody ProductFilter requestBody) {
+        AuthorizationToken token = this.authorizationService.getPayload(authorizationCookie);
+        if (this.authorizationService.isTokenExpired(authorizationCookie)) {
+            return this.handleFailure(
+                    new ServiceFailures.AuthorizationFailed(
+                            "Cookie de autorização não encontrado. ", true),
+                    ProductController.class.getCanonicalName(), "Create Product (Method)");
+        } ;
+
+        DeleteVirtualProductCommand command =
+                new DeleteVirtualProductCommand(token.userId(), requestBody);
+
+        Response<Integer> deleteVirtualProductResponse =
+                this.productService.deleteOwnedVirtualProduct(command);
+        if (!deleteVirtualProductResponse.isSuccess())
+            return this.handleFailure(deleteVirtualProductResponse.getFailure(),
+                    "Product (Controller)", "Delete Product (Endpoint)",
+                    "Delete Virtual Product (Service)");
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ClientResponse(
+                new DeleteVirtualProductDto(deleteVirtualProductResponse.getPayload())));
+    }
 }

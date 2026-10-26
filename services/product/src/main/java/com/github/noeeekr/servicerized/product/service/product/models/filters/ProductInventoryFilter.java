@@ -4,6 +4,10 @@ import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductInventoryFilterableFieldsInterface;
 import lombok.Builder;
 
+/**
+ * @deprecated Currently, there is no need for this class, only {@link VirtualProductEntity} is
+ *             available, which manages its inventory itself. Still, it is kept for future updates.
+ */
 @Builder
 public class ProductInventoryFilter implements ProductInventoryFilterableFieldsInterface {
     private UUID productId;
