@@ -21,7 +21,8 @@ import lombok.NoArgsConstructor;
  * ProductInventoryEntity defines the format of a persisted product inventory entity according to
  * business rules. It also serves as a model for jakarta persistence through hibernate ORM.
  * 
- * 
+ * @deprecated Currently, there is no need for this class, only {@link VirtualProductEntity} is
+ *             available, which manages its inventory itself. Still, it is kept for future updates.
  */
 @Getter
 @Entity

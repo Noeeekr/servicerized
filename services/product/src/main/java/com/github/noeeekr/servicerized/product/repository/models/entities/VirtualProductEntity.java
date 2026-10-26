@@ -33,7 +33,8 @@ public class VirtualProductEntity implements VirtualProductInterface {
      * from the moment it starts.
      */
     private int provisionHours;
-
+    private int maxProvisionHours;
+    
     /**
      * The product this entity data increments.
      */

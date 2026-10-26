@@ -3,12 +3,15 @@ package com.github.noeeekr.servicerized.product.service.product.models.command;
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.controller.models.request.UpdateVirtualProductInformationRequestInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.update.UpdateProductFields;
-import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.update.UpdateVirtualProductFields;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateVirtualProductFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.models.query.update.UpdateProductFields;
+import com.github.noeeekr.servicerized.product.repository.models.query.update.UpdateVirtualProductFields;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 
+/**
+ * UpdateVirtualProductInformationCommand
+ */
 public class UpdateVirtualProductInformationCommand
         implements UpdateVirtualProductInformationCommandInterface {
     private UUID productOwnerId;
@@ -22,6 +25,7 @@ public class UpdateVirtualProductInformationCommand
             UpdateVirtualProductFieldsInterface virtualProductFields,
             ProductFilterableFieldsInterface productFilter) {
         this.productFilter = new ProductFilter(productFilter);
+
 
         this.productFields = new UpdateProductFields(productFields);
         this.virtualProductFields = new UpdateVirtualProductFields(virtualProductFields);
