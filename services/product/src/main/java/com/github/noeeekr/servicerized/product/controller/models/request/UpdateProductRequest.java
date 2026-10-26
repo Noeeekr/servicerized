@@ -1,8 +1,8 @@
 package com.github.noeeekr.servicerized.product.controller.models.request;
 
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.ProductFilterableFieldsInterface;
-import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.update.UpdateProductFields;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
+import com.github.noeeekr.servicerized.product.repository.models.query.update.UpdateProductFields;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import lombok.experimental.SuperBuilder;
 
