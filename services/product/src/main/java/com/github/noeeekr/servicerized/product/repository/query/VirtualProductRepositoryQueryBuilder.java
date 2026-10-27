@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fields.VirtualProductFilterableFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateVirtualProductFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.entities.VirtualProductEntity;
+import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -23,14 +25,35 @@ public class VirtualProductRepositoryQueryBuilder {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public CriteriaUpdate<VirtualProductEntity> buildUpdateSingleQuery(
+    public Response<CriteriaUpdate<VirtualProductEntity>> buildUpdateSingleQuery(
             UpdateVirtualProductFieldsInterface virtualProductFields,
             VirtualProductFilterableFieldsInterface virtualProductFilter) {
+        // section --- business logic validation
+        Response<?> response;
+        {
+            Integer maxWeeklyProvisionHours = virtualProductFields.getMaxWeeklyProvisionHours();
+            response = VirtualProductEntity.isMaxWeeklyProvisionHoursValid(maxWeeklyProvisionHours);
+            if (!response.isSuccess()) {
+                return Response.fromFailure(response);
+            }
+        }
+        {
+            Integer provisionHours = virtualProductFields.getProvisionHours();
+            response = VirtualProductEntity.isProvisionHoursValid(provisionHours);
+            if (!response.isSuccess()) {
+                return Response.fromFailure(response);
+            }
+        }
+
+        // section --- query build
+
         CriteriaBuilder criteria = this.entityManager.getCriteriaBuilder();
         CriteriaUpdate<VirtualProductEntity> query =
                 criteria.createCriteriaUpdate(VirtualProductEntity.class);
 
         Root<VirtualProductEntity> product = query.from(VirtualProductEntity.class);
+
+        // section --- update filters
 
         List<Predicate> conditions = new ArrayList<>();
         if (virtualProductFilter != null) {
@@ -38,6 +61,9 @@ public class VirtualProductRepositoryQueryBuilder {
                     this.filterBuilder.getVirtualProductFilterFor(product, virtualProductFilter);
             conditions.add(condition);
         }
+        query.where(criteria.and(conditions));
+
+        // section --- update set statement
 
         {
             Integer maxWeeklyProvisionHours = virtualProductFields.getMaxWeeklyProvisionHours();
@@ -55,6 +81,6 @@ public class VirtualProductRepositoryQueryBuilder {
             }
         }
 
-        return query.where(criteria.and(conditions));
+        return Response.success(query);
     }
 }
