@@ -10,7 +10,7 @@ import com.github.noeeekr.servicerized.product.repository.models.entities.Virtua
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -23,12 +23,12 @@ public class VirtualProductRepositoryQueryBuilder {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public CriteriaQuery<VirtualProductEntity> buildUpdateSingleQuery(
+    public CriteriaUpdate<VirtualProductEntity> buildUpdateSingleQuery(
             UpdateVirtualProductFieldsInterface virtualProductFields,
             VirtualProductFilterableFieldsInterface virtualProductFilter) {
         CriteriaBuilder criteria = this.entityManager.getCriteriaBuilder();
-        CriteriaQuery<VirtualProductEntity> query =
-                criteria.createQuery(VirtualProductEntity.class);
+        CriteriaUpdate<VirtualProductEntity> query =
+                criteria.createCriteriaUpdate(VirtualProductEntity.class);
 
         Root<VirtualProductEntity> product = query.from(VirtualProductEntity.class);
 
@@ -37,6 +37,22 @@ public class VirtualProductRepositoryQueryBuilder {
             Predicate condition =
                     this.filterBuilder.getVirtualProductFilterFor(product, virtualProductFilter);
             conditions.add(condition);
+        }
+
+        {
+            Integer maxWeeklyProvisionHours = virtualProductFields.getMaxWeeklyProvisionHours();
+            if (maxWeeklyProvisionHours != null) {
+                query.set(product
+                        .get(VirtualProductEntity.METADATA.COLUMN_NAME_MAX_WEEKLY_PROVISION_HOURS),
+                        maxWeeklyProvisionHours);
+            }
+        }
+        {
+            Integer provisionHours = virtualProductFields.getProvisionHours();
+            if (provisionHours != null) {
+                query.set(product.get(VirtualProductEntity.METADATA.COLUMN_NAME_PROVISION_HOURS),
+                        provisionHours);
+            }
         }
 
         return query.where(criteria.and(conditions));
