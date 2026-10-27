@@ -3,8 +3,8 @@ package com.github.noeeekr.servicerized.product.repository.models.query.update;
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateVirtualProductFieldsInterface;
 
 public class UpdateVirtualProductFields implements UpdateVirtualProductFieldsInterface {
-    private int provisionHours;
-    private int maxWeeklyProvisionHours;
+    private Integer provisionHours;
+    private Integer maxWeeklyProvisionHours;
 
     public UpdateVirtualProductFields(int provisionHours) {
         this.provisionHours = provisionHours;
@@ -14,11 +14,11 @@ public class UpdateVirtualProductFields implements UpdateVirtualProductFieldsInt
         this.provisionHours = virtualProduct.getProvisionHours();
     }
 
-    public int getMaxWeeklyProvisionHours() {
+    public Integer getMaxWeeklyProvisionHours() {
         return this.maxWeeklyProvisionHours;
     }
 
-    public int getProvisionHours() {
+    public Integer getProvisionHours() {
         return this.provisionHours;
     }
 }
