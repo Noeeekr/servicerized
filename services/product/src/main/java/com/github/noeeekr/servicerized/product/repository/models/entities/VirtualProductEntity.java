@@ -2,6 +2,7 @@ package com.github.noeeekr.servicerized.product.repository.models.entities;
 
 import java.util.UUID;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.VirtualProductInterface;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
@@ -21,17 +22,30 @@ public class VirtualProductEntity implements VirtualProductInterface {
     public static final class METADATA {
         public static final String TABLE_NAME = "services";
 
+        public static final String COLUMN_NAME_MAX_WEEKLY_PROVISION_HOURS =
+                "maxWeeklyProvisionHours";
         public static final String COLUMN_NAME_PROVISION_HOURS = "provisionHours";
         public static final String COLUMN_NAME_PRODUCT_ID = "productId";
+
+        public static final String DATABASE_COLUMN_NAME_MAX_WEEKLY_PROVISION_HOURS =
+                "max_weekly_provision_hours";
+        public static final String DATABASE_COLUMN_NAME_PROVISION_HOURS = "provision_hours";
+        public static final String DATABASE_COLUMN_NAME_PRODUCT_ID = "product_id";
     }
 
     @Id
+    @Column(name = VirtualProductEntity.METADATA.DATABASE_COLUMN_NAME_PRODUCT_ID)
     private UUID productId;
 
     /**
      * Defines the amount of time the service provider believes this service takes to be completed
      * from the moment it starts.
      */
+    @Column(name = VirtualProductEntity.METADATA.DATABASE_COLUMN_NAME_MAX_WEEKLY_PROVISION_HOURS,
+            nullable = false)
+    private int maxWeeklyProvisionHours;
+    @Column(name = VirtualProductEntity.METADATA.DATABASE_COLUMN_NAME_PROVISION_HOURS,
+            nullable = false)
     private int provisionHours;
     private int maxProvisionHours;
     

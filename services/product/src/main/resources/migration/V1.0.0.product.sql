@@ -86,8 +86,10 @@ alter table if exists products_kinds
 
 --changeset migrate-product-service:create-services-table
 create table services (
+    max_weekly_provision_hours integer not null,
     provision_hours integer not null,
     product_id uuid not null,
+    
     primary key (product_id)
 );
 

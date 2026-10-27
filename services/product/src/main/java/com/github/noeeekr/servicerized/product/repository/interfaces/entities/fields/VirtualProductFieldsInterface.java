@@ -4,6 +4,10 @@ public interface VirtualProductFieldsInterface {
     public interface ProvisionHours {
         public int getProvisionHours();
     }
+    public interface MaxWeeklyProvisionHours {
+        public int getMaxWeeklyProvisionHours();
+    }
+    
     public interface Id extends ProductFieldsInterface.Id {
 
     }
