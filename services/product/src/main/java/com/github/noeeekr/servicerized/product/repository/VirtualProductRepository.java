@@ -11,6 +11,7 @@ import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 
 @Repository
 public class VirtualProductRepository {
@@ -38,7 +39,7 @@ public class VirtualProductRepository {
     //
     public Response<Integer> updateSingle(UpdateVirtualProductFieldsInterface virtualProductFields,
             VirtualProductFilterableFieldsInterface virtualProductFilter) {
-        CriteriaQuery<VirtualProductEntity> updateSingleQuery =
+        CriteriaUpdate<VirtualProductEntity> updateSingleQuery =
                 this.query.buildUpdateSingleQuery(virtualProductFields, virtualProductFilter);
         try {
             Integer updatedAmount = entityManager.createQuery(updateSingleQuery).executeUpdate();
