@@ -1,7 +1,9 @@
 package com.github.noeeekr.servicerized.product.repository.models.entities;
 
 import java.util.UUID;
+import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.interfaces.entities.VirtualProductInterface;
+import com.github.noeeekr.servicerized.response.Response;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -47,8 +49,7 @@ public class VirtualProductEntity implements VirtualProductInterface {
     @Column(name = VirtualProductEntity.METADATA.DATABASE_COLUMN_NAME_PROVISION_HOURS,
             nullable = false)
     private int provisionHours;
-    private int maxProvisionHours;
-    
+
     /**
      * The product this entity data increments.
      */
@@ -63,5 +64,42 @@ public class VirtualProductEntity implements VirtualProductInterface {
 
         this.productId = product.getProductId();
         this.product = product;
+    }
+
+    public Response<?> isValid() {
+        return VirtualProductEntity.isValid(this);
+    }
+
+    public static Response<?> isValid(VirtualProductEntity virtualProduct) {
+        Response<?> response;
+
+        response = VirtualProductEntity
+                .isMaxWeeklyProvisionHoursValid(virtualProduct.maxWeeklyProvisionHours);
+        if (!response.isSuccess()) {
+            return response;
+        }
+
+        response = VirtualProductEntity.isProvisionHoursValid(virtualProduct.provisionHours);
+        if (!response.isSuccess()) {
+            return response;
+        }
+
+        return Response.success(virtualProduct);
+    }
+
+    public static Response<?> isMaxWeeklyProvisionHoursValid(Integer maxWeeklyProvisionHours) {
+        if (maxWeeklyProvisionHours > 40) {
+            return Response.fromFailure(new ServiceFailures.BadRequest(
+                    "o campo 'tempo máximo de provisão semanal' requer um valor <= 40 ao envés de 'tempo máximo de provisão semanal' > 40"));
+        }
+        return Response.success(null);
+    }
+
+    public static Response<?> isProvisionHoursValid(Integer provisionHours) {
+        if (provisionHours > 40) {
+            return Response.fromFailure(new ServiceFailures.BadRequest(
+                    "o campo 'tempo de provisão' requer um valor <= 40 ao envés de 'tempo de provisão' > 40"));
+        }
+        return Response.success(null);
     }
 }

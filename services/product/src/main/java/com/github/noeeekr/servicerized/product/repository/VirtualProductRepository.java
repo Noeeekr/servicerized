@@ -10,7 +10,6 @@ import com.github.noeeekr.servicerized.response.Response;
 import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
 
 @Repository
@@ -26,6 +25,12 @@ public class VirtualProductRepository {
     //
     public Response<VirtualProductEntity> persist(VirtualProductEntity productServiceData) {
         try {
+            {
+                Response<VirtualProductEntity> response = productServiceData.isValid();
+                if (!response.isSuccess())
+                    return response;
+            }
+
             entityManager.persist(productServiceData);
             entityManager.flush();
             return Response.success(productServiceData);
@@ -39,10 +44,14 @@ public class VirtualProductRepository {
     //
     public Response<Integer> updateSingle(UpdateVirtualProductFieldsInterface virtualProductFields,
             VirtualProductFilterableFieldsInterface virtualProductFilter) {
-        CriteriaUpdate<VirtualProductEntity> updateSingleQuery =
+        Response<CriteriaUpdate<VirtualProductEntity>> response =
                 this.query.buildUpdateSingleQuery(virtualProductFields, virtualProductFilter);
+        if (!response.isSuccess())
+            return Response.fromFailure(response);
+
         try {
-            Integer updatedAmount = entityManager.createQuery(updateSingleQuery).executeUpdate();
+            Integer updatedAmount =
+                    entityManager.createQuery(response.getPayload()).executeUpdate();
             return Response.success(updatedAmount);
         } catch (Exception e) {
             return Response.fromFailure(new Failures.UnhandledException(e));
