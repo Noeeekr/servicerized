@@ -4,6 +4,7 @@ import com.github.noeeekr.servicerized.product.repository.interfaces.operations.
 
 public class UpdateVirtualProductFields implements UpdateVirtualProductFieldsInterface {
     private int provisionHours;
+    private int maxWeeklyProvisionHours;
 
     public UpdateVirtualProductFields(int provisionHours) {
         this.provisionHours = provisionHours;
@@ -11,6 +12,10 @@ public class UpdateVirtualProductFields implements UpdateVirtualProductFieldsInt
 
     public UpdateVirtualProductFields(UpdateVirtualProductFieldsInterface virtualProduct) {
         this.provisionHours = virtualProduct.getProvisionHours();
+    }
+
+    public int getMaxWeeklyProvisionHours() {
+        return this.maxWeeklyProvisionHours;
     }
 
     public int getProvisionHours() {
