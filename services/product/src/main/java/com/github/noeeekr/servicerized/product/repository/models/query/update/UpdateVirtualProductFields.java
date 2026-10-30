@@ -6,11 +6,13 @@ public class UpdateVirtualProductFields implements UpdateVirtualProductFieldsInt
     private Integer provisionHours;
     private Integer maxWeeklyProvisionHours;
 
-    public UpdateVirtualProductFields(int provisionHours) {
+    public UpdateVirtualProductFields(Integer provisionHours, Integer maxWeeklyProvisionHours) {
+        this.maxWeeklyProvisionHours = maxWeeklyProvisionHours;
         this.provisionHours = provisionHours;
     }
 
     public UpdateVirtualProductFields(UpdateVirtualProductFieldsInterface virtualProduct) {
+        this.maxWeeklyProvisionHours = virtualProduct.getMaxWeeklyProvisionHours();
         this.provisionHours = virtualProduct.getProvisionHours();
     }
 
