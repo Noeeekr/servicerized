@@ -26,9 +26,9 @@ public class VirtualProductRepository {
     public Response<VirtualProductEntity> persist(VirtualProductEntity productServiceData) {
         try {
             {
-                Response<VirtualProductEntity> response = productServiceData.isValid();
+                Response<?> response = productServiceData.isValid();
                 if (!response.isSuccess())
-                    return response;
+                    return Response.fromFailure(response);
             }
 
             entityManager.persist(productServiceData);
