@@ -18,6 +18,7 @@ import com.github.noeeekr.servicerized.product.controller.models.dto.DeleteVirtu
 import com.github.noeeekr.servicerized.product.controller.models.request.CreateVirtualProductRequestInterface;
 import com.github.noeeekr.servicerized.product.controller.models.request.UpdateVirtualProductInformationRequest;
 import com.github.noeeekr.servicerized.product.controller.models.request.list.ListProductRequest;
+import com.github.noeeekr.servicerized.product.controller.models.response.UpdateVirtualProductResponse;
 import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.models.entities.ProductEntity;
 import com.github.noeeekr.servicerized.product.repository.models.relations.VirtualProductInformation;
@@ -35,14 +36,33 @@ import com.github.noeeekr.servicerized.response.client.ClientResponseDto;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController extends Controller {
+    public static class METADATA {
+        public static class ENDPOINT {
+            public static String ROOT = "/api/product";
+
+            public static String LIST_VIRTUAL_PRODUCT = "/list";
+            public static String CREATE_OWNED_VIRTUAL_PRODUCT = "";
+            public static String UPDATE_OWNED_VIRTUAL_PRODUCT = "";
+            public static String DELETE_OWNED_VIRTUAL_PRODUCT = "";
+        }
+    }
+
     @Autowired
     private ProductService productService;
 
     @Autowired
     private AuthorizationService authorizationService;
 
+    /**
+     * listVirtualProduct endpoint lists any product that is marked as deleted.
+     * 
+     * @param authorizationCookie The authorization cookie for authentication.
+     * @param request The request body.
+     * @return A {@link ResponseEntity} containing a {@link ClientResponse} containing a
+     *         {@link ProductEntity} on success.
+     */
     @PostMapping("/list")
-    public ResponseEntity<ClientResponse> listProduct(
+    public ResponseEntity<ClientResponse> listVirtualProduct(
             @CookieValue(Authorization.AUTH_COOKIE_NAME) String authorizationCookie,
             @RequestBody ListProductRequest request) {
         /**
@@ -128,16 +148,22 @@ public class ProductController extends Controller {
             return this.handleFailure(
                     new ServiceFailures.AuthorizationFailed(
                             "Cookie de autorização não encontrado. ", true),
-                    ProductController.class.getCanonicalName(), "Create Product (Method)");
+                    ProductController.class.getCanonicalName(),
+                    "Update Virtual Product (Endpoint)");
         }
 
         UpdateVirtualProductInformationCommand command =
                 UpdateVirtualProductInformationCommand.upgrade(token.userId(), request);
 
-        this.productService.updateOwnedVirtualProductInformation(command);
+        Response<Integer> response =
+                this.productService.updateOwnedVirtualProductInformation(command);
+        if (!response.isSuccess()) {
+            return this.handleFailure(response.getFailure(), "Update Virtual Product (Endpoint)");
+        }
 
-
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(ClientResponse.empty());
+        UpdateVirtualProductResponse responseBody =
+                UpdateVirtualProductResponse.builder().updatedAmount(response.getPayload()).build();
+        return ResponseEntity.status(HttpStatus.OK).body(new ClientResponse(responseBody));
     }
 
     @DeleteMapping()

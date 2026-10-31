@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.KindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
@@ -28,6 +29,7 @@ import com.github.noeeekr.servicerized.product.service.product.models.filters.Li
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.VirtualProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
+import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -155,12 +157,15 @@ public class ProductService {
             return Response.fromFailure(new ServiceFailures.BadRequest(
                     "filtros de produto não definidos. Incapaz de localizar o produto alvo"));
 
+        Integer updatedAmount = 0;
+
         UpdateProductFieldsInterface productFields = command.getProduct();
         if (productFields != null) {
             Response<Integer> updateSingleResponse =
                     this.productRepository.updateSingle(productFields, filter);
             if (!updateSingleResponse.isSuccess())
                 return updateSingleResponse;
+            updatedAmount = updateSingleResponse.getPayload();
         }
 
         UpdateVirtualProductFieldsInterface virtualProductFields = command.getVirtualProduct();
@@ -169,10 +174,15 @@ public class ProductService {
                     virtualProductFields, new VirtualProductFilter(filter.getProductId()));
             if (!updateSingleResponse.isSuccess())
                 return updateSingleResponse;
+            if (updatedAmount > 0 && updatedAmount != updateSingleResponse.getPayload()) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
+                return Response.fromFailure(new Failures.BugBoundary(
+                        "update amount on virtual product differed from product on a 1:1 relation."));
+            }
         }
 
-        return Response.fromFailure(new ServiceFailures.NotImplemented(
-                "update owned product information method is not implemented", "Product (Service)"));
+        return Response.success(updatedAmount);
     }
 
     @Transactional
