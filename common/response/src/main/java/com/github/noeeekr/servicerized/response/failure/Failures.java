@@ -12,7 +12,16 @@ public class Failures {
 
         @Override
         public String message() {
-            return String.format("Unable to finish operation. The following procedure is not implemented: '%s' at origin '%s'", procedureDescription, origin);
+            return String.format(
+                    "Unable to finish operation. The following procedure is not implemented: '%s' at origin '%s'",
+                    procedureDescription, origin);
+        }
+    }
+
+    public record BugBoundary(String message) implements Failure {
+        @Override
+        public String message() {
+            return message;
         }
     }
 
