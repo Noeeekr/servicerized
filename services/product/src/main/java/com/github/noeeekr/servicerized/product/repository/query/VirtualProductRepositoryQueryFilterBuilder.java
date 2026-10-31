@@ -11,12 +11,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
 
-@Component 
+@Component
 public class VirtualProductRepositoryQueryFilterBuilder {
     //
     // Class fields
     //
-    @PersistenceContext 
+    @PersistenceContext
     private EntityManager entityManager;
 
     //
@@ -31,8 +31,8 @@ public class VirtualProductRepositoryQueryFilterBuilder {
         List<Predicate> conditions = new ArrayList<>();
         if (filter.getProductId() != null) {
             Predicate condition =
-                    virtualProduct.get(VirtualProductEntity.METADATA.COLUMN_NAME_PROVISION_HOURS)
-                            .equalTo(conditions);
+                    virtualProduct.get(VirtualProductEntity.METADATA.COLUMN_NAME_PRODUCT_ID)
+                            .equalTo(filter.getProductId());
             conditions.add(condition);
         }
 

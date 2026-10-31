@@ -4,9 +4,15 @@ import com.github.noeeekr.servicerized.product.repository.interfaces.entities.fi
 import com.github.noeeekr.servicerized.product.repository.interfaces.operations.UpdateProductFieldsInterface;
 import com.github.noeeekr.servicerized.product.repository.models.query.update.UpdateProductFields;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+@Setter
+@Getter
 @SuperBuilder
+@NoArgsConstructor
 public class UpdateProductRequest implements UpdateProductRequestInterface {
 
     private UpdateProductFields fields;

@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.github.noeeekr.servicerized.product.failures.ServiceFailures;
 import com.github.noeeekr.servicerized.product.repository.KindRepository;
 import com.github.noeeekr.servicerized.product.repository.ProductKindRepository;
@@ -29,7 +28,6 @@ import com.github.noeeekr.servicerized.product.service.product.models.filters.Li
 import com.github.noeeekr.servicerized.product.service.product.models.filters.ProductFilter;
 import com.github.noeeekr.servicerized.product.service.product.models.filters.VirtualProductFilter;
 import com.github.noeeekr.servicerized.response.Response;
-import com.github.noeeekr.servicerized.response.failure.Failures;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -174,11 +172,9 @@ public class ProductService {
                     virtualProductFields, new VirtualProductFilter(filter.getProductId()));
             if (!updateSingleResponse.isSuccess())
                 return updateSingleResponse;
-            if (updatedAmount > 0 && updatedAmount != updateSingleResponse.getPayload()) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
-                return Response.fromFailure(new Failures.BugBoundary(
-                        "update amount on virtual product differed from product on a 1:1 relation."));
+            if (updateSingleResponse.getPayload() > updatedAmount) {
+                updatedAmount = updateSingleResponse.getPayload();
             }
         }
 
