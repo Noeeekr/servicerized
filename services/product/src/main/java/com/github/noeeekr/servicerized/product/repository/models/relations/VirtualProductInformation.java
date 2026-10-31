@@ -15,7 +15,7 @@ import lombok.experimental.Delegate;
 public class VirtualProductInformation
         implements VirtualProductInformationInterface, ClientResponseDto {
     @Delegate(excludes = {VirtualProductFieldsInterface.Id.class, ClientResponseDto.class})
-    private VirtualProductEntity productKind;
+    private VirtualProductEntity virtualProduct;
 
     @Delegate(excludes = {ClientResponseDto.class})
     private ProductEntity product;
@@ -23,16 +23,28 @@ public class VirtualProductInformation
     @Delegate(excludes = {ClientResponseDto.class})
     private KindEntity kind;
 
-    public VirtualProductInformation(VirtualProductEntity productKind, ProductEntity product,
+    public VirtualProductInformation(VirtualProductEntity virtualProduct, ProductEntity product,
             KindEntity kind) {
-        this.productKind = productKind;
+        this.virtualProduct = virtualProduct;
         this.product = product;
         this.kind = kind;
     }
 
     @Override
     public Object prepareToClient() {
-        return new VirtualProductInformationClientDto(new VirtualProductDto(this.productKind),
+        return new VirtualProductInformationClientDto(new VirtualProductDto(this.virtualProduct),
                 new ProductDto(this.product), new KindDto(this.kind));
+    }
+
+    public VirtualProductEntity getVirtualProduct() {
+        return this.virtualProduct;
+    }
+
+    public KindEntity getProductKind() {
+        return this.kind;
+    }
+
+    public ProductEntity getProduct() {
+        return this.product;
     }
 }
